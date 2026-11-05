@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* One typeface for the whole site. The complete Inter file covers Latin, Cyrillic, the Mongolian
+   letters Ө and Ү, and the subscripts, arrows and maths signs used in chemistry. */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('inter-ui/variable/InterVariable.woff2') format('woff2');
+}
+
+@theme {
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+  }
+  code, kbd, samp, pre {
+    font-family: var(--font-sans);
+  }
+}
+
+/* Drawings on a light background, for pages that ask for it. */
+.art-light {
+  --art-background: #f0f9ff;
+  --art-grid: #e0f2fe;
+  --art-stroke: #475569;
+  --art-muted: #64748b;
+  --art-accent: #0891b2;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body,
+  #root > div {
+    background: #fff !important;
+    min-height: 0 !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  /* Show everything the student typed, not just the visible rows */
+  textarea {
+    field-sizing: content;
+  }
+  ol > li,
+  ul > li,
+  tr {
+    break-inside: avoid;
+  }
+}
