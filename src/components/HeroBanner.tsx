@@ -1,9 +1,22 @@
 import React from 'react';
 import { Language, NavigationTab } from '../types/chemistry';
 import { getTranslation } from '../data/translations';
-import { rulePhotos } from '../data/safetyPhotos';
+import { SafetyPhoto } from '../data/safetyPhotos';
+import labRoomImage from '../assets/images/lab/lab_room.jpg';
 import { PhotoCredit } from './PhotoCredit';
 import { BookOpen, ShieldCheck, ArrowRight } from 'lucide-react';
+
+// Our own laboratory, so there is no outside source to credit.
+const photo: SafetyPhoto = {
+  src: labRoomImage,
+  author: '',
+  license: '',
+  licenseUrl: '',
+  sourceUrl: '',
+  altEn: 'Our school chemistry laboratory: benches set with burettes, reagent bottles and fume extraction arms',
+  altMn: 'Манай сургуулийн химийн лаборатори: бюретка, урвалжийн шил бэлдсэн ширээ, утаа сорох хоолой',
+  cropped: true,
+};
 
 interface HeroBannerProps {
   language: Language;
@@ -13,8 +26,6 @@ interface HeroBannerProps {
 export const HeroBanner: React.FC<HeroBannerProps> = ({ language, onNavigate }) => {
   const t = getTranslation(language);
   const en = language === 'en';
-  // A student in goggles, gloves and a coat: the practice this site teaches.
-  const photo = rulePhotos[9];
   const stats = [
     { value: '17', label: en ? 'Core Practical Chapters' : 'Үндсэн бүлэг' },
     { value: '15', label: en ? 'Laboratory Safety Rules' : 'Алтан дүрэм' },
