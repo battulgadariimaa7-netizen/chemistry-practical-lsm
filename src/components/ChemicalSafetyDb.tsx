@@ -7,6 +7,7 @@ import { ChemText } from './ChemText';
 import { GhsPictogram, ghsCodeOf } from './art/GhsPictogram';
 import { ReagentBottle } from './art/ReagentBottle';
 import { pagePhotos } from '../data/pagePhotos';
+import { chemicalPhotos } from '../data/chemicalPhotos';
 import { PhotoCredit } from './PhotoCredit';
 import {
   Flame,
@@ -24,6 +25,23 @@ import {
 interface ChemicalSafetyDbProps {
   language: Language;
 }
+
+/** A real photo of the reagent bottle with its credit, or the drawn amber bottle when there is no photo. */
+const ChemicalPicture: React.FC<{ id: string; label: string; language: Language; className?: string }> = ({ id, label, language, className = '' }) => {
+  const photo = chemicalPhotos[id];
+  return (
+    <figure className={className}>
+      <div className="aspect-[4/3] rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+        {photo ? (
+          <img src={photo.src} alt={language === 'en' ? photo.altEn : photo.altMn} loading="lazy" className="w-full h-full object-cover" />
+        ) : (
+          <ReagentBottle id={id} label={label} light />
+        )}
+      </div>
+      {photo && <PhotoCredit photo={photo} language={language} cropped={photo.cropped} className="mt-1 text-slate-400" />}
+    </figure>
+  );
+};
 
 export const ChemicalSafetyDb: React.FC<ChemicalSafetyDbProps> = ({ language }) => {
   const t = getTranslation(language);
@@ -140,9 +158,7 @@ export const ChemicalSafetyDb: React.FC<ChemicalSafetyDbProps> = ({ language }) 
             className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-colors"
           >
             <div>
-              <div className="aspect-[4/3] rounded-lg overflow-hidden border border-slate-200 mb-4">
-                <ReagentBottle id={chem.id} label={language === 'en' ? chem.nameEn : chem.nameMn} light />
-              </div>
+              <ChemicalPicture id={chem.id} label={language === 'en' ? chem.nameEn : chem.nameMn} language={language} className="mb-4" />
 
               {/* Header with CAS & Formula */}
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs mb-2">
@@ -240,9 +256,12 @@ export const ChemicalSafetyDb: React.FC<ChemicalSafetyDbProps> = ({ language }) 
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
-              <div className="w-full sm:w-44 aspect-[4/3] shrink-0 rounded-lg overflow-hidden border border-slate-200">
-                <ReagentBottle id={activeSdsModal.id} label={language === 'en' ? activeSdsModal.nameEn : activeSdsModal.nameMn} light />
-              </div>
+              <ChemicalPicture
+                id={activeSdsModal.id}
+                label={language === 'en' ? activeSdsModal.nameEn : activeSdsModal.nameMn}
+                language={language}
+                className="w-full sm:w-44 shrink-0"
+              />
               <div className="flex flex-wrap items-center gap-2">
                 {activeSdsModal.pictograms.map((pic) => (
                   <GhsPictogram key={pic} code={ghsCodeOf(pic)} label={getPictogramLabel(pic, language)} className="w-16 h-16" />

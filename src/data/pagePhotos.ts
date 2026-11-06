@@ -1,4 +1,5 @@
 import chemicalStorageImage from '../assets/images/pages/chemical_storage.jpg';
+import copperSulfateImage from '../assets/images/pages/copper_sulfate_pentahydrate.jpg';
 import labNotebookImage from '../assets/images/pages/lab_notebook.jpg';
 import titrationEndpointImage from '../assets/images/pages/titration_endpoint.jpg';
 import titrationSetupImage from '../assets/images/pages/titration_setup.jpg';
@@ -8,10 +9,13 @@ export interface PagePhoto extends ApparatusPhoto {
   altEn: string;
   altMn: string;
   cropped?: boolean;
+  /** Says what the photo shows when it is not the set-up the text beside it describes. */
+  noteEn?: string;
+  noteMn?: string;
 }
 
 // Freely licensed photos from Wikimedia Commons, resized for the site. Keep the credits with them.
-export const pagePhotos: Record<'chemicalStorage' | 'labNotebook' | 'titrationEndpoint' | 'titrationSetup', PagePhoto> = {
+export const pagePhotos: Record<'chemicalStorage' | 'copperSulfate' | 'labNotebook' | 'titrationEndpoint' | 'titrationSetup', PagePhoto> = {
   chemicalStorage: {
     src: chemicalStorageImage,
     author: 'Bamrsykp',
@@ -21,6 +25,17 @@ export const pagePhotos: Record<'chemicalStorage' | 'labNotebook' | 'titrationEn
     altEn: 'Yellow safety cabinet for flammable chemicals',
     altMn: 'Шатамхай бодисын шар хамгаалалтын шүүгээ',
     cropped: true,
+  },
+  copperSulfate: {
+    src: copperSulfateImage,
+    author: 'Benjah-bmm27',
+    license: 'Public domain',
+    licenseUrl: '',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Copper(II)-sulfate-pentahydrate-sample.jpg',
+    altEn: 'Blue hydrated copper(II) sulfate, CuSO₄·5H₂O, as powder and small lumps',
+    altMn: 'Цэнхэр зэсийн байван CuSO₄·5H₂O: нунтаг ба жижиг бөөм',
+    noteEn: 'In the photo: blue hydrated copper(II) sulfate before heating. It turns white as the water leaves.',
+    noteMn: 'Зурагт: халаахаас өмнөх цэнхэр зэсийн байван. Ус нь ялгарахад цагаан болно.',
   },
   labNotebook: {
     src: labNotebookImage,

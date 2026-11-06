@@ -27,8 +27,10 @@ import {
   Printer
 } from 'lucide-react';
 
-// Practicals with a matching lab photo; the rest use a drawn setup.
+// Practicals with a real photo; the rest use a drawn setup.
+// 1.1 shows the salt that is heated, since no free photo of the crucible set-up was found; its note says so.
 const setupPhotos: Record<string, PagePhoto> = {
+  p1_1: pagePhotos.copperSulfate,
   p4_1: pagePhotos.titrationSetup,
 };
 
@@ -368,6 +370,9 @@ export const PracticalLessons: React.FC<PracticalLessonsProps> = ({
                     <SetupArt id={currentExperiment.id} label={language === 'en' ? setupVisual.titleEn : setupVisual.titleMn} />
                   )}
                 </div>
+                {setupPhoto?.noteEn && (
+                  <p className="text-[11px] leading-snug text-slate-200">{language === 'en' ? setupPhoto.noteEn : setupPhoto.noteMn}</p>
+                )}
                 {setupPhoto && <PhotoCredit photo={setupPhoto} language={language} cropped={setupPhoto.cropped} className="text-slate-400" />}
               </figure>
             </div>
