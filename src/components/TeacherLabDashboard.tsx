@@ -121,7 +121,7 @@ export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
   return (
     <>
     {/* Soft wash behind the top of the page. It sits outside the content so that it reaches both edges. */}
-    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-16 xl:top-0 h-[30rem] bg-linear-to-b from-cyan-100/80 via-sky-50/60 to-transparent print:hidden" />
+    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-16 lg:top-0 h-[30rem] bg-linear-to-b from-cyan-100/80 via-sky-50/60 to-transparent print:hidden" />
     <div className="relative space-y-8">
       {/* Top Banner and Navigation */}
       <div className="bg-white/90 backdrop-blur-sm border border-white rounded-2xl p-6 shadow-sm print:hidden">

@@ -37,7 +37,10 @@ const navItems: { tab: NavigationTab; en: string; mn: string; icon: React.Elemen
   { tab: 'management', en: 'Staff Portal', mn: 'Багш, лаборант', icon: Users },
 ];
 
-/** A fixed list down the left side on wide screens; a top bar with a menu button on narrower ones. */
+/**
+ * A fixed list down the left side from 1024px up; a top bar with a menu button on narrower screens.
+ * It starts at lg, not xl: a 1280px laptop screen leaves the page about 1265px once the scroll bar is drawn.
+ */
 export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   onSelectTab,
@@ -118,9 +121,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   );
 
   return (
-    <header className="sticky top-0 z-40 xl:static print:hidden">
+    <header className="sticky top-0 z-40 lg:static print:hidden">
       {/* Wide screens: the list down the left side */}
-      <div className="hidden xl:flex fixed inset-y-0 left-0 z-40 w-60 flex-col bg-white border-r border-slate-200">
+      <div className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-60 flex-col bg-white border-r border-slate-200">
         <div className="h-16 shrink-0 px-4 flex items-center border-b border-slate-100">{brand}</div>
         <nav
           aria-label={language === 'en' ? 'Main' : 'Үндсэн цэс'}
@@ -135,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Narrower screens: a bar across the top */}
-      <div className="xl:hidden h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 bg-white/95 backdrop-blur-md border-b border-slate-200">
+      <div className="lg:hidden h-16 px-4 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 bg-white/95 backdrop-blur-md border-b border-slate-200">
         {brand}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {languageButton}
@@ -158,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {menuOpen && (
-        <nav id="mobile-nav" className="xl:hidden border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-2">
+        <nav id="mobile-nav" className="lg:hidden border-b border-slate-200 bg-white px-4 sm:px-6 py-2">
           <div className="space-y-0.5">
             {links}
             <div className="sm:hidden px-3 py-3 border-t border-slate-100 mt-1">{roleSelect}</div>

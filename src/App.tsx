@@ -107,7 +107,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans xl:pl-60 print:pl-0">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans lg:pl-60 print:pl-0">
       {/* Navigation Top Bar strictly adhering to Top Bar Contract */}
       <Navbar
         currentTab={currentTab}
