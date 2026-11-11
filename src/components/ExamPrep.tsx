@@ -395,7 +395,7 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
                 ? (en ? 'No exam material matches this.' : 'Тохирох шалгалтын бодис олдсонгүй.')
                 : en
                   ? `${groups.length} matching description${groups.length === 1 ? '' : 's'}. «Same solution» means the identical description in several papers; the rest are similar: the same substance at another concentration or amount.`
-                  : `${groups.length} тохирох тайлбар. «Ижил уусмал» нь хэд хэдэн шалгалтад яг ижил тайлбартай; бусад нь төстэй: ижил бодис, өөр концентрац эсвэл хэмжээтэй.`}
+                  : `${groups.length} тохирох тайлбар. «Ижил уусмал» нь хэд хэдэн шалгалтад яг ижил тайлбартай; бусад нь төстэй: ижил бодис, өөр концентраци эсвэл хэмжээтэй.`}
             </p>
             {benchMatch && (
               <p className="p-2.5 rounded-lg bg-cyan-50 border border-cyan-100 text-[11px] text-cyan-900">
