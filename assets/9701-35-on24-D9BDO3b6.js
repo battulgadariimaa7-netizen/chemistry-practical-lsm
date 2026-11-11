@@ -201,8 +201,8 @@ table.rt input.tin{min-width:56px}
         <h3>@@Structure|||Бүтэц@@</h3>
         <table class="rt">
           <tr><th>@@Question|||Асуулт@@</th><th>@@Content|||Агуулга@@</th><th>@@Marks|||Оноо@@</th></tr>
-          <tr><td>1</td><td style="text-align:left">@@Adding H₂SO₄ to NaOH and using the temperature change (thermometric titration) to find the acid concentration; <b>graph</b>|||NaOH-д H₂SO₄ нэмж температурын өөрчлөлтөөр (дулааны титрлэлт) хүчлийн концентрацыг олох; <b>график</b>@@</td><td>12</td></tr>
-          <tr><td>2</td><td style="text-align:left">@@Finding the same acid concentration from the mass of CO₂ given off in the reaction of Na₂CO₃ with H₂SO₄; uncertainty calculation|||Na₂CO₃ + H₂SO₄ урвалд ялгарсан CO₂-ын массаар мөн хүчлийн концентрацыг олох; алдааны тооцоо@@</td><td>14</td></tr>
+          <tr><td>1</td><td style="text-align:left">@@Adding H₂SO₄ to NaOH and using the temperature change (thermometric titration) to find the acid concentration; <b>graph</b>|||NaOH-д H₂SO₄ нэмж температурын өөрчлөлтөөр (дулааны титрлэлт) хүчлийн концентрацийг олох; <b>график</b>@@</td><td>12</td></tr>
+          <tr><td>2</td><td style="text-align:left">@@Finding the same acid concentration from the mass of CO₂ given off in the reaction of Na₂CO₃ with H₂SO₄; uncertainty calculation|||Na₂CO₃ + H₂SO₄ урвалд ялгарсан CO₂-ын массаар мөн хүчлийн концентрацийг олох; алдааны тооцоо@@</td><td>14</td></tr>
           <tr><td>3</td><td style="text-align:left">@@Three compounds of one metal: deducing the oxidation states|||Нэг металлын гурван нэгдэл — исэлдэлтийн зэргийг тогтоох@@</td><td>14</td></tr>
         </table>
       </div>
@@ -250,7 +250,7 @@ table.rt input.tin{min-width:56px}
     <div class="eq">2NaOH(aq) + H₂SO₄(aq) → Na₂SO₄(aq) + 2H₂O(l)</div>
     <ul>
       <li><b>FA 1</b> — 2.01 mol dm⁻³ NaOH</li>
-      <li>@@<b>FA 2</b>: H₂SO₄ (concentration unknown; used again in question 2)|||<b>FA 2</b> — H₂SO₄ (концентрац нь тодорхойгүй; 2-р асуултад дахин хэрэглэнэ)@@</li>
+      <li>@@<b>FA 2</b>: H₂SO₄ (concentration unknown; used again in question 2)|||<b>FA 2</b> — H₂SO₄ (концентраци нь тодорхойгүй; 2-р асуултад дахин хэрэглэнэ)@@</li>
     </ul>
     <details class="teach"><summary>@@Method (summary): read it all first|||Аргачлал (товч) — эхлээд бүтэн уншина уу@@</summary><div>
       <ol>
@@ -312,7 +312,7 @@ table.rt input.tin{min-width:56px}
     <details class="teach"><summary>@@Teacher’s notes: marking points for 1(a)|||Багшийн тайлбар: 1(a)-ийн онооны цэгүүд@@</summary><div>
       <p>@@<b>I</b>: a temperature is recorded for all 9 volumes.|||<b>I</b> — 9 эзлэхүүн бүрт температур бичигдсэн.@@</p>
       <p>@@<b>II</b>: every reading ends in <span class="mono">.0</span> or <span class="mono">.5</span> (a thermometer with 1 °C divisions is read to 0.5 °C). Writing <span class="mono">22</span> or <span class="mono">22.3</span> loses the mark.|||<b>II</b> — Бүх заалт <span class="mono">.0</span> эсвэл <span class="mono">.5</span>-аар төгссөн (1 °C-ийн хуваарьтай термометрийг 0.5 °C хүртэл уншина). <span class="mono">22</span>, <span class="mono">22.3</span> гэвэл оноо алдана.@@</p>
-      <p>@@<b>III, IV (accuracy)</b>: your largest temperature rise Δ = T<sub>max</sub> − T(0.00) is compared with the supervisor’s: difference ≤ 2.0 °C → III, ≤ 1.0 °C → IV. In this simulation the supervisor’s Δ ≈ <b>12.0 °C</b> (worked out from the concentrations in the CI).|||<b>III, IV (нарийвчлал)</b> — Таны температурын хамгийн их өсөлт Δ = T<sub>max</sub> − T(0.00)-ийг хянагчийнхтай харьцуулна: зөрүү ≤ 2.0 °C → III, ≤ 1.0 °C → IV. Энэ симуляцид хянагчийн Δ ≈ <b>12.0 °C</b> (CI-ийн концентрацаас тооцсон).@@</p>
+      <p>@@<b>III, IV (accuracy)</b>: your largest temperature rise Δ = T<sub>max</sub> − T(0.00) is compared with the supervisor’s: difference ≤ 2.0 °C → III, ≤ 1.0 °C → IV. In this simulation the supervisor’s Δ ≈ <b>12.0 °C</b> (worked out from the concentrations in the CI).|||<b>III, IV (нарийвчлал)</b> — Таны температурын хамгийн их өсөлт Δ = T<sub>max</sub> − T(0.00)-ийг хянагчийнхтай харьцуулна: зөрүү ≤ 2.0 °C → III, ≤ 1.0 °C → IV. Энэ симуляцид хянагчийн Δ ≈ <b>12.0 °C</b> (CI-ийн концентрациас тооцсон).@@</p>
       <div class="note exam">@@<b class="t">Examiner’s advice</b>If you do not stir well after each addition, the heat does not spread evenly and the highest value comes out too low. If you wait a long time between additions, the cup loses heat and the curve drops. Do not rest the thermometer on the bottom of the cup; keep the bulb fully covered.|||<b class="t">Шалгагчийн зөвлөмж</b>Нэмэлт бүрийн дараа сайн хутгахгүй бол дулаан жигд тархахгүй, хамгийн их утга бага гарна. Нэмэлтүүдийн хооронд удаан хүлээвэл аяга дулаан алдаж, муруй доошилно. Термометрийг аяганы ёроолд тулгахгүй, бөмбөлгийг бүрэн дүрнэ.@@</div>
     </div></details>
   </div>
@@ -378,7 +378,7 @@ table.rt input.tin{min-width:56px}
 <section class="tab" id="tab-q2">
   <div class="partnav" id="partnav-q2"></div>
   <div class="card">
-    <div class="qhead"><h2>@@2. Finding the acid concentration from the mass of CO₂ given off|||2. Ялгарсан CO₂-ын массаар хүчлийн концентрацыг олох@@</h2><span class="marks">[14]</span></div>
+    <div class="qhead"><h2>@@2. Finding the acid concentration from the mass of CO₂ given off|||2. Ялгарсан CO₂-ын массаар хүчлийн концентрацийг олох@@</h2><span class="marks">[14]</span></div>
     <div class="eq">Na₂CO₃(s) + H₂SO₄(aq) → Na₂SO₄(aq) + CO₂(g) + H₂O(l)</div>
     <ul><li>@@<b>FA 2</b>: the acid from question 1|||<b>FA 2</b> — 1-р асуултын хүчил@@</li><li>@@<b>FA 3</b>: Na₂CO₃ (solid)|||<b>FA 3</b> — Na₂CO₃ (хатуу)@@</li></ul>
     <details class="teach"><summary>@@Method (summary)|||Аргачлал (товч)@@</summary><div>
@@ -511,7 +511,7 @@ table.rt input.tin{min-width:56px}
   <div class="card">
     <div class="qhead"><h2>@@3. Three compounds of one metal|||3. Нэг металлын гурван нэгдэл@@</h2><span class="marks">[14]</span></div>
     <p>@@<b>FA 4, FA 5 and FA 6</b> are compounds of one metal in different oxidation states.|||<b>FA 4, FA 5, FA 6</b> нь нэг металлын өөр өөр исэлдэлтийн зэрэгтэй нэгдлүүд.@@</p>
-    <p class="small">@@Write every observation clearly: colour changes, any precipitate and whether it dissolves in excess reagent, any gas and the test that identified it. If nothing happens, write <b>no change</b>. Heat solutions in a boiling tube and solids in a hard-glass test-tube.|||Ажиглалт бүрийг тодорхой бич: өнгөний өөрчлөлт, тунадас ба илүүдэл реагентэд уусах эсэх, хий ба түүнийг илрүүлсэн сорил. Өөрчлөлтгүй бол <b>no change</b>. Уусмал халаах бол boiling tube, хатуу бодис халаах бол hard-glass test-tube хэрэглэнэ.@@</p>
+    <p class="small">@@Write every observation clearly: colour changes, any precipitate and whether it dissolves in excess reagent, any gas and the test that identified it. If nothing happens, write <b>no change</b>. Heat solutions in a boiling tube and solids in a hard-glass test-tube.|||Ажиглалт бүрийг тодорхой бич: өнгөний өөрчлөлт, тунадас ба илүүдэл реагентэд уусах эсэх, хий ба түүнийг илрүүлсэн сорил. Өөрчлөлтгүй бол <b>no change</b>. Уусмал халаах бол буцалгах хуруу шил, хатуу бодис халаах бол халуунд тэсвэртэй хуруу шил хэрэглэнэ.@@</p>
     <div class="note warn small">@@<b class="t">Safety</b>Concentrated HCl is corrosive. Fill each test-tube with water as soon as you have made your observations. Chlorine is a toxic gas.|||<b class="t">Аюулгүй ажиллагаа</b>Төвлөрсөн HCl идэмхий. Ажиглалтаа хийсэн даруйдаа хуруу шилийг усаар дүүргэнэ. Хлор хортой хий.@@</div>
   </div>
 
@@ -531,7 +531,7 @@ table.rt input.tin{min-width:56px}
 
   <div class="card">
     <div class="qhead"><h3>3(a) FA 4</h3><span class="marks">[5]</span></div>
-    <p class="small">@@<b>(i)</b> Heat solid FA 4 in a hard-glass test-tube, gently at first and then strongly. Record all your observations. Let it cool and keep it for (iii). [2]|||<b>(i)</b> Хатуу FA 4-ийг hard-glass хуруу шилэнд эхлээд зөөлөн, дараа нь хүчтэй халаана. Бүх ажиглалтаа бич. Хөргөөд (iii)-д хадгална. [2]@@</p>
+    <p class="small">@@<b>(i)</b> Heat solid FA 4 in a hard-glass test-tube, gently at first and then strongly. Record all your observations. Let it cool and keep it for (iii). [2]|||<b>(i)</b> Хатуу FA 4-ийг халуунд тэсвэртэй хуруу шилэнд эхлээд зөөлөн, дараа нь хүчтэй халаана. Бүх ажиглалтаа бич. Хөргөөд (iii)-д хадгална. [2]@@</p>
     <textarea id="q3ai" placeholder="Observations..."></textarea>
     <p class="small">@@<b>(ii)</b> Dissolve FA 4 in distilled water to a depth of about 5 cm and add about 1 cm of dilute H₂SO₄. Table 3.1 [2]|||<b>(ii)</b> FA 4-ийг ~5 cm гүн нэрмэл усанд уусгаж, ~1 cm шингэрүүлсэн H₂SO₄ нэмнэ. Хүснэгт 3.1 [2]@@</p>
     <div class="tablewrap"><table class="rt"><tr><th style="width:34%">test</th><th>observations</th></tr>
@@ -555,7 +555,7 @@ table.rt input.tin{min-width:56px}
 
   <div class="card">
     <div class="qhead"><h3>@@3(b) FA 5: Table 3.2|||3(b) FA 5 — Хүснэгт 3.2@@</h3><span class="marks">[3]</span></div>
-    <p class="small">@@Dissolve FA 5 in a half-filled boiling tube (you may need to warm it). Use a 1 cm depth of solution for each test.|||FA 5-ыг хагас дүүргэсэн boiling tube-д уусгана (халаах хэрэгтэй байж болно). Сорил бүрт 1 cm гүн уусмал авна.@@</p>
+    <p class="small">@@Dissolve FA 5 in a half-filled boiling tube (you may need to warm it). Use a 1 cm depth of solution for each test.|||FA 5-ыг хагас дүүргэсэн буцалгах хуруу шилэнд уусгана (халаах хэрэгтэй байж болно). Сорил бүрт 1 cm гүн уусмал авна.@@</p>
     <div class="tablewrap"><table class="rt"><tr><th style="width:34%">test</th><th>observations</th></tr>
       <tr><th class="mini">Test 1: dilute HNO₃, then AgNO₃(aq)</th><td><textarea id="q3b1"></textarea></td></tr>
       <tr><th class="mini">Test 2: BaCl₂(aq) or Ba(NO₃)₂(aq), then dilute HNO₃</th><td><textarea id="q3b2"></textarea></td></tr>
@@ -744,8 +744,8 @@ function grade(t){return t>=24?"A":t>=22?"B":t>=19?"C":t>=16?"D":t>=14?"E":"U";}
 const KEYWORD_PARTS=new Set(["q2c","q3a","q3b","q3c"]);
 const PART_BUTTON={q1a:"q1checkA",q1b:"q1checkB",q1c:"q1checkC",q2a:"q2checkA",q2b:"q2checkB",q2c:"q2checkC",q2d:"q2checkD",q3a:"q3checkA",q3b:"q3checkB",q3c:"q3checkC",q3d:"q3checkD"};
 const QUESTIONS=[
- {id:"q1",n:1,title:"@@Thermometric titration|||Дулааны титрлэлт@@",text:"@@Adding H₂SO₄ to NaOH and using the temperature change to find the acid concentration; graph|||NaOH-д H₂SO₄ нэмж температурын өөрчлөлтөөр хүчлийн концентрацыг олох; график@@",marks:12,min:40},
- {id:"q2",n:2,title:"@@Mass of CO₂|||CO₂-ын масс@@",text:"@@Finding the acid concentration from the mass of CO₂ given off by Na₂CO₃; uncertainty|||Na₂CO₃-аас ялгарсан CO₂-ын массаар хүчлийн концентрацыг олох; алдааны тооцоо@@",marks:14,min:35},
+ {id:"q1",n:1,title:"@@Thermometric titration|||Дулааны титрлэлт@@",text:"@@Adding H₂SO₄ to NaOH and using the temperature change to find the acid concentration; graph|||NaOH-д H₂SO₄ нэмж температурын өөрчлөлтөөр хүчлийн концентрацийг олох; график@@",marks:12,min:40},
+ {id:"q2",n:2,title:"@@Mass of CO₂|||CO₂-ын масс@@",text:"@@Finding the acid concentration from the mass of CO₂ given off by Na₂CO₃; uncertainty|||Na₂CO₃-аас ялгарсан CO₂-ын массаар хүчлийн концентрацийг олох; алдааны тооцоо@@",marks:14,min:35},
  {id:"q3",n:3,title:"@@Qualitative analysis|||Чанарын шинжилгээ@@",text:"@@Three compounds of one metal: deducing the oxidation states|||Нэг металлын гурван нэгдэл: исэлдэлтийн зэргийг тогтоох@@",marks:14,min:35}];
 function goPart(k){showTab("q"+k[1]);$("#"+PART_BUTTON[k]).closest(".card").scrollIntoView({block:"start"});}
 document.addEventListener("click",e=>{const go=e.target.closest("[data-go]");if(go){showTab(go.dataset.go);return;}const p=e.target.closest("[data-part]");if(p)goPart(p.dataset.part);});

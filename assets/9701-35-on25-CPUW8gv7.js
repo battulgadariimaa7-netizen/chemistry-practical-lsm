@@ -347,7 +347,7 @@ footer{max-width:80rem;margin:0 auto;padding:10px 16px 90px;color:var(--muted);f
       <p><b>(ii)</b> n(MnO₄⁻) = c × V = 0.0200 × 24.60 / 1000 = <b>4.920 × 10⁻⁴ mol</b></p>
       <p>@@<b>(iii)</b> From the equation, 5 (COOH)₂ : 2 MnO₄⁻, so n((COOH)₂) = 4.920 × 10⁻⁴ × 5/2 = <b>1.230 × 10⁻³ mol</b> (in 25.0 cm³).<br>
       Concentration = 1.230 × 10⁻³ × 1000 / 25.0 = <b>0.04920 mol dm⁻³</b>|||<b>(iii)</b> Тэгшитгэлээс 5 (COOH)₂ : 2 MnO₄⁻ → n((COOH)₂) = 4.920 × 10⁻⁴ × 5/2 = <b>1.230 × 10⁻³ mol</b> (25.0 cm³-т).<br>
-      Концентрац = 1.230 × 10⁻³ × 1000 / 25.0 = <b>0.04920 mol dm⁻³</b>@@</p>
+      Концентраци = 1.230 × 10⁻³ × 1000 / 25.0 = <b>0.04920 mol dm⁻³</b>@@</p>
       <p>@@<b>(iv)</b> 1 dm³ of FA 1 contains 6.20 g, so M<sub>r</sub> = 6.20 / 0.04920 = <b>126</b> (126.0)|||<b>(iv)</b> FA 1-ийн 1 dm³-т 6.20 g байгаа тул M<sub>r</sub> = 6.20 / 0.04920 = <b>126</b> (126.0)@@</p>
       <p>@@<b>(v)</b> M<sub>r</sub>((COOH)₂) = 2(12.0 + 2×16.0 + 1.0) = 90.0, so <i>x</i> = (126 − 90)/18 = 2.0, giving <b>x = 2</b> (as a whole number)|||<b>(v)</b> M<sub>r</sub>((COOH)₂) = 2(12.0 + 2×16.0 + 1.0) = 90.0 → <i>x</i> = (126 − 90)/18 = 2.0 → <b>x = 2</b> (бүхэл тоогоор)@@</p>
       <div class="note exam">@@<b class="t">Examiner's tip</b>The (c)(i) mark is given only when <i>all</i> answers in (ii), (iii) and (iv) have 3–4 s.f.; one answer with 2 s.f. or 5 s.f. loses it. Do not round intermediate values. Using the 5/2 ratio upside down (2/5) is the most common mistake. If you write <i>x</i> as a non-integer (for example 2.03) you lose the (v) mark.|||<b class="t">Шалгагчийн зөвлөмж</b>(c)(i)-ийн оноо (ii), (iii), (iv)-ийн <i>бүх</i> хариулт 3–4 s.f. байхад л өгөгдөнө — нэг нь 2 s.f. эсвэл 5 s.f. бол алдана. Завсрын утгыг бүү тойрогло. 5/2 харьцааг урвуу (2/5) авах нь хамгийн түгээмэл алдаа. <i>x</i>-ийг бүхэл тоо биш (жишээ 2.03) бичвэл (v)-ийн оноо алдана.@@</div>
@@ -473,7 +473,7 @@ footer{max-width:80rem;margin:0 auto;padding:10px 16px 90px;color:var(--muted);f
   <div class="partnav" id="partnav-q3"></div>
   <div class="card">
     <div class="qhead"><h2>@@3. Qualitative analysis|||3. Чанарын шинжилгээ@@</h2><span class="marks">[15]</span></div>
-    <p class="small">@@Write each observation clearly: colour changes, precipitates and whether they dissolve in excess reagent, gases and the test that identifies them. If nothing changes, write <b>no change</b>. Use a boiling tube to heat solutions and a hard-glass test-tube to heat solids.|||Ажиглалт бүрийг тодорхой бич: өнгөний өөрчлөлт, тунадас ба илүүдэл реагентэд уусах эсэх, хий ба түүнийг илрүүлсэн сорил. Өөрчлөлтгүй бол <b>no change</b> гэж бич. Уусмал халаах бол boiling tube, хатуу бодис халаах бол hard-glass test-tube хэрэглэнэ.@@</p>
+    <p class="small">@@Write each observation clearly: colour changes, precipitates and whether they dissolve in excess reagent, gases and the test that identifies them. If nothing changes, write <b>no change</b>. Use a boiling tube to heat solutions and a hard-glass test-tube to heat solids.|||Ажиглалт бүрийг тодорхой бич: өнгөний өөрчлөлт, тунадас ба илүүдэл реагентэд уусах эсэх, хий ба түүнийг илрүүлсэн сорил. Өөрчлөлтгүй бол <b>no change</b> гэж бич. Уусмал халаах бол буцалгах хуруу шил, хатуу бодис халаах бол халуунд тэсвэртэй хуруу шил хэрэглэнэ.@@</p>
     <div class="note warn small">@@<b class="t">Note</b>A label in the laboratory saying “possibly” is only a guess. Draw your conclusions from <i>your own observations</i>.|||<b class="t">Анхаар</b>Лабораторийн шошго «магадгүй» гэсэн таамаг л байдаг. Дүгнэлтээ <i>өөрийн ажиглалтаас</i> гарга.@@</div>
   </div>
 
@@ -515,7 +515,7 @@ footer{max-width:80rem;margin:0 auto;padding:10px 16px 90px;color:var(--muted);f
 
   <div class="card">
     <div class="qhead"><h3>@@3(b) Solid FA 6|||3(b) Хатуу FA 6@@</h3><span class="marks">[3]</span></div>
-    <p class="small">@@<b>(i)</b> Heat a few crystals in a hard-glass test-tube until no more gas is given off, and record all your observations. Let the residue cool and keep it. [2]|||<b>(i)</b> Хэдэн талстыг hard-glass хуруу шилэнд хий ялгарахаа болих хүртэл халааж, бүх ажиглалтаа бич. Үлдэгдлийг хөргөөд хадгална. [2]@@</p>
+    <p class="small">@@<b>(i)</b> Heat a few crystals in a hard-glass test-tube until no more gas is given off, and record all your observations. Let the residue cool and keep it. [2]|||<b>(i)</b> Хэдэн талстыг халуунд тэсвэртэй хуруу шилэнд хий ялгарахаа болих хүртэл халааж, бүх ажиглалтаа бич. Үлдэгдлийг хөргөөд хадгална. [2]@@</p>
     <textarea id="q3bi" placeholder="Observations..."></textarea>
     <p class="small">@@<b>(ii)</b> Add distilled water to the cooled residue to a depth of about 3 cm, stir and filter. Colour of the solution: [1]|||<b>(ii)</b> Хөргөсөн үлдэгдэл дээр ~3 cm гүн нэрмэл ус нэмж хутгаад шүүнэ. Уусмалын өнгө: [1]@@</p>
     <input id="q3bii" placeholder="colour">
@@ -900,7 +900,7 @@ $("#q1checkC").onclick=()=>{const L=[];let m=0;const V=isFinite(num($("#q1mean")
   const base=isFinite(num(ii))?num(ii):eii;const ea=base*5/2;const oka=close(num(a),ea,0.006);
   L.push(li(oka,\`<b>(iii) M1</b> n((COOH)₂) = (ii) × 5/2 = \${ea.toPrecision(4)} mol\`+(close(num(a),base*2/5,0.006)?" @@<span class='small'>(you used 2/5, which is upside down!)</span>|||<span class='small'>— 2/5 гэж урвуу авсан байна!</span>@@":"")));m+=oka;
   const baseA=isFinite(num(a))?num(a):ea;const eb=baseA*1000/25;const okb=close(num(b),eb,0.006);
-  L.push(li(okb,\`@@<b>(iii) M2</b> concentration = n × 1000/25.0 = \${eb.toPrecision(4)} mol dm⁻³|||<b>(iii) M2</b> концентрац = n × 1000/25.0 = \${eb.toPrecision(4)} mol dm⁻³@@\`));m+=okb;
+  L.push(li(okb,\`@@<b>(iii) M2</b> concentration = n × 1000/25.0 = \${eb.toPrecision(4)} mol dm⁻³|||<b>(iii) M2</b> концентраци = n × 1000/25.0 = \${eb.toPrecision(4)} mol dm⁻³@@\`));m+=okb;
   const baseB=isFinite(num(b))?num(b):eb;const eiv=6.20/baseB;const okiv=close(num(iv),eiv,0.006);
   L.push(li(okiv,\`<b>(iv)</b> M<sub>r</sub> = 6.20 / \${baseB.toPrecision(4)} = \${eiv.toPrecision(4)}\`));m+=okiv;
   const baseM=isFinite(num(iv))?num(iv):eiv;const ex=Math.round((baseM-90)/18);const okv=/^\\d+$/.test(clean(v))&&+clean(v)===ex;
@@ -1032,7 +1032,7 @@ const SAMPLES={
 function A(id,label,en,steps,obs,extra){return Object.assign({id,label,en,steps,obs},extra||{});}
 const ACTIONS={
  FA5:[
-  A("heat","@@Heat solid FA 5 in a hard-glass test-tube|||Хатуу FA 5-ыг hard-glass хуруу шилэнд халаах@@","heat solid FA 5 in a hard-glass test-tube",[{solid:COL.white,flame:true,label:"FA 5 (s)"},{solid:COL.white,flame:true,cond:true,label:"FA 5 (s)"}],"Colourless liquid (droplets) condenses on the cooler upper part of the tube / steam given off; white solid remains."),
+  A("heat","@@Heat solid FA 5 in a hard-glass test-tube|||Хатуу FA 5-ыг халуунд тэсвэртэй хуруу шилэнд халаах@@","heat solid FA 5 in a hard-glass test-tube",[{solid:COL.white,flame:true,label:"FA 5 (s)"},{solid:COL.white,flame:true,cond:true,label:"FA 5 (s)"}],"Colourless liquid (droplets) condenses on the cooler upper part of the tube / steam given off; white solid remains."),
   A("dissolve","@@Dissolve in distilled water|||Нэрмэл усанд уусгах@@","dissolve FA 5 in distilled water",[{liq:COL.colourless,label:"FA 5 (aq)"}],"Dissolves to give a colourless solution.",{after:()=>{Q3.fa5dissolved=true;}}),
   A("naoh","@@NaOH(aq) dropwise, then in excess|||NaOH(aq) дуслаар, дараа нь илүүдэл@@","add NaOH(aq) dropwise, then in excess",[{liq:COL.colourless,ppt:COL.white,label:"+ NaOH"},{liq:COL.colourless,ppt:COL.white,label:"+ excess NaOH"}],"White ppt; insoluble in excess NaOH(aq).",{aq:true}),
   A("nh3","@@NH₃(aq) dropwise, then in excess|||NH₃(aq) дуслаар, дараа нь илүүдэл@@","add NH3(aq) dropwise, then in excess",[{liq:COL.colourless,ppt:COL.white,label:"+ NH₃"},{liq:COL.colourless,ppt:COL.white,label:"+ excess NH₃"}],"White ppt; insoluble in excess NH3(aq).",{aq:true}),
@@ -1040,7 +1040,7 @@ const ACTIONS={
   A("acid","@@(On the Ba precipitate) excess dilute HCl or HNO₃|||(Ba тунадас дээр) шингэрүүлсэн HCl эсвэл HNO₃ илүүдлээр@@","then add excess dilute hydrochloric (or nitric) acid",[{liq:COL.colourless,ppt:COL.white,label:"+ HCl"}],"White ppt remains / is insoluble in excess acid.",{aq:true,needBa:true}),
   A("kmno4","@@Add acidified KMnO₄(aq)|||Хүчиллэг KMnO₄(aq) нэмэх@@","add acidified KMnO4(aq)",[{liq:"rgba(150,40,160,.8)",label:"+ KMnO₄"}],"Remains purple / KMnO4 is not decolourised.",{aq:true})],
  FA6:[
-  A("heat","@@Heat in a hard-glass test-tube until no more gas is given off|||Hard-glass хуруу шилэнд хий ялгарахаа болих хүртэл халаах@@","heat FA 6",[{solid:"#3a1048",flame:true,label:"@@heating|||халааж байна@@"},{solid:"#1a1a1a",flame:true,label:"@@crackling, jumping|||шажигнаж үсэрнэ@@"},{solid:"#151515",label:"@@black residue|||хар үлдэгдэл@@"}],"Purple(-black) crystals crackle / jump about (spit); gas given off; black residue remains."),
+  A("heat","@@Heat in a hard-glass test-tube until no more gas is given off|||Халуунд тэсвэртэй хуруу шилэнд хий ялгарахаа болих хүртэл халаах@@","heat FA 6",[{solid:"#3a1048",flame:true,label:"@@heating|||халааж байна@@"},{solid:"#1a1a1a",flame:true,label:"@@crackling, jumping|||шажигнаж үсэрнэ@@"},{solid:"#151515",label:"@@black residue|||хар үлдэгдэл@@"}],"Purple(-black) crystals crackle / jump about (spit); gas given off; black residue remains."),
   A("splint","@@Test the gas given off with a glowing splint|||Ялгарч буй хийг цогтой хэлтэрхийгээр шалгах@@","test gas with a glowing splint",[{solid:"#151515",flame:true,splint:"relight",label:"O₂?"}],"Glowing splint relights → oxygen.",{needHeat:true}),
   A("water","@@Add about 3 cm of water to the residue, stir and filter|||Үлдэгдэлд ~3 cm ус нэмж хутгаад шүүх@@","add water to residue, stir and filter",[{liq:COL.green,filter:"#151515",label:"@@filtered solution|||шүүсэн уусмал@@"}],"Filtrate is (dark) green; black solid remains on the filter paper.",{needHeat:true})],
  FA7:[
@@ -1118,7 +1118,7 @@ $("#q3checkC").onclick=()=>{const v=k=>($(\`#t32 textarea[data-c="\${k}"]\`).val
   const m=Math.min(4,Math.floor(stars/2));L.push(\`@@<div class="small muted">Total stars: \${stars} → 2 stars = 1 mark (max 4).</div>|||<div class="small muted">Нийт од: \${stars} → 2 од = 1 оноо (max 4).</div>@@\`);
   $("#q3fbC").innerHTML=fbBlock(L,m,4);setScore("q3c1",m);};
 $("#q3checkC2").onclick=()=>{const a=/mangan|^\\s*mn\\s*$/i.test($("#q3cii").value);const o=s=>clean(s).replace(/^\\+/,"").toUpperCase();
-  const b1=["7","VII"].includes(o($("#q3ciii1").value)),b2=["2","II"].includes(o($("#q3ciii2").value));const L=[li(a,"<b>(ii)</b> manganese / Mn"),li(b1&&b2,"@@<b>(iii)</b> FA 6/FA 7 = +7, FA 8 = +2 (both must be correct)|||<b>(iii)</b> FA 6/FA 7 = +7, FA 8 = +2 (хоёул зөв байх)@@")];
+  const b1=["7","VII"].includes(o($("#q3ciii1").value)),b2=["2","II"].includes(o($("#q3ciii2").value));const L=[li(a,"<b>(ii)</b> manganese / Mn"),li(b1&&b2,"@@<b>(iii)</b> FA 6/FA 7 = +7, FA 8 = +2 (both must be correct)|||<b>(iii)</b> FA 6/FA 7 = +7, FA 8 = +2 (хоёулаа зөв байх)@@")];
   const m=(a?1:0)+(b1&&b2?1:0);$("#q3fbC2").innerHTML=fbBlock(L,m,2);setScore("q3c2",m);};
 
 /* =====================================================================
