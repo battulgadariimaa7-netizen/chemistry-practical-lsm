@@ -1,0 +1,1220 @@
+var e=`<!DOCTYPE html>
+<html lang="__LANG__">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@@9701/35 M/J 2024 Practical|||9701/35 M/J 2024 Практик@@</title>
+<meta name="description" content="@@Cambridge AS Chemistry 9701/35 May/June 2024: interactive practical simulation, checking based on the mark scheme, and a whiteboard.|||Cambridge AS Chemistry 9701/35 May/June 2024 — интерактив практик симуляци, mark scheme-д суурилсан шалгалт, самбар.@@">
+<style>
+@font-face{font-family:"Inter Variable";font-style:normal;font-weight:100 900;font-display:swap;src:url("__INTER_FONT_URL__") format("woff2")}
+:root{
+  --bg:#f8fafc; --paper:#fff; --ink:#0f172b; --muted:#45556c; --line:#e2e8f0;
+  --accent:#007595; --accent-2:#0092b8; --accent-soft:#ecfeff;
+  --ok:#007a55; --ok-soft:#ecfdf5; --bad:#c70036; --bad-soft:#fff1f2; --warn:#bb4d00; --warn-soft:#fffbeb;
+  --info:#0069a8; --info-soft:#f0f9ff;
+  --glass:#cfe3ee; --shadow:0 1px 2px rgba(15,23,43,.05);
+  --mono:"Inter Variable",system-ui,sans-serif;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "Inter Variable",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-weight:700;letter-spacing:-.01em;line-height:1.25;margin:0 0 .5em}
+h2{font-size:1.45rem} h3{font-size:1.12rem;margin-top:1.2em}
+p{margin:.45em 0}
+code,.mono{font-family:var(--mono);font-size:.92em}
+sub,sup{line-height:0}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+textarea{width:100%;min-height:70px;resize:vertical}
+
+/* header */
+header.top{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.top-inner{max-width:80rem;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px}
+nav.tabs{flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs button{background:none;border:none;border-bottom:2px solid transparent;padding:12px 8px;color:var(--muted);white-space:nowrap;font-size:.82rem;font-weight:500}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.brand{display:flex;align-items:baseline;gap:8px;flex-shrink:0;white-space:nowrap}
+.brand b{font-size:.82rem;font-weight:600}
+.brand span{color:var(--muted);font-size:.78rem}
+.scorechip{flex-shrink:0;font-size:.8rem;font-weight:600;background:var(--accent-soft);color:var(--accent);padding:3px 10px;border-radius:99px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+@media (max-width:1100px){.brand span{display:none}}
+@media (max-width:860px){.brand{display:none}}
+
+main{max-width:80rem;margin:0 auto;padding:20px 16px 48px}
+section.tab{display:none}
+section.tab.active{display:block}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);margin:14px 0}
+.card h3:first-child{margin-top:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.grid-sim{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.grid2,.grid-sim{grid-template-columns:minmax(0,1fr)}}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.pill{display:inline-block;font-size:.78rem;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);margin-right:4px}
+.qhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.marks{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.note{border-left:4px solid var(--info);background:var(--info-soft);padding:10px 12px;border-radius:0 8px 8px 0;margin:10px 0}
+.note.warn{border-color:var(--warn);background:var(--warn-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+.note.bad{border-color:var(--bad);background:var(--bad-soft)}
+.note.exam{border-color:var(--accent);background:var(--accent-soft)}
+.note b.t{display:block;margin-bottom:2px}
+ol.steps{padding-left:1.3em;margin:.4em 0}
+ol.steps li{margin:.25em 0}
+ol.steps li.done{color:var(--ok)}
+ol.steps li.done::marker{content:"✓  "}
+
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:6px 12px;font-weight:600;transition:background .15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.08);background:var(--accent)}
+.btn.ghost{background:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.wb-link{border:1px dashed var(--accent);color:var(--accent);background:none;border-radius:8px;padding:5px 10px;font-weight:600}
+
+table.rt{border-collapse:collapse;width:100%;font-size:.92rem}
+table.rt th,table.rt td{border:1px solid var(--line);padding:4px 6px;text-align:center;vertical-align:middle}
+table.rt th{background:color-mix(in srgb,var(--accent-soft) 60%,var(--paper))}
+table.rt input{width:100%;min-width:64px;text-align:center;font-family:var(--mono)}
+table.rt input.head{text-align:left;font-family:inherit;min-width:180px}
+.tablewrap{overflow-x:auto}
+td.ok,input.ok{background:var(--ok-soft)!important}
+td.bad,input.bad{background:var(--bad-soft)!important}
+
+.calc{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+.calc .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.calc input{width:170px;font-family:var(--mono)}
+.fb{font-size:.9rem;margin-top:4px}
+.fb .y{color:var(--ok);font-weight:600}
+.fb .n{color:var(--bad);font-weight:600}
+.markbox{font-family:var(--mono);font-weight:700;color:var(--accent)}
+details.teach{margin:10px 0;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:8px;background:color-mix(in srgb,var(--accent-soft) 45%,var(--paper))}
+details.teach summary{padding:8px 12px;cursor:pointer;font-weight:600;color:var(--accent)}
+details.teach > div{padding:0 14px 12px}
+.eq{font-family:var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 10px;margin:6px 0;overflow-x:auto;white-space:nowrap}
+
+/* apparatus */
+.app-svg{width:100%;max-width:360px;height:auto;display:block;margin:auto}
+.lens{width:170px;height:300px;border:2px solid var(--ink);border-radius:12px;background:var(--paper);display:block}
+.readouts{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.readout{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-family:var(--mono);font-size:.9rem}
+.readout b{font-family:inherit;font-weight:600;font-size:.8rem;color:var(--muted);display:block}
+.balance{font-family:var(--mono);font-size:1.8rem;background:#10261a;color:#7dff9e;padding:6px 14px;border-radius:6px;letter-spacing:.06em;display:inline-block;min-width:150px;text-align:right}
+.log{max-height:180px;overflow:auto;font-family:var(--mono);font-size:.82rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:8px;z-index:80;max-width:92vw;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+
+/* bench */
+.bench{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px;align-items:start}
+@media (max-width:700px){.bench{grid-template-columns:minmax(0,1fr)}}
+.tube-svg{width:200px;height:300px;display:block;margin:auto}
+.obsbox{background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:8px 10px;min-height:48px;font-size:.92rem}
+.samples button.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* score */
+.scoretable td,.scoretable th{text-align:left}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--accent)}
+
+/* whiteboard */
+.wb-fab{position:fixed;right:18px;bottom:18px;z-index:40;background:var(--accent);color:#fff;border:none;border-radius:99px;padding:12px 18px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25);display:flex;align-items:center;gap:8px}
+.wb{position:fixed;inset:0;z-index:60;display:none;background:rgba(0,0,0,.35)}
+.wb.open{display:block}
+.wb-panel{position:absolute;right:0;top:0;bottom:0;width:min(980px,100vw);background:var(--paper);display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.25)}
+.wb-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
+.wb-bar .sw{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);padding:0}
+.wb-bar .sw.on{outline:3px solid var(--accent);outline-offset:1px}
+.wb-bar .tool.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.wb-stage{position:relative;flex:1;min-height:0}
+.wb-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.wb-hint{padding:4px 10px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line)}
+#wbGrid.on{background:var(--accent-soft)}
+footer{max-width:80rem;margin:0 auto;padding:10px 16px 90px;color:var(--muted);font-size:.78rem}
+.wb-fab svg,.wb-bar svg{width:1em;height:1em;display:block}
+.wb-bar .icon{padding:6px 10px}
+.scorechip,.marks,.markbox,.readout,.balance,table.rt input,.calc input,.log{font-variant-numeric:tabular-nums}
+@media (min-width:640px){.top-inner,main,footer{padding-left:24px;padding-right:24px}}
+@media (min-width:1024px){.top-inner,main,footer{padding-left:32px;padding-right:32px}}
+.card{scroll-margin-top:96px}
+.qcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+@media (max-width:860px){.qcards{grid-template-columns:minmax(0,1fr)}}
+.qcard{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.qcard h3{margin:0;font-size:1rem}
+.qcard p{margin:0;flex:1}
+.qcard .meta{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.qcard .btn{margin-top:6px;width:100%}
+.flow{padding-left:1.3em;margin:.4em 0}
+.flow li{margin:.3em 0}
+.tabscore{margin-left:5px;font-size:.72rem;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.partnav{position:sticky;top:48px;z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:var(--bg);padding:8px 0;margin:-8px 0 4px}
+.partnav button{flex-shrink:0;border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:99px;padding:2px 10px;font-size:.78rem;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.partnav button.full{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.partnav button.some{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.partnav button.none{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.nextrow{display:flex;justify-content:flex-end;margin:16px 0 0}
+.todo{list-style:none;padding:0;margin:8px 0 16px}
+.todo li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.tag{font-size:.7rem;font-weight:600;color:var(--warn);background:var(--warn-soft);padding:1px 6px;border-radius:99px;margin-left:6px;white-space:nowrap}
+.graphwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+#graph{display:block;width:100%;max-width:760px;min-width:520px;margin:auto;touch-action:none;cursor:crosshair}
+.gtools{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.gtools .tool.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.scalebox{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 14px;margin:8px 0}
+.scalebox label{display:flex;flex-direction:column;font-size:.86rem;gap:2px}
+.scalebox input,.scalebox select{width:100%}
+table.rt input.tin{min-width:56px}
+.mini{font-size:.82rem}
+.graph{display:block;width:100%;max-width:760px;min-width:520px;margin:auto;touch-action:none;cursor:crosshair}
+textarea.cell{min-height:56px;font-size:.88rem}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+  <nav class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-tab="ov" aria-selected="true">@@Overview|||Тойм@@</button>
+    <button role="tab" data-tab="q1">@@1. Rate of reaction|||1. Урвалын хурд@@</button>
+    <button role="tab" data-tab="q2">@@2. Enthalpy of solution|||2. Уусалтын энтальпи@@</button>
+    <button role="tab" data-tab="q3">@@3. Qualitative analysis|||3. Чанарын шинжилгээ@@</button>
+    <button role="tab" data-tab="ref">@@Reference|||Лавлах@@</button>
+    <button role="tab" data-tab="score">@@Results|||Дүн@@</button>
+  </nav>
+    <div class="brand"><b>9701/35 · M/J 2024</b><span>AS Chemistry — Advanced Practical Skills 1</span></div>
+    <span class="scorechip" id="scoreChip">0 / 40</span>
+  </div>
+</header>
+<main>
+<!-- ===================== OVERVIEW ===================== -->
+<section class="tab active" id="tab-ov">
+  <div class="card">
+    <h2>@@Practical Exam Practice|||Практик шалгалтын интерактив дадлага@@</h2>
+    <p>@@This page takes you step by step through the practical exam <b>Cambridge International AS &amp; A Level Chemistry 9701/35, May/June 2024</b> as simulations, and checks your answers straight away against the rules of that year’s <b>mark scheme</b>. 40 marks in total, 2 hours.|||Энэ хуудас <b>Cambridge International AS &amp; A Level Chemistry 9701/35, 2024 оны 5/6-р сар</b>-ын практик шалгалтыг алхам алхмаар симуляци хэлбэрээр хийлгэж, хариултыг тухайн оны <b>mark scheme</b>-ийн дүрмээр шууд шалгана. Нийт 40 оноо, 2 цаг.@@</p>
+    <div class="qcards" id="qcards"></div>
+    <div class="grid2">
+      <div><h3>@@Structure|||Бүтэц@@</h3>
+        <table class="rt">
+          <tr><th>@@Question|||Асуулт@@</th><th>@@Content|||Агуулга@@</th><th>@@Marks|||Оноо@@</th></tr>
+          <tr><td>1</td><td style="text-align:left">@@Rate of the reaction of peroxodisulfate with iodide: the «iodine clock»; the effect of concentration|||Пероксодисульфат ба иодидын урвалын хурд — «иодын цаг» (iodine clock); концентрацын нөлөө@@</td><td>11</td></tr>
+          <tr><td>2</td><td style="text-align:left">@@Enthalpy of solution of NH₄Cl: a temperature–time <b>graph</b>, extrapolation|||NH₄Cl-ийн уусалтын энтальпи — температур-хугацааны <b>график</b>, экстраполяц@@</td><td>14</td></tr>
+          <tr><td>3</td><td style="text-align:left">@@Heating a solid salt; a manganate reaction; identifying the ions in two solutions|||Хатуу давсыг халаах; манганатын урвал; хоёр уусмалын ион тодорхойлох@@</td><td>15</td></tr>
+        </table></div>
+      <div><h3>@@Assessment objectives (syllabus)|||Үнэлгээний ангилал (syllabus)@@</h3>
+        <table class="rt">
+          <tr><th>@@Skill|||Ур чадвар@@</th><th>@@Minimum marks|||Хамгийн бага оноо@@</th></tr>
+          <tr><td style="text-align:left">@@MMO: making measurements and observations|||MMO — хэмжилт, ажиглалт хийх@@</td><td>12</td></tr>
+          <tr><td style="text-align:left">@@PDO: presenting data and observations|||PDO — өгөгдөл, ажиглалтыг бүртгэх@@</td><td>6</td></tr>
+          <tr><td style="text-align:left">@@ACE: analysis, conclusions and evaluation|||ACE — анализ, дүгнэлт, үнэлгээ@@</td><td>10</td></tr>
+        </table><p class="small muted">@@The remaining 12 marks are shared among these in varying amounts.|||Үлдсэн 12 оноо эдгээрт харилцан адилгүй хуваарилагдана.@@</p></div>
+    </div>
+    <h3>Grade threshold (component 35, June 2024)</h3>
+    <div class="tablewrap"><table class="rt"><tr><th>Max</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr><tr><td>40</td><td>25</td><td>20</td><td>17</td><td>14</td><td>11</td></tr></table></div>
+    <p class="small muted">@@Source: Cambridge grade thresholds for 9701, June 2024. These are the thresholds for this component only.|||Эх сурвалж: Cambridge-ийн June 2024 оны 9701 grade threshold. Энэ нь зөвхөн энэ хэсгийн (component) босго.@@</p>
+  </div>
+  <div class="card">
+    <h3>@@How to use it|||Хэрхэн ашиглах вэ@@</h3>
+    <ol class="steps">
+      <li>@@Open each question’s tab and do the experiment in the simulation. You read and record the burettes, measuring cylinder, stopwatch, thermometer and balance yourself.|||Асуулт бүрийн табыг нээж, симуляцийн дагуу туршилтаа хийнэ. Бюрет, цилиндр, секундомер, термометр, жинлүүрийг та өөрөө уншиж бүртгэнэ.@@</li>
+      <li>@@Write headings and observations <b>in English</b>, as you would on the exam paper.|||Гарчиг, ажиглалтыг шалгалтын хуудсан дээр бичдэгтэйгээ адил <b>англиар</b> бичнэ.@@</li>
+      <li>@@You draw your own graph in 2(b): axes, scales, points, two straight lines, extended to t = 2 min.|||2(b)-д графикаа өөрөө зурна: тэнхлэг, масштаб, цэг, хоёр шулуун, t = 2 мин хүртэл сунгалт.@@</li>
+      <li>@@The <b>Check</b> button shows and explains each mark of the mark scheme separately.|||<b>Шалгах</b> товч mark scheme-ийн оноо бүрийг тусад нь харуулж тайлбарлана.@@</li>
+      <li>@@<b>Whiteboard</b> (bottom right corner): a whiteboard for writing out your working by hand.|||<b>Самбар</b> (баруун доод булан) — тооцоогоо гараар бичих цагаан самбар.@@</li>
+    </ol>
+    <div class="note exam">@@<b class="t">Suggested timing</b>Question 1 about 25 min, question 2 about 45 min (8 minutes of readings + graph), question 3 about 40 min, 10 min for checking. You can start 3(b)(i) while the residue from 3(a)(i) cools.|||<b class="t">Цаг хуваарилалтын зөвлөмж</b>1-р асуулт ~25 мин, 2-р ~45 мин (8 минутын хэмжилт + график), 3-р ~40 мин, шалгах 10 мин. 3(a)(i)-ийн үлдэгдэл хөрөх хооронд 3(b)(i)-ийг эхэлж болно.@@</div>
+    <div class="note">@@<b class="t">About the material</b>The marking points of the mark scheme (9701/35/M/J/24) are explained and used here. The real names of the substances come from the Confidential Instructions in your project. Because of copyright, the question text is not copied word for word; it has been shortened, keeping its meaning. The <i>Principal Examiner Report</i> for this session is not publicly available, so the «Examiner’s tips» are based on the syllabus, the mark scheme and mistakes that come up again and again in earlier years.|||<b class="t">Материалын тухай</b>Mark scheme (9701/35/M/J/24)-ийн онооны цэгүүдийг монголоор тайлбарлаж ашигласан. Бодисуудын жинхэнэ нэрийг таны төслийн Confidential Instructions-аас авсан. Асуултын текстийг зохиогчийн эрхийн улмаас үгчлэн хуулаагүй, утгаар нь товчилсон. Энэ сессийн <i>Principal Examiner Report</i> олон нийтэд нээлттэй байршаагүй тул «Шалгагчийн зөвлөмж» нь syllabus, mark scheme болон өмнөх жилүүдийн давтагддаг алдаан дээр тулгуурласан.@@</div>
+  </div>
+</section>
+
+<!-- ===================== Q1 ===================== -->
+<section class="tab" id="tab-q1">
+  <div class="partnav" id="partnav-q1"></div>
+  <div class="card">
+    <div class="qhead"><h2>@@1. The effect of concentration on rate (the «iodine clock»)|||1. Урвалын хурдад концентрацын нөлөө («иодын цаг»)@@</h2><span class="marks">[11]</span></div>
+    <div class="eq">2I⁻(aq) + S₂O₈²⁻(aq) → I₂(aq) + 2SO₄²⁻(aq)</div>
+    <div class="eq">@@I₂(aq) + 2S₂O₃²⁻(aq) → 2I⁻(aq) + S₄O₆²⁻(aq)   (fast)|||I₂(aq) + 2S₂O₃²⁻(aq) → 2I⁻(aq) + S₄O₆²⁻(aq)   (хурдан)@@</div>
+    <p>@@Thiosulfate turns the iodine formed straight back into iodide. As soon as the thiosulfate runs out, the next iodine reacts with starch and the solution suddenly turns <b>blue-black</b>. The time taken is inversely proportional to the rate of reaction.|||Үүссэн иодыг тиосульфат тэр даруй буцааж иодид болгоно. Тиосульфат дуусмагц дараагийн иод цардуултай (starch) урвалж уусмал гэнэт <b>хар хөх</b> болно. Энэ хүртэлх хугацаа урвалын хурдтай урвуу пропорциональ.@@</p>
+    <ul><li><b>FA 1</b> — 0.0200 mol dm⁻³ K₂S₂O₈</li><li><b>FA 2</b> — 0.00500 mol dm⁻³ Na₂S₂O₃</li><li><b>FA 3</b> — 1.00 mol dm⁻³ KI</li><li>@@<b>FA 4</b>: starch indicator|||<b>FA 4</b> — цардуулын индикатор@@</li></ul>
+    <details class="teach"><summary>@@Method (summary): read it all first|||Аргачлал (товч) — эхлээд бүтэн уншина уу@@</summary><div>
+      <div class="tablewrap"><table class="rt small"><tr><th></th><th>@@Beaker A: FA 1 (burette)|||Стакан A: FA 1 (бюрет)@@</th><th>@@Beaker B: FA 2 (burette)|||Стакан B: FA 2 (бюрет)@@</th><th>@@B: FA 3 (measuring cylinder)|||B: FA 3 (цилиндр)@@</th><th>@@B: distilled water (measuring cylinder)|||B: нэрмэл ус (цилиндр)@@</th><th>B: FA 4</th></tr>
+        <tr><th>@@Experiment 1|||Туршилт 1@@</th><td>20.00 cm³</td><td>10.00 cm³</td><td>20.0 cm³</td><td>—</td><td>@@10 drops|||10 дусал@@</td></tr>
+        <tr><th>@@Experiment 2|||Туршилт 2@@</th><td>10.00 cm³</td><td>10.00 cm³</td><td>20.0 cm³</td><td>10.0 cm³</td><td>@@10 drops|||10 дусал@@</td></tr></table></div>
+      <p>@@As soon as you tip A into B, <b>start the clock</b>, stir once and stand the beaker on a white tile. When the solution goes dark, stop the clock and record the time to <b>1 second</b>. Wash the beakers and dry them with a paper towel.|||A-г B-д хийнгүүт <b>цагийг эхлүүлж</b>, нэг удаа хутгаад цагаан хавтан дээр тавина. Уусмал бараан өнгөтэй болмогц цагийг зогсоож, <b>1 секунд</b> хүртэл бүртгэнэ. Стаканыг угааж, цаасан алчуураар хатаана.@@</p>
+      <p>@@In the table record, for each experiment, the volume of FA 1, the volume of distilled water, the reaction time and the rate: <b>rate = 1000 / reaction time</b>.|||Хүснэгтэд туршилт бүрийн FA 1-ийн эзлэхүүн, нэрмэл усны эзлэхүүн, урвалын хугацаа, хурдыг бичнэ: <b>rate = 1000 / reaction time</b>.@@</p>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <h3>@@1(a) Simulation|||1(a) Симуляци@@</h3>
+    <div class="btnrow"><label class="small">@@Experiment:|||Туршилт:@@ <select id="ck_exp" data-nopersist><option value="1">@@Experiment 1|||Туршилт 1@@</option><option value="2">@@Experiment 2|||Туршилт 2@@</option></select></label>
+      <label class="small"><input type="checkbox" id="ck_fast" data-nopersist> @@Speed up time ×4|||Цагийг ×4 хурдасгах@@</label></div>
+    <div class="grid-sim">
+      <div><svg id="ck_svg" class="app-svg" viewBox="0 0 360 360" aria-label="@@Beakers A and B|||Стакан A, B@@"></svg>
+        <div class="readouts"><div class="readout">@@<b>Stopwatch</b><span id="ck_watch" class="mono" style="font-size:1.5rem">0:00</span>|||<b>Секундомер</b><span id="ck_watch" class="mono" style="font-size:1.5rem">0:00</span>@@</div></div></div>
+      <div>
+        <ol class="steps" id="ck_steps">
+          <li>@@FA 1 into beaker A:|||FA 1-ийг стакан A руу:@@ <button class="btn" data-ck="a1">+1.00</button><button class="btn" data-ck="a.1">+0.10</button><button class="btn" data-ck="a.05">+0.05</button></li>
+          <li>@@FA 2 into beaker B:|||FA 2-ыг стакан B руу:@@ <button class="btn" data-ck="b1">+1.00</button><button class="btn" data-ck="b.1">+0.10</button><button class="btn" data-ck="b.05">+0.05</button></li>
+          <li>@@Into B with the measuring cylinder:|||Цилиндрээр B руу:@@ <button class="btn" data-ck="kiCyl">@@Measure FA 3|||FA 3 хэмжих@@</button> <button class="btn" data-ck="wCyl">@@Measure distilled water|||Нэрмэл ус хэмжих@@</button>
+            @@<span class="small">cylinder:</span>|||<span class="small">цилиндр:</span>@@ <button class="btn" data-ck="c5">+5</button><button class="btn" data-ck="c1">+1</button><button class="btn" data-ck="c.5">+0.5</button><button class="btn" data-ck="c-.5">−0.5</button> <button class="btn" data-ck="pour">@@Pour into B|||B руу асгах@@</button></li>
+          <li><button class="btn" data-ck="starch">@@10 drops of FA 4 into B|||B-д 10 дусал FA 4@@</button></li>
+          <li><button class="btn primary" data-ck="mix">@@Tip A into B and start the clock|||A-г B-д хийж цаг эхлүүлэх@@</button> <button class="btn primary" data-ck="stop">@@Stop the clock|||Цагийг зогсоох@@</button></li>
+          <li><button class="btn ghost" data-ck="wash">@@Wash the beakers and set up a new experiment|||Стакануудыг угааж, шинэ туршилт бэлтгэх@@</button></li>
+        </ol>
+        <div class="grid2" style="gap:10px;align-items:start">
+          <div><svg id="ck_lens" class="lens" viewBox="0 0 170 300"></svg><p class="small muted" style="max-width:180px" id="ck_lenscap">@@Magnified burette / cylinder: shows the last apparatus you used.|||Томруулсан бюрет / цилиндр — сүүлд хэрэглэсэн багажаа харуулна.@@</p></div>
+          <div><div class="note small">@@<b class="t">Observation</b><span id="ck_obs">Experiment 1: start by reading the initial reading of the FA 1 burette.</span>|||<b class="t">Ажиглалт</b><span id="ck_obs">Туршилт 1: FA 1-ийн бюретийн эхний заалтыг уншиж эхэл.</span>@@</div><div class="note warn small" id="ck_warn" hidden></div>
+            <p class="small muted">@@Action log:|||Үйлдлийн бүртгэл:@@</p><div class="log" id="ck_log"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@1(a) Results table|||1(a) Үр дүнгийн хүснэгт@@</h3><span class="marks">[6]</span></div>
+    <p class="small">@@Write the row headings <b>in English with their units</b>. Burette volumes to 2 decimal places (ending in 0 or 5), cylinder volumes to 1 decimal place, times in whole seconds.|||Мөрийн гарчгийг <b>нэгжтэй нь англиар</b> бичнэ. Бюретийн эзлэхүүн 2 аравтын оронтой (0 эсвэл 5-аар төгсөнө), цилиндрийнх 1 аравтын оронтой, хугацаа бүхэл секундээр.@@</p>
+    <div class="tablewrap"><table class="rt"><thead><tr><th>@@Heading (with unit)|||Гарчиг (нэгжтэй)@@</th><th>@@Experiment 1|||Туршилт 1@@</th><th>@@Experiment 2|||Туршилт 2@@</th></tr></thead><tbody>
+      <tr><td><input class="head" id="r1h0" placeholder="volume of FA 1 ..."></td><td><input id="r1v0e1"></td><td><input id="r1v0e2"></td></tr>
+      <tr><td><input class="head" id="r1h1" placeholder="..."></td><td><input id="r1v1e1"></td><td><input id="r1v1e2"></td></tr>
+      <tr><td><input class="head" id="r1h2" placeholder="..."></td><td><input id="r1v2e1"></td><td><input id="r1v2e2"></td></tr>
+      <tr><td><input class="head" id="r1h3" placeholder="..."></td><td><input id="r1v3e1"></td><td><input id="r1v3e2"></td></tr>
+    </tbody></table></div>
+    <div class="btnrow"><button class="btn primary" id="q1checkA">@@Check 1(a)|||1(a)-г шалгах@@</button> <button class="wb-link" data-wb="Q1">@@Open the whiteboard|||Самбар нээх@@</button></div>
+    <div id="q1fbA" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: marking points for 1(a)|||Багшийн тайлбар: 1(a)-ийн онооны цэгүүд@@</summary><div>
+      <p>@@<b>I</b>: One table with 4 headings (volume of FA 1, volume of water, time, rate) <i>and</i> both experiments done.|||<b>I</b> — Нэг хүснэгтэд 4 гарчиг (FA 1-ийн эзлэхүүн, усны эзлэхүүн, хугацаа, хурд) <i>ба</i> хоёр туршилт хийгдсэн.@@</p>
+      <p>@@<b>II</b>: Correct headings and units: <span class="mono">volume of FA 1 / cm3</span>, <span class="mono">volume of (distilled) water / cm3</span>, <span class="mono">(reaction) time / s</span>, <span class="mono">rate / s-1</span>.|||<b>II</b> — Гарчиг, нэгж зөв: <span class="mono">volume of FA 1 / cm3</span>, <span class="mono">volume of (distilled) water / cm3</span>, <span class="mono">(reaction) time / s</span>, <span class="mono">rate / s-1</span>.@@</p>
+      <p>@@<b>III</b>: Precision: FA 1 (burette) to 2 decimal places, the last digit 0 or 5 (<span class="mono">20.00</span>); water (cylinder) to 1 decimal place, ending in 0 or 5 (<span class="mono">10.0</span>, and <span class="mono">0.0</span> in experiment 1); times in whole seconds.|||<b>III</b> — Нарийвчлал: FA 1 (бюрет) 2 аравтын оронтой, сүүлийн орон 0 эсвэл 5 (<span class="mono">20.00</span>); ус (цилиндр) 1 аравтын оронтой, 0 эсвэл 5-аар (<span class="mono">10.0</span>, туршилт 1-д <span class="mono">0.0</span>); хугацаа бүхэл секунд.@@</p>
+      <p>@@<b>IV</b>: Rate = 1000 / time worked out correctly.|||<b>IV</b> — Хурд = 1000 / хугацаа зөв тооцогдсон.@@</p>
+      <p>@@<b>V, VI (accuracy)</b>: the ratio t₂ / t₁ (to 2 decimal places): 1.80–2.20 → V; 1.90–2.10 → VI. In theory, halving [S₂O₈²⁻] halves the rate and doubles the time → <b>2.00</b>.|||<b>V, VI (нарийвчлал)</b> — t₂ / t₁ харьцаа (2 аравтын оронтой): 1.80–2.20 → V; 1.90–2.10 → VI. Онолоор [S₂O₈²⁻] хоёр дахин багасвал хурд хоёр дахин буурч, хугацаа хоёр дахин уртасна → <b>2.00</b>.@@</p>
+      <div class="note exam">@@<b class="t">Examiner’s tips</b>No water is added in experiment 1, but you still need to write «0.0» in the table: leaving the cell empty or putting a dash does not show the precision of the volume. Stop the clock the moment the colour appears: being a few seconds late distorts the t₂/t₁ ratio. Wash and dry the beakers well between experiments: leftover iodine speeds up the next one.|||<b class="t">Шалгагчийн зөвлөмж</b>Туршилт 1-д ус нэмээгүй ч хүснэгтэд «0.0» гэж бичих хэрэгтэй — нүдийг хоосон орхих эсвэл зураас тавих нь эзлэхүүний нарийвчлалыг харуулахгүй. Өнгө гарсан агшинд цагийг зогсоо — хэдэн секунд хоцорвол t₂/t₁ харьцаа гажина. Хоёр туршилтын хооронд стаканыг сайн угааж хатаа: үлдсэн иод дараагийн туршилтыг хурдасгана.@@</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@1(b) Concentration and volume|||1(b) Концентрац ба эзлэхүүн@@</h3><span class="marks">[3]</span></div>
+    <p class="small">@@<b>(i)</b> Why is the concentration of K₂S₂O₈ proportional to the volume of FA 1? [1]|||<b>(i)</b> K₂S₂O₈-ийн концентрац яагаад FA 1-ийн эзлэхүүнтэй пропорциональ вэ? [1]@@</p>
+    <textarea id="q1bi" placeholder="@@In English…|||Англиар...@@"></textarea>
+    <p class="small">@@<b>(ii)</b> Suggest the volumes for a further experiment to test the idea that «the rate is proportional to the concentration of FA 1» (do not carry it out). [2]|||<b>(ii)</b> «Хурд FA 1-ийн концентрацтай пропорциональ» гэсэн таамаглалыг шалгах дараагийн туршилтын эзлэхүүнийг санал болго (хийхгүй). [2]@@</p>
+    <div class="tablewrap"><table class="rt" style="max-width:640px"><tr><th>FA 1 / cm³</th><th>FA 2 / cm³</th><th>FA 3 / cm³</th><th>distilled water / cm³</th><th>FA 4</th></tr>
+      <tr><td><input id="t11a"></td><td><input id="t11b"></td><td><input id="t11c"></td><td><input id="t11d"></td><td>10 drops</td></tr></table></div>
+    <div class="btnrow"><button class="btn primary" id="q1checkB">@@Check 1(b)|||1(b)-г шалгах@@</button></div>
+    <div id="q1fbB" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: 1(b)|||Багшийн тайлбар: 1(b)@@</summary><div>
+      <p>@@<b>(i)</b> In both experiments the <b>total volume</b> of FA 1 + water <b>is the same</b> (20 cm³), so the total volume of the mixture (60 cm³) is constant → [S₂O₈²⁻] ∝ V(FA 1).|||<b>(i)</b> Хоёр туршилтад FA 1 + усны <b>нийт эзлэхүүн ижил</b> (20 cm³), тиймээс холимгийн нийт эзлэхүүн (60 cm³) тогтмол → [S₂O₈²⁻] ∝ V(FA 1).@@</p>
+      <p>@@<b>(ii) M1</b> FA 1 + water = 20.00 cm³ <i>and</i> the volume of FA 1 at least 2.5 cm³ different from the earlier 20.00 and 10.00 (for example 15.00 + 5.00, or 5.00 + 15.00). <b>M2</b> FA 2 = 10.0, FA 3 = 20.0 cm³ (other variables kept constant).|||<b>(ii) M1</b> FA 1 + ус = 20.00 cm³ <i>ба</i> FA 1-ийн эзлэхүүн өмнөх 20.00, 10.00-аас дор хаяж 2.5 cm³ зөрүүтэй (жишээ: 15.00 + 5.00, эсвэл 5.00 + 15.00). <b>M2</b> FA 2 = 10.0, FA 3 = 20.0 cm³ (бусад хувьсагчийг тогтмол).@@</p>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>1(c), (d)</h3><span class="marks">[2]</span></div>
+    <p class="small">@@<b>(c)</b> If a student used more concentrated thiosulfate, how would their time differ from yours? Explain. [1]|||<b>(c)</b> Нэг сурагч илүү өтгөн тиосульфат авсан бол түүний хугацаа таныхаас хэрхэн ялгаатай вэ? Тайлбарла. [1]@@</p>
+    <textarea id="q1c" placeholder="@@In English…|||Англиар...@@"></textarea>
+    <p class="small">@@<b>(d)</b> Why must the KI be in large excess? [1]|||<b>(d)</b> KI яагаад их илүүдэлтэй байх ёстой вэ? [1]@@</p>
+    <textarea id="q1d" placeholder="@@In English…|||Англиар...@@"></textarea>
+    <div class="btnrow"><button class="btn primary" id="q1checkC">@@Check 1(c)(d)|||1(c)(d)-г шалгах@@</button></div>
+    <div id="q1fbC" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: 1(c), (d)|||Багшийн тайлбар: 1(c), (d)@@</summary><div>
+      <p>@@<b>(c)</b> The time would be <b>longer</b>: more thiosulfate reacts with more iodine, so more iodine has to form before it can react with the starch.|||<b>(c)</b> Хугацаа <b>уртсана</b> — илүү тиосульфат илүү их иодтой урвалд орох тул цардуултай урвалах хүртэл илүү их иод үүсэх шаардлагатай.@@</p>
+      <p>@@<b>(d)</b> [I⁻] stays almost <b>constant</b>, so only [S₂O₈²⁻] affects the rate (isolating the variable).|||<b>(d)</b> [I⁻] бараг <b>тогтмол</b> хэвээр байх тул хурдад зөвхөн [S₂O₈²⁻] нөлөөлнө (хувьсагчийг тусгаарлах).@@</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===================== Q2 ===================== -->
+<section class="tab" id="tab-q2">
+  <div class="partnav" id="partnav-q2"></div>
+  <div class="card">
+    <div class="qhead"><h2>@@2. Enthalpy of solution of ammonium chloride|||2. Аммонийн хлоридын уусалтын энтальпи@@</h2><span class="marks">[14]</span></div>
+    <div class="eq">@@NH₄Cl(s) + aq → NH₄⁺(aq) + Cl⁻(aq)    ΔH > 0 (endothermic)|||NH₄Cl(s) + aq → NH₄⁺(aq) + Cl⁻(aq)    ΔH > 0 (эндотерм)@@</div>
+    <ul><li>@@<b>FA 5</b>: NH₄Cl (solid)|||<b>FA 5</b> — NH₄Cl (хатуу)@@</li></ul>
+    <details class="teach"><summary>@@Method (summary)|||Аргачлал (товч)@@</summary><div><ol>
+      <li>@@Weigh the container with FA 5 and record the mass.|||FA 5-тай савыг жинлэж бүртгэнэ.@@</li>
+      <li>@@Stand the cup in a 250 cm³ beaker and add 25.0 cm³ of distilled water with a measuring cylinder.|||Аягыг 250 cm³ стаканд тавьж, цилиндрээр 25.0 cm³ нэрмэл ус хийнэ.@@</li>
+      <li>@@Put in the thermometer and record the temperature at t = 0. Start the stopwatch and keep it running throughout.|||Термометрийг дүрж, t = 0 үеийн температурыг бүртгэнэ. Секундомерийг эхлүүлж, туршилтын турш ажиллуулна.@@</li>
+      <li>@@Record the temperature every half minute up to 2 minutes.|||2 минут хүртэл хагас минут тутам температурыг бүртгэнэ.@@</li>
+      <li>@@At t = 2 minutes add all the FA 5 to the cup and stir. (No reading at 2.5 minutes.)|||t = 2 минутад FA 5-ыг бүгдийг нь аяганд хийж хутгана. (2.5 минутад хэмжихгүй.)@@</li>
+      <li>@@From t = 3 minutes record the temperature every half minute up to 8 minutes.|||t = 3 минутаас эхлэн хагас минут тутам 8 минут хүртэл температурыг бүртгэнэ.@@</li>
+      <li>@@Weigh the container with its residue and work out the mass of FA 5 added.|||Үлдэгдэлтэй савыг жинлэж, нэмсэн FA 5-ын массыг тооцно.@@</li></ol></div></details>
+  </div>
+
+  <div class="card">
+    <h3>@@2(a) Simulation|||2(a) Симуляци@@</h3>
+    <div class="grid-sim">
+      <div><svg id="en_svg" class="app-svg" viewBox="0 0 360 380" aria-label="@@Cup, thermometer|||Аяга, термометр@@"></svg>
+        <div class="readouts"><div class="readout">@@<b>Time</b><span id="en_time" class="mono" style="font-size:1.4rem">—</span>|||<b>Хугацаа</b><span id="en_time" class="mono" style="font-size:1.4rem">—</span>@@</div></div></div>
+      <div>
+        <p>@@<span class="balance" id="en_bal">--.--</span> <span class="small muted">g · balance</span>|||<span class="balance" id="en_bal">--.--</span> <span class="small muted">g · жинлүүр</span>@@</p>
+        <ol class="steps" id="en_steps">
+          <li><button class="btn primary" data-en="weigh">@@Weigh the container with FA 5|||FA 5-тай савыг жинлэх@@</button></li>
+          <li><button class="btn" data-en="water">@@Put 25.0 cm³ of water in the cup and put in the thermometer|||Аяганд 25.0 cm³ ус хийж, термометр дүрэх@@</button></li>
+          <li><button class="btn" data-en="start">@@Start the stopwatch (t = 0)|||Секундомер эхлүүлэх (t = 0)@@</button></li>
+          <li><button class="btn" data-en="wait">@@Wait 0.5 min|||0.5 мин хүлээх@@</button> @@<span class="small muted">→ read the temperature and write it down</span>|||<span class="small muted">→ температурыг уншиж бич</span>@@</li>
+          <li><button class="btn" data-en="tip">@@Add FA 5 to the cup and stir|||FA 5-ыг аяганд хийж хутгах@@</button></li>
+        </ol>
+        <div class="grid2" style="gap:10px;align-items:start">
+          <div><svg id="en_lens" class="lens" viewBox="0 0 170 300"></svg><p class="small muted" style="max-width:180px">@@Magnified thermometer (1 °C divisions): read it to 0.5 °C.|||Томруулсан термометр (1 °C хуваарь) — 0.5 °C хүртэл уншина.@@</p></div>
+          <div><div class="note small">@@<b class="t">Observation</b><span id="en_obs">Start by weighing the container with FA 5.</span>|||<b class="t">Ажиглалт</b><span id="en_obs">FA 5-тай савыг жинлэж эхэлнэ үү.</span>@@</div><div class="note warn small" id="en_warn" hidden></div>
+            <p class="small muted">@@Action log:|||Үйлдлийн бүртгэл:@@</p><div class="log" id="en_log"></div><div class="btnrow"><button class="btn ghost" data-en="reset">@@Start again|||Шинээр эхлэх@@</button></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@2(a) Results|||2(a) Үр дүн@@</h3><span class="marks">[5]</span></div>
+    <p class="small">@@<b>Weighings:</b> three rows (two weighings + mass of FA 5 added), headings with units.|||<b>Жинлэлт:</b> гурван мөр (хоёр жинлэлт + нэмсэн FA 5-ын масс), гарчиг нэгжтэй.@@</p>
+    <div id="en_res"></div>
+    <p class="small" style="margin-top:12px">@@<b>Temperatures:</b> 16 readings (t = 0, 0.5, 1.0, 1.5, 2.0, 3.0, 3.5 … 8.0 min). Write the column headings with their units.|||<b>Температур:</b> 16 хэмжилт (t = 0, 0.5, 1.0, 1.5, 2.0, 3.0, 3.5 … 8.0 мин). Баганын гарчгийг нэгжтэй нь бич.@@</p>
+    <div class="tablewrap"><table class="rt" style="max-width:520px" id="en_tt"><thead><tr><th><input class="head" id="en_h0" placeholder="time / min"></th><th><input class="head" id="en_h1" placeholder="temperature / °C"></th></tr></thead><tbody></tbody></table></div>
+    <div class="btnrow"><button class="btn primary" id="q2checkA">@@Check 2(a)|||2(a)-г шалгах@@</button></div>
+    <div id="q2fbA" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: marking points for 2(a)|||Багшийн тайлбар: 2(a)-ийн онооны цэгүүд@@</summary><div>
+      <p>@@<b>I</b>: 16 temperature readings with their matching times, correct units (<span class="mono">time / min</span>, <span class="mono">temperature / °C</span>).|||<b>I</b> — 16 температурын заалт тохирох хугацаатайгаа, нэгж зөв (<span class="mono">time / min</span>, <span class="mono">temperature / °C</span>).@@</p>
+      <p>@@<b>II</b>: Both weighings and the mass of FA 5 added, worked out correctly and written with units.|||<b>II</b> — Хоёр жинлэлт ба нэмсэн FA 5-ын массыг зөв тооцож, нэгжтэй бичсэн.@@</p>
+      <p>@@<b>III</b>: Weighings to the same number of decimal places (2 or 3) <i>and</i> all temperatures to .0 or .5, with at least one .0 and one .5.|||<b>III</b> — Жинлэлтүүд ижил аравтын оронтой (2 эсвэл 3) <i>ба</i> бүх температур .0 эсвэл .5-аар; дор хаяж нэг нь .0, нэг нь .5.@@</p>
+      <p>@@<b>IV, V (accuracy)</b>: ΔT = T(initial) − T(lowest) is compared with the supervisor’s. If the supervisor’s ΔT is 10.0–14.5 °C: difference ≤ 2.0 → IV, ≤ 1.5 → V.|||<b>IV, V (нарийвчлал)</b> — ΔT = T(эхний) − T(хамгийн бага)-г хянагчийнхтай харьцуулна. Хянагчийн ΔT 10.0–14.5 °C бол: зөрүү ≤ 2.0 → IV, ≤ 1.5 → V.@@</p>
+      <div class="note exam">@@<b class="t">Examiner’s tips</b>You write the time column in the table yourself: there is no reading at t = 2.5 min, so leave it out. Write the thermometer readings themselves, not changes such as «−8.0».|||<b class="t">Шалгагчийн зөвлөмж</b>Хүснэгтэд хугацааны баганыг өөрөө бичнэ — t = 2.5 мин-д хэмжилт хийгдэхгүй тул түүнийг оруулахгүй. «−8.0» гэх мэт өөрчлөлтийг биш, термометрийн заалтыг шууд бич.@@</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@2(b) Graph|||2(b) График@@</h3><span class="marks">[4]</span></div>
+    <p class="small">@@y: temperature, x: time. The y axis must include a value <b>2 °C below</b> the lowest temperature. Mark any anomalous point. <b>Two straight lines</b>: the temperature before FA 5 is added, and the warming after the lowest temperature. Extend both to <b>t = 2 min</b>.|||y — температур, x — хугацаа. y тэнхлэг хамгийн бага температураас <b>2 °C доош</b> утгыг багтаах ёстой. Гажуудсан цэг байвал тэмдэглэ. <b>Хоёр шулуун</b>: FA 5 нэмэхийн өмнөх температур ба хамгийн бага температурын дараах халалт. Хоёуланг нь <b>t = 2 мин</b> хүртэл сунгана.@@</p>
+    <div id="en_graph"></div>
+    <div class="btnrow"><button class="btn primary" id="q2checkB">@@Check 2(b)|||2(b)-г шалгах@@</button> <button class="wb-link" data-wb="Q2">@@Open the whiteboard|||Самбар нээх@@</button></div>
+    <div id="q2fbB" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: 2(b)|||Багшийн тайлбар: 2(b)@@</summary><div>
+      <p>@@<b>I</b>: Temperature on the y axis, time on the x axis; clear labels with units.|||<b>I</b> — Температур y тэнхлэгт, хугацаа x тэнхлэгт; тодорхой нэр, нэгжтэй.@@</p>
+      <p>@@<b>II</b>: Scales of 1, 2 or 5 (or multiples) per 20 squares <i>and</i> the points (including the lowest − 2 °C) using <b>more than half</b> of each axis.|||<b>II</b> — Масштаб 20 нүдэнд 1, 2, 5-ын үржвэр <i>ба</i> цэгүүд (хамгийн бага − 2 °C-ийг оруулаад) тэнхлэг бүрийн <b>хагасаас илүүг</b> эзэлнэ.@@</p>
+      <p>@@<b>III</b>: All points plotted to within half a square <i>and</i> at least 9 temperatures.|||<b>III</b> — Бүх цэг хагас нүдний нарийвчлалтай тавигдсан <i>ба</i> дор хаяж 9 температур.@@</p>
+      <p>@@<b>IV</b>: Two straight lines, both extended to t = 2 min, <i>and</i> the value of line 2 at t = 2 min not higher than the lowest temperature measured.|||<b>IV</b> — Хоёр шулуун, хоёулаа t = 2 мин хүртэл сунгагдсан <i>ба</i> 2-р шулууны t = 2 мин дахь утга хэмжсэн хамгийн бага температураас ихгүй.@@</p>
+      <div class="note">@@<b class="t">Why extrapolate?</b>NH₄Cl does not dissolve instantly, and meanwhile the cup takes in heat from its surroundings. So the lowest temperature measured is <i>above</i> the true value. Extending the warming line back to t = 2 min corrects for this heat exchange.|||<b class="t">Яагаад экстраполяц хийдэг вэ?</b>NH₄Cl агшин зуур уусдаггүй, энэ хооронд аяга орчноосоо дулаан авна. Тиймээс хэмжсэн хамгийн бага температур жинхэнэ утгаас <i>дээгүүр</i> байна. Халалтын шугамыг t = 2 мин хүртэл сунгавал дулааны алдагдлыг засварлана.@@</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@2(c) Calculation|||2(c) Тооцоо@@</h3><span class="marks">[4]</span></div>
+    <div class="calc"><b>(i)</b><div class="row">@@ΔT at t = 2 min =|||t = 2 мин дахь ΔT =@@ <input id="c2i"> @@°C (from the graph, 1 decimal place)|||°C (графикаас, 1 аравтын орон)@@</div></div>
+    <div class="calc"><b>(ii)</b><div class="row">@@energy change =|||энергийн өөрчлөлт =@@ <input id="c2ii"> J</div></div>
+    <div class="calc"><b>(iii)</b><div class="row">n(NH₄Cl) = <input id="c2iii"> mol</div></div>
+    <div class="calc"><b>(iv)</b><div class="row">ΔH = <select id="c2ivs"><option value="">@@sign|||тэмдэг@@</option><option>+</option><option>−</option></select> <input id="c2iv"> kJ mol⁻¹</div></div>
+    <div class="btnrow"><button class="btn primary" id="q2checkC">@@Check 2(c)|||2(c)-г шалгах@@</button> <button class="wb-link" data-wb="Q2">@@Work it out on the whiteboard|||Самбар дээр бодох@@</button></div>
+    <div id="q2fbC" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes (example: ΔT = 11.6 °C, m = 5.02 g)|||Багшийн тайлбар (жишээ: ΔT = 11.6 °C, m = 5.02 g)@@</summary><div>
+      <p>@@<b>(ii)</b> q = m c ΔT = 25 × 4.18 × 11.6 = <b>1212 J</b> (mass of water 25 g; do not include the mass of NH₄Cl)|||<b>(ii)</b> q = m c ΔT = 25 × 4.18 × 11.6 = <b>1212 J</b> (усны масс 25 g; NH₄Cl-ийн массыг оруулахгүй)@@</p>
+      <p><b>(iii)</b> n = 5.02 / 53.5 = <b>0.0938 mol</b></p>
+      <p>@@<b>(iv)</b> ΔH = 1212 / 0.0938 / 1000 = <b>+12.9 kJ mol⁻¹</b>: the temperature fell, so it is <b>endothermic, sign +</b>.|||<b>(iv)</b> ΔH = 1212 / 0.0938 / 1000 = <b>+12.9 kJ mol⁻¹</b> — температур буурсан тул <b>эндотерм, тэмдэг +</b>.@@</p>
+      <div class="note exam">@@<b class="t">Examiner’s tips</b>Temperature fell → the system took in heat from the surroundings → ΔH positive. A wrong sign loses the mark. Do not forget to divide by 1000 to turn J into kJ.|||<b class="t">Шалгагчийн зөвлөмж</b>Температур буурсан → систем орчноосоо дулаан авсан → ΔH эерэг. Тэмдэг буруу бол оноо алдана. J-ийг kJ болгохдоо 1000-д хуваахаа бүү март.@@</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@2(d) Percentage error|||2(d) Хувийн алдаа@@</h3><span class="marks">[1]</span></div>
+    <p class="small">@@Find the maximum percentage error in the temperature change between 0 and 4 minutes. The uncertainty in one reading is ±0.5 °C.|||0-ээс 4 минутын хоорондох температурын өөрчлөлтийн хамгийн их хувийн алдааг ол. Нэг заалтын тодорхойгүй байдал ±0.5 °C.@@</p>
+    <div class="calc"><div class="row">@@% error =|||% алдаа =@@ <input id="c2d"> %</div></div>
+    <div class="btnrow"><button class="btn primary" id="q2checkD">@@Check 2(d)|||2(d)-г шалгах@@</button></div>
+    <div id="q2fbD" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: 2(d)|||Багшийн тайлбар: 2(d)@@</summary><div>
+      <div class="eq">@@% error = (0.5 × 2) / (T₀ − T₄) × 100|||% алдаа = (0.5 × 2) / (T₀ − T₄) × 100@@</div>
+      <p>@@The change is the difference of <b>two</b> readings, so the uncertainty is 2 × 0.5 = 1.0 °C. Example: T₀ = 21.0, T₄ = 10.5 → 1.0 / 10.5 × 100 = 9.5 %.|||Өөрчлөлт нь <b>хоёр</b> заалтын зөрүү тул тодорхойгүй байдал 2 × 0.5 = 1.0 °C. Жишээ: T₀ = 21.0, T₄ = 10.5 → 1.0 / 10.5 × 100 = 9.5 %.@@</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ===================== Q3 ===================== -->
+<section class="tab" id="tab-q3">
+  <div class="partnav" id="partnav-q3"></div>
+  <div class="card">
+    <div class="qhead"><h2>@@3. Qualitative analysis|||3. Чанарын шинжилгээ@@</h2><span class="marks">[15]</span></div>
+    <p>@@<b>FA 6</b>: a salt of a Group 1 ion with an anion made of a transition metal + a non-metal. <b>FA 8</b>: one cation and one anion; <b>FA 9</b>: a solution with two cations and one anion.|||<b>FA 6</b> — 1-р бүлгийн ион ба шилжилтийн металл + металл бус элементээс тогтсон анионтой давс. <b>FA 8</b> — нэг катион, нэг анионтой; <b>FA 9</b> — хоёр катион, нэг анионтой уусмал.@@</p>
+    <p class="small">@@Write each observation clearly: colour changes, precipitates and whether they dissolve in excess, gases and the test used to identify them. If there is no change, write <b>no change</b>.|||Ажиглалт бүрийг тодорхой бич: өнгөний өөрчлөлт, тунадас ба илүүдэлд уусах эсэх, хий ба түүнийг илрүүлсэн сорил. Өөрчлөлтгүй бол <b>no change</b>.@@</p>
+  </div>
+  <div class="card"><h3>@@Test bench|||Туршилтын ширээ@@</h3><div id="benchBox"></div></div>
+
+  <div class="card">
+    <div class="qhead"><h3>3(a) FA 6</h3><span class="marks">[5]</span></div>
+    <p class="small">@@<b>(i)</b> Heat FA 6 in a hard-glass test tube, gently at first and then strongly. Observations, gas given off. The residue is FA 7. [3]|||<b>(i)</b> FA 6-г hard-glass хуруу шилэнд эхлээд зөөлөн, дараа нь хүчтэй халаана. Ажиглалт, ялгарсан хий. Үлдэгдэл нь FA 7. [3]@@</p>
+    <textarea id="q3ai" placeholder="observations..."></textarea>
+    <div class="calc"><div class="row">gas produced: <input id="q3aig"></div></div>
+    <p class="small">@@<b>(ii)</b> 2 cm depth of acidified KMnO₄ + the same depth of NaOH(aq) + FA 7, stir for 30 s and filter. Observation of the filtrate; then add excess H₂SO₄ to 1 cm of the filtrate. [2]|||<b>(ii)</b> 2 cm гүн хүчиллэг KMnO₄ + ижил гүн NaOH(aq) + FA 7, 30 с хутгаад шүүнэ. Шүүсэн уусмалын ажиглалт; дараа нь 1 cm шүүсэн уусмалд H₂SO₄-ийг илүүдлээр нэмнэ. [2]@@</p>
+    <textarea id="q3aii1" placeholder="filtrate..."></textarea><textarea id="q3aii2" placeholder="after adding excess sulfuric acid..."></textarea>
+    <div class="btnrow"><button class="btn primary" id="q3checkA">@@Check 3(a)|||3(a)-г шалгах@@</button></div>
+    <div id="q3fbA" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: 3(a)|||Багшийн тайлбар: 3(a)@@</summary><div>
+      <p>@@<b>(i) M1</b> Two of: (dark) purple crystals; the crystals spit; it darkens and a black residue forms. <b>M2</b> The gas relights a glowing splint. <b>M3</b> Oxygen.|||<b>(i) M1</b> Дараах хоёроос: (бараан) нил ягаан талст; талст үсэрнэ; бараантаж хар үлдэгдэл үүснэ. <b>M2</b> Хий цогтой хэлтэрхийг дахин асаана. <b>M3</b> Хүчилтөрөгч.@@</p>
+      <div class="eq">2KMnO₄(s) → K₂MnO₄(s) + MnO₂(s) + O₂(g)</div>
+      <p>@@<b>(ii) M1</b> The filtrate is (dark) <b>green</b>: manganate(VI), MnO₄²⁻, in alkaline conditions. <b>M2</b> On adding acid it turns <b>pink / purple</b>: MnO₄²⁻ disproportionates in acid:|||<b>(ii) M1</b> Шүүсэн уусмал (бараан) <b>ногоон</b> — шүлтлэг орчинд манганат(VI), MnO₄²⁻. <b>M2</b> Хүчил нэмэхэд <b>ягаан / нил ягаан</b> болно — MnO₄²⁻ хүчиллэг орчинд диспропорцлоно:@@</p>
+      <div class="eq">3MnO₄²⁻ + 4H⁺ → 2MnO₄⁻ + MnO₂ + 2H₂O</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>@@3(b)(i) Table 3.1: FA 8 and FA 9|||3(b)(i) Хүснэгт 3.1 — FA 8 ба FA 9@@</h3><span class="marks">[7]</span></div>
+    <div class="tablewrap"><table class="rt"><thead><tr><th style="width:28%">test</th><th>FA 8</th><th>FA 9</th></tr></thead><tbody>
+      <tr><th class="mini">Test 1: add sulfuric acid</th><td><textarea class="cell" id="b11"></textarea></td><td><textarea class="cell" id="b12"></textarea></td></tr>
+      <tr><th class="mini">Test 2: NaOH(aq), then transfer to boiling tube and warm</th><td><textarea class="cell" id="b21"></textarea></td><td><textarea class="cell" id="b22"></textarea></td></tr>
+      <tr><th class="mini">Test 3: BaCl₂(aq) or Ba(NO₃)₂(aq), then nitric acid</th><td><textarea class="cell" id="b31"></textarea></td><td><textarea class="cell" id="b32"></textarea></td></tr>
+      <tr><th class="mini">Test 4: add FA 8 to FA 9 with shaking until in excess</th><td colspan="2"><textarea class="cell" id="b41"></textarea></td></tr></tbody></table></div>
+    <div class="btnrow"><button class="btn primary" id="q3checkB">@@Check 3(b)(i)|||3(b)(i)-г шалгах@@</button></div>
+    <div id="q3fbB" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes: 3(b)(i): 16 stars, max 7 marks|||Багшийн тайлбар: 3(b)(i) — 16 од, max 7 оноо@@</summary><div>
+      <div class="tablewrap"><table class="rt small"><tr><th></th><th>FA 8 (Na₂CO₃)</th><th>FA 9 (CuSO₄ + H₂SO₄)</th></tr>
+        <tr><th>H₂SO₄</th><td>effervescence*; gas tested with limewater*; white ppt with limewater* (CO₂)</td><td>no change / stays blue*</td></tr>
+        <tr><th>NaOH, warm</th><td>no change*; on warming no change / no gas turning red litmus blue*</td><td>pale blue ppt*; insoluble in excess*; on warming ppt turns black*</td></tr>
+        <tr><th>Ba²⁺, HNO₃</th><td>white ppt*; effervescence with acid*; ppt dissolves*</td><td>white ppt*; insoluble in acid*</td></tr>
+        <tr><th>FA 8 → FA 9</th><td colspan="2">effervescence*; (pale) blue ppt*</td></tr></table></div>
+      <div class="eq">@@Cu(OH)₂(s) → CuO(s) + H₂O(l)   (turns black on heating)|||Cu(OH)₂(s) → CuO(s) + H₂O(l)   (халаахад хар болно)@@</div>
+    </div></details>
+  </div>
+
+  <div class="card">
+    <div class="qhead"><h3>3(b)(ii), (iii)</h3><span class="marks">[3]</span></div>
+    <p class="small">@@Write the formulae of the three ions that are in the Qualitative analysis notes and of one other cation. If you cannot identify one, write <b>unknown</b>.|||Qualitative analysis notes-д байгаа гурван ион ба өөр нэг катионыг томьёогоор бич. Тодорхойлж чадахгүй бол <b>unknown</b>.@@</p>
+    <div class="calc"><div class="row">FA 8: <input id="i81" style="width:110px"> and <input id="i82" style="width:110px"></div>
+      <div class="row">FA 9: <input id="i91" style="width:110px"> and <input id="i92" style="width:110px"> and <input id="i93" style="width:110px"></div></div>
+    <p class="small">@@<b>(iii)</b> Ionic equation for one reaction in Test 2 (with state symbols):|||<b>(iii)</b> Test 2-т явагдсан нэг урвалын ионы тэгшитгэл (төлөвийн тэмдэглэгээтэй):@@</p>
+    <input id="q3eq" style="width:100%" placeholder="@@example: Cu2+(aq) + 2OH-(aq) → ...|||жишээ: Cu2+(aq) + 2OH-(aq) → ...@@">
+    <div class="btnrow"><button class="btn primary" id="q3checkC">@@Check 3(b)(ii)(iii)|||3(b)(ii)(iii)-г шалгах@@</button> <button class="wb-link" data-wb="Q3">@@Whiteboard|||Самбар@@</button></div>
+    <div id="q3fbC" class="fb"></div>
+    <details class="teach"><summary>@@Teacher’s notes|||Багшийн тайлбар@@</summary><div>
+      <p>@@<b>(ii)</b> FA 8: <b>unknown</b> (Na⁺ is not in the analysis notes) and <b>CO₃²⁻</b>. FA 9: <b>Cu²⁺</b>, <b>H⁺</b> (an acid: adding FA 8 gave bubbles) and <b>SO₄²⁻</b>. All correct → 2, three correct → 1.|||<b>(ii)</b> FA 8: <b>unknown</b> (Na⁺ шинжилгээний тэмдэглэлд байхгүй) ба <b>CO₃²⁻</b>. FA 9: <b>Cu²⁺</b>, <b>H⁺</b> (хүчил — FA 8 нэмэхэд бөмбөлөг гарсан) ба <b>SO₄²⁻</b>. Бүгд зөв → 2, гурав нь зөв → 1.@@</p>
+      <p>@@<b>(iii)</b> Cu²⁺(aq) + 2OH⁻(aq) → Cu(OH)₂(s) &nbsp;or&nbsp; Cu(OH)₂(s) → CuO(s) + H₂O(l)|||<b>(iii)</b> Cu²⁺(aq) + 2OH⁻(aq) → Cu(OH)₂(s) &nbsp;эсвэл&nbsp; Cu(OH)₂(s) → CuO(s) + H₂O(l)@@</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="tab" id="tab-ref">
+  <div class="card">
+    <h3>@@Qualitative analysis notes (appendix to the exam paper)|||Чанарын шинжилгээний тэмдэглэл (шалгалтын хуудасны хавсралт)@@</h3>
+    <div class="tablewrap"><table class="rt small">
+      <tr><th>@@cation|||катион@@</th><th>NaOH(aq)</th><th>NH₃(aq)</th></tr>
+      <tr><td>Al³⁺</td><td>white ppt, soluble in excess</td><td>white ppt, insoluble in excess</td></tr>
+      <tr><td>NH₄⁺</td><td>no ppt; NH₃ produced on warming</td><td>–</td></tr>
+      <tr><td>Ba²⁺</td><td>faint white ppt unless [Ba²⁺] very low</td><td>no ppt</td></tr>
+      <tr><td>Ca²⁺</td><td>white ppt unless [Ca²⁺] very low</td><td>no ppt</td></tr>
+      <tr><td>Cr³⁺</td><td>grey-green ppt, soluble in excess → dark green solution</td><td>grey-green ppt, insoluble in excess</td></tr>
+      <tr><td>Cu²⁺</td><td>pale blue ppt, insoluble in excess</td><td>pale blue ppt, soluble in excess → dark blue solution</td></tr>
+      <tr><td>Fe²⁺</td><td>green ppt turning brown in air; insoluble in excess</td><td>same</td></tr>
+      <tr><td>Fe³⁺</td><td>red-brown ppt, insoluble in excess</td><td>same</td></tr>
+      <tr><td>Mg²⁺</td><td>white ppt, insoluble in excess</td><td>white ppt, insoluble in excess</td></tr>
+      <tr><td>Mn²⁺</td><td>off-white ppt rapidly turning brown in air; insoluble in excess</td><td>same</td></tr>
+      <tr><td>Zn²⁺</td><td>white ppt, soluble in excess</td><td>white ppt, soluble in excess</td></tr>
+    </table></div>
+    <div class="tablewrap"><table class="rt small" style="margin-top:10px">
+      <tr><th>@@anion|||анион@@</th><th>@@reaction|||урвал@@</th></tr>
+      <tr><td>CO₃²⁻</td><td>CO₂ liberated by dilute acids</td></tr>
+      <tr><td>Cl⁻</td><td>white ppt with Ag⁺ (soluble in NH₃(aq))</td></tr>
+      <tr><td>Br⁻</td><td>cream ppt with Ag⁺ (partially soluble in NH₃(aq))</td></tr>
+      <tr><td>I⁻</td><td>pale yellow ppt with Ag⁺ (insoluble in NH₃(aq))</td></tr>
+      <tr><td>NO₃⁻</td><td>NH₃ liberated on heating with OH⁻ and Al foil</td></tr>
+      <tr><td>NO₂⁻</td><td>NH₃ liberated with OH⁻ and Al foil; decolourises acidified KMnO₄</td></tr>
+      <tr><td>SO₄²⁻</td><td>white ppt with Ba²⁺ (insoluble in excess dilute strong acids)</td></tr>
+      <tr><td>SO₃²⁻</td><td>white ppt with Ba²⁺ (soluble in excess dilute strong acids); decolourises acidified KMnO₄</td></tr>
+      <tr><td>S₂O₃²⁻</td><td>off-white / pale yellow ppt slowly with H⁺</td></tr>
+    </table></div>
+    <div class="tablewrap"><table class="rt small" style="margin-top:10px">
+      <tr><th>@@gas|||хий@@</th><th>@@test and result|||сорил ба үр дүн@@</th></tr>
+      <tr><td>NH₃</td><td>turns damp red litmus blue</td></tr>
+      <tr><td>CO₂</td><td>gives a white ppt with limewater</td></tr>
+      <tr><td>H₂</td><td>pops with a lighted splint</td></tr>
+      <tr><td>O₂</td><td>relights a glowing splint</td></tr>
+    </table></div>
+  </div>
+  <div class="card">
+    <h3>@@General rules of the mark scheme (Paper 3)|||Mark scheme-ийн ерөнхий дүрмүүд (Paper 3)@@</h3>
+    <ul>
+      <li>@@A thermometer with 1 °C divisions is read to 0.5 °C (.0 or .5).|||1 °C-ийн хуваарьтай термометрийг 0.5 °C хүртэл уншина (.0 эсвэл .5).@@</li>
+      <li>@@All balance readings to the same number of decimal places (2 or 3), as displayed.|||Жинлүүрийн бүх заалт ижил аравтын оронтой (2 эсвэл 3), харагдсанаар нь.@@</li>
+      <li>@@Unit in the heading: <span class="mono">/ g</span>, <span class="mono">(g)</span>, <span class="mono">in g</span>.|||Нэгж гарчигт: <span class="mono">/ g</span>, <span class="mono">(g)</span>, <span class="mono">in g</span>.@@</li>
+      <li>@@Graph scales: 1, 2 or 5 (×10ⁿ) per 20 small squares. Points as × or ⊙, accurate to half a square.|||Графикийн масштаб: 20 жижиг нүдэнд 1, 2, 5 (×10ⁿ). Цэгүүд × эсвэл ⊙-ээр, хагас нүдний нарийвчлалтай.@@</li>
+      <li>@@Significant figures of calculated values: the same as, or one more than, the fewest s.f. in the data.|||Тооцоолсон утгын s.f.: өгөгдлийн хамгийн бага s.f.-тэй тэнцүү эсвэл нэгээр илүү.@@</li>
+      <li>@@ECF: a correct calculation using an earlier wrong value still earns the following marks.|||ECF: өмнөх алдаатай утгаар зөв тооцоо хийвэл дараагийн оноо авна.@@</li>
+      <li>@@Tables with stars (*): 2 stars = 1 mark, rounded down.|||Од (*) бүхий хүснэгт: 2 од = 1 оноо, доош тоймлоно.@@</li>
+    </ul>
+    <h3>@@Sources of error and uncertainty (syllabus)|||Алдааны эх үүсвэр ба тодорхойгүй байдал (syllabus)@@</h3>
+    <ul>
+      <li>@@The answer “human error” is not accepted.|||«Human error» гэсэн хариулт хүлээн авахгүй.@@</li>
+      <li>@@Maximum uncertainty = half the difference between the two closest divisions.|||Хамгийн их тодорхойгүй байдал = хамгийн ойрын хоёр хуваарийн зөрүүний хагас.@@</li>
+      <li>@@For a quantity found from the difference of two readings the uncertainty doubles: % uncertainty = (2 × U) / value × 100.|||Хоёр заалтын зөрүүгээр олсон хэмжигдэхүүнд тодорхойгүй байдал хоёр дахин: % алдаа = (2 × U) / утга × 100.@@</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>@@Relative masses (for this paper)|||Харьцангуй масс (энэ шалгалтад)@@</h3>
+    <p class="mono small">@@H 1.0 · N 14.0 · O 16.0 · Na 23.0 · S 32.1 · Cl 35.5 · K 39.1 · Mn 54.9 · Cu 63.5<br>NH₄Cl = 53.5 · c(water) = 4.18 J g⁻¹ K⁻¹|||H 1.0 · N 14.0 · O 16.0 · Na 23.0 · S 32.1 · Cl 35.5 · K 39.1 · Mn 54.9 · Cu 63.5<br>NH₄Cl = 53.5 · c(ус) = 4.18 J g⁻¹ K⁻¹@@</p>
+  </div>
+</section>
+
+
+<section class="tab" id="tab-score"><div class="card"><h2>@@Summary of results|||Дүнгийн хураангуй@@</h2><div id="scoreBody"></div><div class="btnrow"><button class="btn ghost" id="resetAll">@@Clear all answers|||Бүх хариултыг арилгах@@</button></div></div></section>
+</main>
+<footer>@@Independent study tool, not an official Cambridge product. Practice material. Questions and mark scheme © Cambridge University Press &amp; Assessment 2024; paraphrased here with added explanations. Values in the simulation are modelled and will not match real laboratory results exactly.|||Бие даасан сургалтын хэрэгсэл, Cambridge-ийн албан ёсны бүтээгдэхүүн биш. Дадлагын материал. Асуулт ба mark scheme © Cambridge University Press &amp; Assessment 2024; энд утгачилан, монгол тайлбартай ашигласан. Симуляцийн тоон утгууд нь загварчлал бөгөөд бодит лабораторийн үр дүнтэй яг таарахгүй.@@</footer>
+<button class="wb-fab" id="wbFab" aria-label="@@Open whiteboard|||Самбар нээх@@"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg> @@Whiteboard|||Самбар@@</button>
+<div class="wb" id="wb" aria-hidden="true">
+  <div class="wb-panel">
+    <div class="wb-bar">
+      <select id="wbPage" title="@@Page|||Хуудас@@"><option value="Q1">@@Question 1|||1-р асуулт@@</option><option value="Q2">@@Question 2|||2-р асуулт@@</option><option value="Q3">@@Question 3|||3-р асуулт@@</option><option value="free">@@Free|||Чөлөөт@@</option></select>
+      <button class="btn tool on" data-tool="pen">@@Pen|||Үзэг@@</button>
+      <button class="btn tool" data-tool="hl">@@Highlighter|||Тодруулагч@@</button>
+      <button class="btn tool" data-tool="line">@@Line|||Шулуун@@</button>
+      <button class="btn tool" data-tool="eraser">@@Eraser|||Баллуур@@</button>
+      <span id="wbColors"></span>
+      <select id="wbSize" title="@@Thickness|||Зузаан@@"><option value="2">@@thin|||нимгэн@@</option><option value="3.5" selected>@@medium|||дунд@@</option><option value="7">@@thick|||бүдүүн@@</option></select>
+      <button class="btn" id="wbGrid">@@Grid|||Тор@@</button>
+      <button class="btn icon" id="wbUndo" aria-label="@@Undo|||Буцаах@@" title="@@Undo|||Буцаах@@"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg></button>
+      <button class="btn icon" id="wbRedo" aria-label="@@Redo|||Дахих@@" title="@@Redo|||Дахих@@"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 15-6.7L21 13"/></svg></button>
+      <button class="btn" id="wbClear">@@Clear|||Арилгах@@</button>
+      <button class="btn" id="wbSave">PNG</button>
+      <button class="btn primary" id="wbClose" style="margin-left:auto">@@Close ×|||Хаах ×@@</button>
+    </div>
+    <div class="wb-stage" id="wbStage"><canvas id="wbCanvas"></canvas></div>
+    <div class="wb-hint">@@Write with a mouse, finger or pen. Each page is saved separately (in this browser).|||Хулгана, хуруу эсвэл үзгээр бичнэ. Хуудас бүр тусдаа хадгалагдана (энэ хөтөч дээр).@@</div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+const CFG={"id": "s24", "gt": [25, 20, 17, 14, 11], "qtot": [11, 14, 15], "parts": [["q1a", "1(a)", 6], ["q1b", "1(b)", 3], ["q1c", "1(c)(d)", 2], ["q2a", "2(a)", 5], ["q2b", "2(b)", 4], ["q2c", "2(c)", 4], ["q2d", "2(d)", 1], ["q3a1", "3(a)(i)", 3], ["q3a2", "3(a)(ii)", 2], ["q3b1", "3(b)(i)", 7], ["q3b2", "3(b)(ii)(iii)", 3]]};
+/* ================= shared library for 9701/35 interactive papers ================= */
+const PFX="chem9701_35"+CFG.id+"_";
+const $=(s,el)=>(el||document).querySelector(s);
+const $$=(s,el)=>Array.from((el||document).querySelectorAll(s));
+const store={get(k,d){try{const v=localStorage.getItem(PFX+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(PFX+k,JSON.stringify(v));}catch(e){}}};
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2600);}
+const SUPERS={"⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9","⁻":"-","⁺":"+"};
+const UNITS=/(mol\\/dm-?3|moldm-3|g\\/mol|gmol-1|mol|cm-?3|dm-?3|g)$/i;
+function clean(s){return String(s==null?"":s).trim().replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g,c=>SUPERS[c]).replace(/−|–/g,"-").replace(/,/g,".").replace(/\\s*[×xX*·]\\s*10\\s*\\^?\\s*/,"e").replace(/\\s+/g,"").replace(UNITS,"");}
+function num(s){const c=clean(s);if(!/^[+-]?(\\d+\\.?\\d*|\\.\\d+)(e[+-]?\\d+)?$/i.test(c))return NaN;return parseFloat(c);}
+function sigFigs(s){let c=clean(s).replace(/^[+-]/,"");c=c.split(/e/i)[0];if(!/^\\d*\\.?\\d*$/.test(c)||c==="")return 0;
+  if(c.includes(".")){return c.replace(".","").replace(/^0+/,"").length;}return c.replace(/^0+/,"").replace(/0+$/,"").length||0;}
+function dp(s){const c=clean(s);if(/e/i.test(c))return -1;const i=c.indexOf(".");return i<0?0:c.length-i-1;}
+function close(a,b,rel){if(!isFinite(a)||!isFinite(b))return false;return Math.abs(a-b)<=Math.abs(b)*rel+1e-12;}
+function sfIn(s,a,b){const n=sigFigs(s);return n>=a&&n<=b;}
+function r2(v){return Math.round((v+1e-9)*100)/100;}
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function li(ok,text){return \`<div>\${ok?'<span class="y">✓</span>':'<span class="n">✗</span>'} \${text}</div>\`;}
+function fbBlock(lines,got,max){return lines.join("")+\`@@<div style="margin-top:6px">Marks: <span class="markbox">\${got} / \${max}</span></div>|||<div style="margin-top:6px">Оноо: <span class="markbox">\${got} / \${max}</span></div>@@\`;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+const RX={BUB:/(bubbl|effervesc|fizz)/i,RELIGHT:/(relight|re-light|reignit|glows? (more )?bright)/i,POP:/(pop|squeaky)/i,
+  NC:/(no (visible |observable )?change|no (observable |visible )?reaction|nothing happens)/i,NOPPT:/(no ppt|no precipitate)/i,
+  PPT:/(ppt|precipit)/i,INSOL:/(insoluble|does ?n[o']t dissolve|not dissolve|no change|remains|stays|persist)/i,
+  SOLX:/(soluble in excess|dissolves in excess|redissolves|re-dissolves|colourless solution in excess)/i,
+  LITBLUE:/(red litmus|litmus).{0,30}blue/i,LIME:/(limewater|lime water).{0,40}(milky|cloudy|white ppt|white precipitate|turbid)|(milky|cloudy|white ppt).{0,30}limewater/i,
+  COND:/(condens|droplet|steam|water vapou?r|moisture|liquid)/i};
+/* stars: list of [ok,label]; 2 stars = 1 mark */
+function starMark(L,items,max){let n=0;items.forEach(([ok,t])=>{L.push(li(ok,t+"*"));if(ok)n++;});const m=Math.min(max,Math.floor(n/2));L.push(\`<div class="small muted">@@Total stars:|||Нийт од:@@ \${n} @@→ 2 stars = 1 mark (max|||→ 2 од = 1 оноо (max@@ \${max}).</div>\`);return m;}
+
+/* tabs & theme */
+function showTab(id){$$("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===id?"true":"false"));
+  $$("section.tab").forEach(s=>s.classList.toggle("active",s.id==="tab-"+id));store.set("tab",id);window.scrollTo({top:0});}
+$$("#tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+
+/* score */
+const SCORE=store.get("score",{});
+function setScore(k,g){SCORE[k]=g;store.set("score",SCORE);renderScore();}
+function grade(t){const g=CFG.gt;return t>=g[0]?"A":t>=g[1]?"B":t>=g[2]?"C":t>=g[3]?"D":t>=g[4]?"E":"U";}
+/* ---------- progress and results ---------- */
+const PARTS=CFG.parts;
+/* parts marked by matching words in written answers: a teacher should confirm these */
+const KEYWORD_PARTS=new Set(["q1b","q1c","q2a","q2b","q3b1"]);
+const PART_BUTTON={"q1a":"q1checkA","q1b":"q1checkB","q1c":"q1checkC","q2a":"q2checkA","q2b":"q2checkB","q2c":"q2checkC","q2d":"q2checkD","q3a1":"q3checkA","q3a2":"q3checkA","q3b1":"q3checkB","q3b2":"q3checkC"};
+const QUESTIONS=CFG.qtot.map((marks,i)=>{const n=i+1,id="q"+n;const tab=$(\`#tabs button[data-tab="\${id}"]\`);const h=$(\`#tab-\${id} h2\`);
+  return {id,n,marks,min:Math.max(10,Math.round(marks*110/40/5)*5),title:(tab?tab.textContent:"").replace(/^\\s*\\d+\\.\\s*/,"").trim(),text:(h?h.textContent:"").replace(/^\\s*\\d+\\.\\s*/,"").trim()};});
+const MAX=PARTS.reduce((a,p)=>a+p[2],0);
+function goPart(k){const id="q"+k[1];showTab(id);const b=PART_BUTTON[k]&&$("#"+PART_BUTTON[k]);const card=b&&b.closest(".card");(card||$("#tab-"+id)).scrollIntoView({block:"start"});}
+document.addEventListener("click",e=>{const go=e.target.closest("[data-go]");if(go){showTab(go.dataset.go);return;}const p=e.target.closest("[data-part]");if(p)goPart(p.dataset.part);});
+function renderProgress(){
+  $("#qcards").innerHTML=QUESTIONS.map(Q=>{const parts=PARTS.filter(([k])=>k[1]===String(Q.n));const seen=parts.filter(([k])=>SCORE[k]!=null);const got=seen.reduce((a,[k])=>a+SCORE[k],0);
+    return \`<div class="qcard"><h3>\${Q.n}. \${Q.title}</h3><p class="small muted">\${Q.text}</p><div class="meta"><span>≈\${Q.min} @@min|||мин@@</span><span>\${seen.length?got:"–"} / \${Q.marks} @@marks|||оноо@@</span></div><div class="bar"><i style="width:\${got/Q.marks*100}%"></i></div><button class="btn \${seen.length?"":"primary"}" data-go="\${Q.id}">\${seen.length?"@@Continue|||Үргэлжлүүлэх@@":"@@Start|||Эхлэх@@"}</button></div>\`;}).join("");
+  QUESTIONS.forEach(Q=>{const parts=PARTS.filter(([k])=>k[1]===String(Q.n));const nav=$("#partnav-"+Q.id);
+    if(nav)nav.innerHTML=parts.map(([k,l,m])=>{const g=SCORE[k];const tone=g==null?"":g===m?"full":g>0?"some":"none";return \`<button class="\${tone}" data-part="\${k}">\${l} \${g==null?"–":g}/\${m}</button>\`;}).join("");
+    const tab=$(\`#tabs button[data-tab="\${Q.id}"]\`);if(!tab)return;const seen=parts.filter(([k])=>SCORE[k]!=null);const got=seen.reduce((a,[k])=>a+SCORE[k],0);
+    let mark=tab.querySelector(".tabscore");if(!mark){mark=document.createElement("span");mark.className="tabscore";tab.appendChild(mark);}mark.textContent=seen.length?\`\${got}/\${Q.marks}\`:"";});}
+QUESTIONS.forEach((Q,i)=>{const next=QUESTIONS[i+1];const sec=$("#tab-"+Q.id);if(sec)sec.insertAdjacentHTML("beforeend",\`<div class="nextrow"><button class="btn primary" data-go="\${next?next.id:"score"}">\${next?"@@Question \${next.n}|||\${next.n}-р асуулт руу@@":"@@See your results|||Дүнгээ харах@@"} →</button></div>\`);});
+function renderScore(){let tot=0;let rows="";const q={};QUESTIONS.forEach(Q=>q[Q.n]=[0,Q.marks]);
+  PARTS.forEach(([k,l,m])=>{const g=SCORE[k];if(g!=null){tot+=g;if(q[l[0]])q[l[0]][0]+=g;}
+    rows+=\`<tr><td>\${l}\${KEYWORD_PARTS.has(k)?'@@<span class="tag">keyword</span>|||<span class="tag">түлхүүр үг</span>@@':""}</td><td>\${g==null?'@@<span class="muted">not checked</span>|||<span class="muted">шалгаагүй</span>@@':g}</td><td>\${m}</td><td style="width:40%"><div class="bar"><i style="width:\${g==null?0:g/m*100}%"></i></div></td></tr>\`;});
+  $("#scoreChip").textContent=\`\${tot} / \${MAX}\`;
+  const checked=PARTS.filter(([k])=>SCORE[k]!=null).length;
+  const lost=p=>p.g==null?-1:p.m-p.g;
+  const todo=PARTS.map(([k,l,m])=>({k,l,m,g:SCORE[k]})).filter(p=>p.g==null||p.g<p.m).sort((a,b)=>lost(b)-lost(a));
+  const todoHtml=todo.length?\`<ul class="todo">\${todo.slice(0,4).map(p=>\`<li><span>\${p.l} <span class="small muted">\${p.g==null?\`@@not checked · \${p.m} marks|||шалгаагүй · \${p.m} оноо@@\`:\`@@\${p.m-p.g} marks lost|||\${p.m-p.g} оноо алдсан@@\`}</span></span><button class="btn" data-part="\${p.k}">@@Go|||Очих@@</button></li>\`).join("")}</ul>\`:'@@<p class="small">Full marks on every part. Now try it again against the clock.</p>|||<p class="small">Бүх хэсэгт бүтэн оноо авлаа. Одоо цагаа барин дахин хийж үзээрэй.</p>@@';
+  const th=\`A \${CFG.gt[0]}, B \${CFG.gt[1]}, C \${CFG.gt[2]}, D \${CFG.gt[3]}, E \${CFG.gt[4]}\`;
+  $("#scoreBody").innerHTML=\`<p>\${checked===PARTS.length?\`@@Total: <span class="markbox" style="font-size:1.3rem">\${tot} / \${MAX}</span>: about level <b>\${grade(tot)}</b> by the thresholds for this component (\${th}).|||Нийт: <span class="markbox" style="font-size:1.3rem">\${tot} / \${MAX}</span> — энэ хэсгийн босгоор ойролцоогоор <b>\${grade(tot)}</b> түвшин (\${th}).@@\`:\`@@Current marks: <span class="markbox" style="font-size:1.3rem">\${tot} / \${MAX}</span>. Parts checked: \${checked} / \${PARTS.length}. A level appears once every part has been checked.|||Одоогийн оноо: <span class="markbox" style="font-size:1.3rem">\${tot} / \${MAX}</span>. Шалгасан хэсэг: \${checked} / \${PARTS.length}. Түвшин бүх хэсгийг шалгасны дараа гарна.@@\`}</p>
+   @@<h3>What to repeat next</h3>|||<h3>Дараа нь юуг давтах вэ</h3>@@\${todoHtml}
+   <p class="small muted">\${QUESTIONS.map(Q=>\`@@Question \${Q.n}|||\${Q.n}-р асуулт@@ \${q[Q.n][0]}/\${Q.marks}\`).join(" · ")}</p>
+   <div class="tablewrap"><table class="rt scoretable"><tr>@@<th>Part</th><th>Earned</th>|||<th>Хэсэг</th><th>Авсан</th>@@<th>Max</th><th></th></tr>\${rows}</table></div>
+   @@<p class="small muted">In parts labelled “keyword” the program checks written answers only by matching words. Ask a teacher to confirm the final judgement.</p>|||<p class="small muted">«Түлхүүр үг» гэсэн хэсгийн бичгэн хариултыг программ зөвхөн үгээр нь таньж шалгадаг. Эцсийн дүгнэлтийг багшаар баталгаажуулна уу.</p>@@\`;renderProgress();}
+$("#resetAll").addEventListener("click",()=>{if(!confirm("@@Clear all marks and answers?|||Бүх оноо, хариултыг арилгах уу?@@"))return;try{Object.keys(localStorage).filter(k=>k.startsWith(PFX)&&!k.includes("_wb_")).forEach(k=>localStorage.removeItem(k));}catch(e){}location.reload();});
+function persistInputs(){$$("main input:not([type=checkbox]), main textarea, main select").forEach(el=>{
+  if(el.closest("[data-nopersist]"))return;const key=el.id?"in_"+el.id:null;if(!key)return;
+  const v=store.get(key,null);if(v!=null)el.value=v;const save=()=>store.set(key,el.value);el.addEventListener("input",save);el.addEventListener("change",save);});}
+
+/* generic magnified scale (burette / thermometer / cylinder) */
+function drawScale(svg,val,o){const W=170,H=300,mid=150,k=o.k;let s=\`<rect width="\${W}" height="\${H}" fill="var(--paper)"/>\`;
+  if(val==null||!isFinite(val)){svg.innerHTML=s+\`<text x="85" y="150" text-anchor="middle" font-size="12" fill="var(--muted)">\${o.empty||"—"}</text>\`;return;}
+  const dir=o.down?1:-1;const yy=v=>mid+dir*(v-val)*k;const x0=60,x1=110;
+  s+=\`<rect x="\${x0}" y="0" width="\${x1-x0}" height="\${H}" fill="var(--glass)" fill-opacity=".3"/>\`;
+  if(o.liquid){const c=o.meniscus==="up"?-7:8;const below=o.fillAbove?\`L\${x1} 0 L\${x0} 0Z\`:\`L\${x1} \${H} L\${x0} \${H}Z\`;
+    s+=\`<path d="M\${x0} \${mid} Q\${(x0+x1)/2} \${mid+c} \${x1} \${mid} \${below}" fill="\${o.liquid}"/>\`;}
+  const span=H/2/k+0.5;const lo=Math.max(o.min,val-span),hi=Math.min(o.max,val+span);const st=o.minor;
+  for(let t=Math.ceil(lo/st-1e-9);t<=Math.floor(hi/st+1e-9);t++){const v=+(t*st).toFixed(4);const Y=yy(v);
+    const isMaj=Math.abs(v/o.major-Math.round(v/o.major))<1e-6;const isMid=o.mid&&Math.abs(v/o.mid-Math.round(v/o.mid))<1e-6;
+    s+=\`<line x1="\${x0}" x2="\${x0+(isMaj?34:isMid?24:14)}" y1="\${Y}" y2="\${Y}" stroke="var(--ink)" stroke-width="\${isMaj?1.6:1}"/>\`;
+    if(isMaj)s+=\`<text x="\${x0-6}" y="\${Y+4}" font-size="13" text-anchor="end" fill="var(--ink)" font-family="monospace">\${o.fmt?o.fmt(v):v}</text>\`;}
+  s+=\`<line x1="\${x0}" x2="\${x0}" y1="0" y2="\${H}" stroke="var(--ink)" stroke-width="2"/><line x1="\${x1}" x2="\${x1}" y1="0" y2="\${H}" stroke="var(--ink)" stroke-width="2"/><path d="M\${x1+4} \${mid} l10 -6 v12z" fill="var(--accent)"/>\`;
+  svg.innerHTML=s;}
+
+/* ============ BALANCE + LOG helper ============ */
+function Logger(sel){const el=$(sel);const arr=[];return{add(t){arr.push(t);el.innerHTML=arr.map(esc).join("<br>");el.scrollTop=1e6;},arr};}
+
+/* ============ GRAPH TOOL ============ */
+function Graph(box,o){
+  const P=o.key,W=o.W||120,H=o.H||160,px=5,ml=62,mt=16,VW=ml+W*px+38,VH=mt+H*px+84;
+  $(box).innerHTML=\`<div class="scalebox" data-nopersist>
+    <label>@@x-axis label (with unit)|||x тэнхлэгийн нэр (нэгжтэй)@@<input data-g="xl" placeholder="..."></label><label>@@x starting value|||x эхлэх утга@@<input data-g="x0" value="0"></label>
+    <label>@@x: per 20 small squares|||x: 20 жижиг нүдэнд@@<select data-g="xs"><option value="">@@choose|||сонго@@</option>\${(o.xopts||[1,2,2.5,4,5,10,20]).map(v=>\`<option>\${v}</option>\`).join("")}</select></label>
+    <label>@@y-axis label (with unit)|||y тэнхлэгийн нэр (нэгжтэй)@@<input data-g="yl" placeholder="..."></label><label>@@y starting value|||y эхлэх утга@@<input data-g="y0" placeholder="@@e.g. 18|||жишээ 18@@"></label>
+    <label>@@y: per 20 small squares|||y: 20 жижиг нүдэнд@@<select data-g="ys"><option value="">@@choose|||сонго@@</option>\${(o.yopts||[0.5,1,2,2.5,3,4,5]).map(v=>\`<option>\${v}</option>\`).join("")}</select></label></div>
+   <div class="gtools"><button class="btn tool on" data-gm="plot">@@× Plot points|||× Цэг тавих@@</button><button class="btn tool" data-gm="erase">@@Remove a point|||Цэг арилгах@@</button><button class="btn tool" data-gm="anom">@@Mark as anomalous|||Гажуудсан гэж тэмдэглэх@@</button>
+    \${o.lines?\`<button class="btn tool" data-gm="L1">\${o.l1label||"@@Line 1 (curve, 3 points)|||Шугам 1 (муруй, 3 цэг)@@"}</button><button class="btn tool" data-gm="L2">\${o.l2label||"@@Line 2 (straight, 2 points)|||Шугам 2 (шулуун, 2 цэг)@@"}</button>
+    <label class="small" style="align-self:center"><input type="checkbox" data-g="l2c"> @@Make line 2 a curve|||Шугам 2-ыг муруй болгох@@</label><label class="small" style="align-self:center"><input type="checkbox" data-g="l1s"> @@Make line 1 straight|||Шугам 1-ийг шулуун болгох@@</label>
+    <button class="btn ghost" data-gc="L">@@Clear the lines|||Шугамуудыг арилгах@@</button>\`:""}<button class="btn ghost" data-gc="all">@@Clear everything|||Бүгдийг арилгах@@</button></div>
+   <p class="small muted" data-g="hint">@@Plotting mode: click on the grid to plot each point from the table (to half a small square). You can drag the control points of a line to move them.|||Цэг тавих горим: хүснэгтийн цэг бүрийг тор дээр дарж тавина (хагас нүдний нарийвчлалтай). Шугамын хяналтын цэгүүдийг чирж зөөж болно.@@</p>
+   <div class="graphwrap"><svg class="graph" viewBox="0 0 \${VW} \${VH}" aria-label="@@Graph grid|||Графикийн тор@@"></svg></div>\`;
+  const q=n=>$(\`[data-g="\${n}"]\`,$(box));const svg=$("svg.graph",$(box));
+  const G={mode:"plot",pts:store.get(P+"pts",[]),L1:store.get(P+"L1",[]),L2:store.get(P+"L2",[]),drag:null};
+  ["xl","x0","xs","yl","y0","ys"].forEach(n=>{const v=store.get(P+n,null);if(v!=null)q(n).value=v;q(n).addEventListener("input",()=>{store.set(P+n,q(n).value);draw();});q(n).addEventListener("change",()=>{store.set(P+n,q(n).value);draw();});});
+  ["l2c","l1s"].forEach(n=>{if(!q(n))return;q(n).checked=!!store.get(P+n,false);q(n).addEventListener("change",()=>{store.set(P+n,q(n).checked);G[n==="l2c"?"L2":"L1"]=[];draw();});});
+  function sc(){const xs=num(q("xs").value),ys=num(q("ys").value),x0=num(q("x0").value),y0=num(q("y0").value);return{ok:[xs,ys,x0,y0].every(isFinite),xs,ys,x0,y0};}
+  const toPx=(x,y,s)=>[ml+(x-s.x0)/s.xs*20*px,mt+H*px-(y-s.y0)/s.ys*20*px];
+  const toData=(X,Y,s)=>[s.x0+(X-ml)/(20*px)*s.xs,s.y0+(mt+H*px-Y)/(20*px)*s.ys];
+  const snap=(v,st)=>Math.round(v/st)*st;
+  function need(n){if(n==="L1")return q("l1s")&&q("l1s").checked?2:(o.l1n||3);return q("l2c")&&q("l2c").checked?3:2;}
+  function fn(L){if(L.length===2){const[a,b]=L;if(Math.abs(b[0]-a[0])<1e-9)return null;const k=(b[1]-a[1])/(b[0]-a[0]);return x=>a[1]+k*(x-a[0]);}
+    if(L.length===3){const[[x0,y0],[x1,y1],[x2,y2]]=L;if(new Set([x0,x1,x2].map(v=>v.toFixed(6))).size<3)return null;
+      return x=>y0*(x-x1)*(x-x2)/((x0-x1)*(x0-x2))+y1*(x-x0)*(x-x2)/((x1-x0)*(x1-x2))+y2*(x-x0)*(x-x1)/((x2-x0)*(x2-x1));}return null;}
+  function range(L){const xs=L.map(p=>p[0]);return[Math.min(...xs),Math.max(...xs)];}
+  function intersect(){const f1=fn(G.L1),f2=fn(G.L2);if(!f1||!f2||G.L1.length!==need("L1")||G.L2.length!==need("L2"))return null;const r1=range(G.L1),r2=range(G.L2);
+    const a=Math.max(r1[0],r2[0]),b=Math.min(r1[1],r2[1]);if(a>=b)return null;const N=4000;let prev=f1(a)-f2(a);
+    for(let i=1;i<=N;i++){const x=a+(b-a)*i/N;const d=f1(x)-f2(x);if(prev===0||d===0||prev*d<0){let lo=x-(b-a)/N,hi=x;for(let j=0;j<40;j++){const mm=(lo+hi)/2;if((f1(lo)-f2(lo))*(f1(mm)-f2(mm))<=0)hi=mm;else lo=mm;}const xi=(lo+hi)/2;return[xi,f1(xi)];}prev=d;}return null;}
+  function draw(){const s=sc();const Wp=W*px,Hp=H*px;let g=\`<rect x="0" y="0" width="\${VW}" height="\${VH}" fill="#fff"/>\`;
+    for(let i=0;i<=W;i++){const x=ml+i*px;g+=\`<line x1="\${x}" y1="\${mt}" x2="\${x}" y2="\${mt+Hp}" stroke="\${i%10?'#e6edf4':'#b9c6d4'}" stroke-width="\${i%10?0.6:1}"/>\`;}
+    for(let j=0;j<=H;j++){const y=mt+j*px;g+=\`<line x1="\${ml}" y1="\${y}" x2="\${ml+Wp}" y2="\${y}" stroke="\${j%10?'#e6edf4':'#b9c6d4'}" stroke-width="\${j%10?0.6:1}"/>\`;}
+    if(s.ok){for(let i=0;i<=W;i+=20)g+=\`<text x="\${ml+i*px}" y="\${mt+Hp+16}" font-size="12" text-anchor="middle" fill="#333" font-family="monospace">\${+(s.x0+i/20*s.xs).toFixed(3)}</text>\`;
+      for(let j=0;j<=H;j+=20)g+=\`<text x="\${ml-6}" y="\${mt+Hp-j*px+4}" font-size="12" text-anchor="end" fill="#333" font-family="monospace">\${+(s.y0+j/20*s.ys).toFixed(3)}</text>\`;}
+    else g+=\`<text x="\${ml+Wp/2}" y="\${mt+Hp/2}" font-size="15" text-anchor="middle" fill="#9a6400">@@First choose your scales (starting value, per 20 squares)|||Эхлээд масштабаа (эхлэх утга, 20 нүдэнд) сонгоно уу@@</text>\`;
+    g+=\`<text x="\${ml+Wp/2}" y="\${mt+Hp+36}" font-size="13" text-anchor="middle" fill="#222">\${esc(q("xl").value||"")}</text><text transform="translate(14 \${mt+Hp/2}) rotate(-90)" font-size="13" text-anchor="middle" fill="#222">\${esc(q("yl").value||"")}</text>\`;
+    if(s.ok){g+=\`<clipPath id="gc\${P}"><rect x="\${ml}" y="\${mt}" width="\${Wp}" height="\${Hp}"/></clipPath><g clip-path="url(#gc\${P})">\`;
+      [["L1","#1f5f9a"],["L2","#b3261e"]].forEach(([n,c])=>{const L=G[n];const f=fn(L);if(f&&L.length===need(n)){const[a,b]=range(L);let d="";
+          for(let i=0;i<=200;i++){const x=a+(b-a)*i/200;const[X,Y]=toPx(x,f(x),s);d+=(i?"L":"M")+X.toFixed(1)+" "+Y.toFixed(1);}g+=\`<path d="\${d}" fill="none" stroke="\${c}" stroke-width="1.6"/>\`;}
+        L.forEach((p,i)=>{const[X,Y]=toPx(p[0],p[1],s);g+=\`<circle data-h="\${n}:\${i}" cx="\${X}" cy="\${Y}" r="6" fill="\${c}" fill-opacity=".25" stroke="\${c}" style="cursor:move"/>\`;});});
+      G.pts.forEach(p=>{const[X,Y]=toPx(p.x,p.y,s);g+=\`<path d="M\${X-4} \${Y-4}L\${X+4} \${Y+4}M\${X-4} \${Y+4}L\${X+4} \${Y-4}" stroke="#111" stroke-width="1.5"/>\`;
+        if(p.anom)g+=\`<circle cx="\${X}" cy="\${Y}" r="9" fill="none" stroke="#d97706" stroke-width="1.5"/><text x="\${X+11}" y="\${Y-8}" font-size="11" fill="#d97706">anomalous</text>\`;});
+      const X=intersect();if(X){const[a,b]=toPx(X[0],X[1],s);g+=\`<circle cx="\${a}" cy="\${b}" r="3" fill="#6b2f8f"/>\`;}g+=\`</g>\`;}
+    svg.innerHTML=g;store.set(P+"pts",G.pts);store.set(P+"L1",G.L1);store.set(P+"L2",G.L2);}
+  const ev=e=>{const r=svg.getBoundingClientRect();return[(e.clientX-r.left)*VW/r.width,(e.clientY-r.top)*VH/r.height];};
+  svg.addEventListener("pointerdown",e=>{const s=sc();if(!s.ok){toast("@@First choose your scales.|||Эхлээд масштабаа сонгоно уу.@@");return;}
+    const h=e.target.getAttribute&&e.target.getAttribute("data-h");if(h){const[n,i]=h.split(":");G.drag={n,i:+i};svg.setPointerCapture(e.pointerId);return;}
+    const[X,Y]=ev(e);if(X<ml-3||X>ml+W*px+3||Y<mt-3||Y>mt+H*px+3)return;let[x,y]=toData(X,Y,s);x=snap(x,s.xs/40);y=snap(y,s.ys/40);
+    if(G.mode==="plot")G.pts.push({x,y,anom:false});
+    else if(G.mode==="erase"||G.mode==="anom"){let bi=-1,bd=1e9;G.pts.forEach((p,i)=>{const[a,b]=toPx(p.x,p.y,s);const d=Math.hypot(a-X,b-Y);if(d<bd){bd=d;bi=i;}});
+      if(bi>=0&&bd<14){if(G.mode==="erase")G.pts.splice(bi,1);else G.pts[bi].anom=!G.pts[bi].anom;}}
+    else{const L=G[G.mode];if(L.length>=need(G.mode)){toast("@@This line is complete. Drag a control point to move it, or clear the lines.|||Энэ шугам бүрэн. Хяналтын цэгийг чирж зөө эсвэл шугамуудыг арилга.@@");return;}L.push([x,y]);}draw();});
+  svg.addEventListener("pointermove",e=>{if(!G.drag)return;const s=sc();const[X,Y]=ev(e);const[x,y]=toData(X,Y,s);G[G.drag.n][G.drag.i]=[snap(x,s.xs/80),snap(y,s.ys/80)];draw();});
+  ["pointerup","pointercancel"].forEach(t=>svg.addEventListener(t,()=>{G.drag=null;}));
+  const hints={plot:"@@Plotting mode: click on the grid to plot each point from the table (to half a small square).|||Цэг тавих горим: хүснэгтийн цэг бүрийг тор дээр дарж тавина (хагас нүдний нарийвчлалтай).@@",erase:"@@Click on the point you want to remove.|||Арилгах цэг дээрээ дарна уу.@@",anom:"@@Click on a point to mark it as anomalous (click again to undo).|||Гажуудсан цэг дээрээ дарж тэмдэглэнэ (дахин дарвал болино).@@",
+    L1:o.l1hint||"@@Line 1: place the control points. The line passes through them: extend it beyond the crossing.|||Шугам 1: хяналтын цэгүүдийг тавина. Шугам хяналтын цэгүүдээр дамжина — огтлолцлоос цааш сунгаарай.@@",L2:o.l2hint||"@@Line 2: place the two end points, before the crossing and beyond the last point.|||Шугам 2: хоёр төгсгөлийн цэгийг тавина — огтлолцлоос өмнөх ба сүүлийн цэгээс цааш.@@"};
+  $$("[data-gm]",$(box)).forEach(b=>b.onclick=()=>{G.mode=b.dataset.gm;$$("[data-gm]",$(box)).forEach(x=>x.classList.toggle("on",x===b));q("hint").textContent=hints[G.mode];});
+  $$("[data-gc]",$(box)).forEach(b=>b.onclick=()=>{if(b.dataset.gc==="all"){if(!confirm("@@Clear all points and lines from the graph?|||Графикийн бүх цэг, шугамыг арилгах уу?@@"))return;G.pts=[];}G.L1=[];G.L2=[];draw();});
+  draw();
+  /* ---- marking primitives ---- */
+  const API={G,sc,draw,intersect,fn,need,
+    labels(xre,yre){const a=q("xl").value.toLowerCase(),b=q("yl").value.toLowerCase();return{x:xre.test(a),y:yre.test(b)};},
+    goodScale(){const s=sc();const ok=[0.1,0.2,0.5,1,2,5,10,20,50,100];return s.ok&&ok.includes(s.xs)&&ok.includes(s.ys);},
+    inGrid(x,y){const s=sc();return s.ok&&x>=s.x0-1e-9&&x<=s.x0+W/20*s.xs+1e-9&&y>=s.y0-1e-9&&y<=s.y0+H/20*s.ys+1e-9;},
+    yTop(){const s=sc();return s.y0+H/20*s.ys;},
+    half(data){const s=sc();if(!s.ok||!data.length)return false;const xs=data.map(d=>d[0]),ys=data.map(d=>d[1]);
+      return(Math.max(...xs)-Math.min(...xs))/(W/20*s.xs)>=0.5&&(Math.max(...ys)-Math.min(...ys))/(H/20*s.ys)>=0.5;},
+    points(data){const s=sc();if(!s.ok)return false;const tx=s.xs/40+1e-9,ty=s.ys/40+1e-9;return data.every(([x,y])=>G.pts.some(p=>Math.abs(p.x-x)<=tx&&Math.abs(p.y-y)<=ty));},
+    fit(Lname,data,tolMin){const s=sc();const f=fn(G[Lname]);if(!f||G[Lname].length!==need(Lname)||data.length<2)return false;
+      const r=data.map(([x,y])=>y-f(x));const mean=r.reduce((a,b)=>a+Math.abs(b),0)/r.length;return mean<=Math.max(s.ys/20*1.5,tolMin||0)&&Math.max(...r.map(Math.abs))<=Math.max(s.ys/20*4,(tolMin||0)*2.3);},
+    curved(Lname){const L=G[Lname];if(L.length!==3)return false;const s=sc();const[a,b,c]=L;return Math.abs(b[1]-(a[1]+(c[1]-a[1])*(b[0]-a[0])/(c[0]-a[0])))>s.ys/40;},
+    nonAnom(data){const s=sc();return data.filter(([x,y])=>!G.pts.some(p=>p.anom&&Math.abs(p.x-x)<=s.xs/40+1e-9&&Math.abs(p.y-y)<=s.ys/40+1e-9));},
+    halfSq(){const s=sc();return{x:s.xs/40,y:s.ys/40};}};
+  return API;}
+
+/* ============ QUAL BENCH ============ */
+const COL={colourless:"rgba(210,230,245,.45)",purple:"#6a1b7a",palepink:"rgba(245,215,228,.6)",green:"#1f6b3a",palegreen:"rgba(160,205,150,.6)",yellow:"rgba(240,215,120,.75)",white:"#fbfbf7",offwhite:"#ece4d4",brown:"#7a4a1e",redbrown:"#8a3b12",black:"#222",darkbrown:"#3a2412",blue:"#2c66c7",paleblue:"rgba(150,190,240,.65)",darkblue:"#1b3f9a",greenppt:"#5d7a3a",greygreen:"#6f7f62",orange:"rgba(235,140,40,.75)",cream:"#efe2b8",paleyellow:"#f4e7a1"};
+function drawTube(svg,s){s=s||{};let g=\`<rect width="200" height="300" fill="none"/>\`;
+  g+=\`<path d="M70 30 L70 250 Q70 280 100 280 Q130 280 130 250 L130 30" fill="var(--glass)" fill-opacity=".25" stroke="var(--ink)" stroke-width="2"/>\`;
+  if(s.liq)g+=\`<path d="M72 170 L128 170 L128 250 Q128 278 100 278 Q72 278 72 250Z" fill="\${s.liq}"/>\`;
+  if(s.ppt){g+=\`<path d="M72 235 L128 235 L128 250 Q128 278 100 278 Q72 278 72 250Z" fill="\${s.ppt}"/>\`;for(let i=0;i<14;i++)g+=\`<circle cx="\${78+Math.random()*44}" cy="\${185+Math.random()*48}" r="1.6" fill="\${s.ppt}" opacity=".85"/>\`;}
+  if(s.solid){g+=\`<path d="M74 258 L126 258 Q124 278 100 278 Q76 278 74 258Z" fill="\${s.solid}" stroke="#0003"/>\`;for(let i=0;i<8;i++)g+=\`<rect x="\${80+Math.random()*36}" y="\${250+Math.random()*10}" width="5" height="4" fill="\${s.solid}" stroke="#0003"/>\`;}
+  if(s.foil)g+=\`<rect x="92" y="200" width="16" height="30" fill="#c9ccd1" stroke="#888" transform="rotate(12 100 215)"/>\`;
+  if(s.bub)for(let i=0;i<16;i++){const x=78+Math.random()*44,y=180+Math.random()*90;g+=\`<circle cx="\${x}" cy="\${y}" r="\${1.5+Math.random()*2.5}" fill="none" stroke="var(--ink)" stroke-width=".8"><animate attributeName="cy" from="\${y}" to="172" dur="\${0.8+Math.random()}s" repeatCount="indefinite"/></circle>\`;}
+  if(s.gas)g+=\`<rect x="72" y="32" width="56" height="120" fill="\${s.gas}" opacity=".45"/>\`;
+  if(s.cond)for(let i=0;i<10;i++)g+=\`<circle cx="\${73+Math.random()*54}" cy="\${40+Math.random()*50}" r="\${1.2+Math.random()*1.6}" fill="#9fd0ff" stroke="#5c8fbf" stroke-width=".5"/>\`;
+  if(s.flame)g+=\`<path d="M100 286 Q85 292 100 300 Q115 292 100 286" fill="#3b7bff" opacity=".85"/>\`;
+  if(s.splint){g+=\`<line x1="100" y1="18" x2="170" y2="-30" stroke="#a7783f" stroke-width="5"/><circle cx="100" cy="20" r="\${s.splint==="relight"||s.splint==="lit"?7:3}" fill="\${s.splint==="relight"||s.splint==="lit"?"#ffb02e":"#c4512b"}"/>\`;
+    if(s.splint==="relight"||s.splint==="lit")g+=\`<path d="M100 2 Q92 14 100 22 Q108 14 100 2" fill="#ff7a1a"/>\`;if(s.splint==="pop")g+=\`<text x="140" y="40" font-size="18" font-weight="700" fill="#b3261e">POP!</text>\`;}
+  if(s.litmus)g+=\`<rect x="95" y="0" width="12" height="40" fill="\${s.litmus}" stroke="#555" stroke-width=".6"/>\`;
+  if(s.lime)g+=\`<path d="M150 120 L150 230 Q150 250 165 250 Q180 250 180 230 L180 120" fill="\${s.lime}" stroke="var(--ink)" stroke-width="1.5"/><path d="M130 60 Q160 60 165 125" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="165" y="265" font-size="9" text-anchor="middle" fill="var(--muted)">limewater</text>\`;
+  if(s.label)g+=\`<text x="100" y="296" font-size="11" text-anchor="middle" fill="var(--muted)">\${esc(s.label)}</text>\`;
+  svg.innerHTML=g;}
+function Bench(box,SAMPLES,ACT){const key="bench_"+box.replace(/\\W/g,"");
+  $(box).innerHTML=\`<div class="btnrow samples"></div><div class="bench"><div><p class="small b-info"></p><div class="btnrow b-act"></div>
+    <div class="obsbox b-obs"><span class="muted">@@Choose a sample, then do a test.|||Дээжээ сонгоод сорил хийнэ үү.@@</span></div>
+    <label class="small"><input type="checkbox" class="b-rev"> @@If you get stuck: show the observations described in English (practice mode)|||Хэрэв гацвал: ажиглалтыг англиар тайлбарлан харуулах (дадлагын горим)@@</label></div>
+    <div><svg class="tube-svg" viewBox="0 0 200 300" aria-label="@@Test-tube|||Хуруу шил@@"></svg></div></div>\`;
+  const R=$(box);const tube=$("svg",R);const done=store.get(key,{});let cur=Object.keys(SAMPLES)[0];let tok=0;
+  function samples(){const b=$(".samples",R);b.innerHTML="";Object.keys(SAMPLES).forEach(k=>b.insertAdjacentHTML("beforeend",\`<button class="btn \${k===cur?"sel":""}" data-s="\${k}">\${SAMPLES[k].name}</button>\`));
+    $$("button",b).forEach(x=>x.onclick=()=>{tok++;cur=x.dataset.s;samples();acts();drawTube(tube,SAMPLES[cur].init);$(".b-obs",R).innerHTML='<span class="muted">@@Choose a test.|||Сорил сонгоно уу.@@</span>';});}
+  function acts(){const a=$(".b-act",R);a.innerHTML="";$(".b-info",R).textContent=SAMPLES[cur].info;
+    ACT[cur].forEach(x=>a.insertAdjacentHTML("beforeend",\`<button class="btn" data-a="\${x.id}">\${x.label}</button>\`));
+    $$("button",a).forEach(b=>b.onclick=()=>run(ACT[cur].find(x=>x.id===b.dataset.a)));}
+  function run(act){if(act.need&&!done[cur+act.need]){const pre=ACT[cur].find(x=>x.id===act.need);toast(\`@@First:|||Эхлээд:@@ \${pre?pre.label:act.need}\`);return;}
+    done[cur+act.id]=true;store.set(key,done);let i=0;const my=++tok;const show=()=>{if(my!==tok)return;drawTube(tube,act.steps[i]);i++;if(i<act.steps.length)setTimeout(show,act.slow?2300:1300);};show();
+    $(".b-obs",R).innerHTML=\`<b>\${esc(act.label)}</b><br>\`+($(".b-rev",R).checked?\`<span class="small">@@Note:|||Тайлбар:@@ <i>\${esc(act.obs)}</i></span>\`:\`<span class="small muted">@@Record what you saw, in English, in the table below.|||Харсан зүйлээ англиар доорх хүснэгтэд бүртгэ.@@</span>\`);}
+  samples();acts();drawTube(tube,SAMPLES[cur].init);return{done};}
+function A(id,label,steps,obs,extra){return Object.assign({id,label,steps,obs},extra||{});}
+
+/* ============ THERMOMETRIC TITRATION (base in cup, acid from burette) ============ */
+function Thermo(box,o){/* o:{key,baseVol,nBase,acidConc,ratio(mol base per mol acid),step,maxV,acidName,baseName,eff} */
+  const EFF=o.eff||0.88,LOSS=0.0008,DH=57100;const heat=V=>Math.min(o.ratio*o.acidConc*V/1000,o.nBase)*DH*EFF;
+  let supD=0;for(let V=0;V<=o.maxV+1e-9;V+=o.step)supD=Math.max(supD,heat(V)/((o.baseVol+V)*4.18));
+  $(box).innerHTML=\`<div class="grid-sim"><div><svg class="app-svg t-svg" viewBox="0 0 360 440"></svg>
+    <div class="readouts"><div class="readout"><b>@@Total added:|||Нийт нэмсэн@@ \${o.acidName}</b><span class="t-vol">—</span></div><div class="readout"><b>@@Stirring|||Хутгаж байна уу@@</b><span class="t-st">@@no|||үгүй@@</span></div></div></div>
+   <div><ol class="steps t-steps"><li data-s="cup"><button class="btn" data-t="cup">@@Stand the cup in the beaker|||Аягыг стакан дотор тавих@@</button></li>
+    <li data-s="base"><button class="btn" data-t="base">\${o.baseVol.toFixed(1)} cm³ \${o.baseName} @@by pipette|||пипеткээр хийх@@</button></li>
+    <li data-s="therm"><button class="btn" data-t="therm">@@Put the thermometer in|||Термометрийг дүрэх@@</button> <span class="small muted">@@→ read and record the starting temperature|||→ эхний температурыг уншиж бич@@</span></li>
+    <li data-s="fill"><button class="btn" data-t="fill">@@Fill the burette with|||Бюретийг@@ \${o.acidName}@@|||-оор дүүргэх@@</button></li>
+    <li data-s="add"><button class="btn" data-t="add">\${o.step.toFixed(2)} cm³ \${o.acidName} @@(add)|||нэмэх@@</button> <button class="btn t-stir">@@Stir (press and hold)|||Хутгах (дарж барих)@@</button></li></ol>
+   <div class="grid2" style="gap:10px;align-items:start"><div><svg class="lens t-lens" viewBox="0 0 170 300"></svg>
+     <p class="small muted" style="max-width:180px">@@Close-up of the thermometer (1 °C divisions). Read it to 0.5 °C. After each addition the temperature rises and then slowly falls: catch the|||Томруулсан термометр (1 °C-ийн хуваарь). 0.5 °C хүртэл уншина. Нэмсний дараа температур өсөөд аажим буурна —@@ <b>@@highest|||хамгийн их@@</b> @@value.|||утгыг барьж ав.@@</p></div>
+    <div><div class="note small"><b class="t">@@Observation|||Ажиглалт@@</b><span class="t-obs">@@Start by standing the cup in the beaker.|||Аягыг стакан дотор тавьж эхэлнэ үү.@@</span></div><div class="note warn small t-warn" hidden></div>
+     <div class="btnrow"><button class="btn ghost" data-t="reset">@@Start again|||Шинээр эхлэх@@</button></div></div></div></div></div>\`;
+  const R=$(box);let S;
+  function init(){S={cup:false,base:false,therm:false,filled:false,V:0,T0:+(19.5+Math.random()*4).toFixed(2),H:0,step:-1,peaks:[],noStir:0,mixed:1,stir:false};S.T=S.T0;}
+  init();const obs=t=>$(".t-obs",R).textContent=t;const warn=t=>{const w=$(".t-warn",R);w.hidden=!t;w.textContent=t||"";};
+  const st=(s,on)=>{const el=$(\`.t-steps li[data-s="\${s}"]\`,R);if(el)el.classList.toggle("done",!!on);};
+  const Teq=()=>S.T0+S.H/((o.baseVol+S.V)*4.18);
+  const act={cup(){S.cup=true;st("cup",1);obs("@@The cup is standing steady in the beaker.|||Аяга стакан дотор тогтвортой байна.@@");},
+    base(){if(!S.cup)return toast("@@First stand the cup in the beaker.|||Эхлээд аягыг стакан дотор тавина уу.@@");S.base=true;st("base",1);obs(\`@@In the cup:|||Аяганд@@ \${o.baseVol.toFixed(1)} cm³ \${o.baseName} @@.|||байна.@@\`);},
+    therm(){if(!S.base)return toast("@@The cup is empty.|||Аяга хоосон байна.@@");S.therm=true;st("therm",1);S.step=0;S.peaks[0]=S.T0;obs("@@The thermometer is in. Read the scale and record it in the 0.00 cm³ box.|||Термометр дүрэгдлээ. Хуваарийг уншиж 0.00 cm³-ийн нүдэнд бич.@@");},
+    fill(){S.filled=true;st("fill",1);obs(\`@@The burette is filled with|||Бюрет@@ \${o.acidName}@@(0.00 cm³).|||-оор дүүрлээ (0.00 cm³).@@\`);},
+    add(){if(!S.therm)return toast("@@First put the thermometer in and record the starting temperature.|||Эхлээд термометрийг дүрж, эхний температурыг бич.@@");if(!S.filled)return toast("@@The burette is empty.|||Бюрет хоосон.@@");if(S.V>=o.maxV-1e-9)return toast(\`\${o.maxV.toFixed(2)} @@cm³ reached: the experiment is complete.|||cm³ хүрсэн — туршилт дууслаа.@@\`);
+      if(S.step>0&&!S.stirred)S.noStir++;const V0=S.V;S.V=+(S.V+o.step).toFixed(2);S.H+=heat(S.V)-heat(V0);
+      S.T=(S.T*(o.baseVol+V0)+S.T0*o.step)/(o.baseVol+S.V);S.mixed=0;S.stirred=false;S.step=Math.round(S.V/o.step);S.peaks[S.step]=S.T;st("add",S.V>=o.maxV-1e-9);
+      obs(\`@@In total|||Нийт@@ \${S.V.toFixed(2)} @@cm³ added. Stir, then read and record the highest temperature.|||cm³ нэмэгдлээ. Хутгаж, хамгийн их температурыг уншаад бич.@@\`);warn("");},
+    reset(){if(!confirm("@@Start the simulation again?|||Симуляцийг шинээр эхлүүлэх үү?@@"))return;init();["cup","base","therm","fill","add"].forEach(s=>st(s,0));obs("@@Start by standing the cup in the beaker.|||Аягыг стакан дотор тавьж эхэлнэ үү.@@");warn("");}};
+  $$("[data-t]",R).forEach(b=>b.onclick=()=>{act[b.dataset.t]();draw();});
+  const sb=$(".t-stir",R);sb.addEventListener("pointerdown",e=>{e.preventDefault();if(!S.therm)return toast("@@There is no thermometer in the cup.|||Аяганд термометр алга.@@");S.stir=true;$(".t-st",R).textContent="@@yes|||тийм@@";});
+  ["pointerup","pointerleave","pointercancel"].forEach(t=>sb.addEventListener(t,()=>{S.stir=false;$(".t-st",R).textContent="@@no|||үгүй@@";}));
+  function draw(){let s="";const bx=230,by=10,bh=200,bw=18;const lvl=S.filled?by+14+(S.V/50)*(bh-24):null;
+    s+=\`<rect x="300" y="10" width="8" height="420" fill="var(--muted)"/><rect x="\${bx+bw}" y="60" width="\${300-bx-bw}" height="6" fill="var(--muted)"/><rect x="\${bx}" y="\${by}" width="\${bw}" height="\${bh}" rx="4" fill="var(--glass)" fill-opacity=".35" stroke="var(--ink)" stroke-width="1.5"/>\`;
+    if(lvl!=null)s+=\`<rect x="\${bx+2}" y="\${lvl}" width="\${bw-4}" height="\${by+bh-lvl-2}" fill="rgba(200,225,240,.8)"/>\`;
+    s+=\`<rect x="\${bx-5}" y="\${by+bh}" width="\${bw+10}" height="7" rx="2" fill="var(--ink)"/><path d="M\${bx+bw/2-3} \${by+bh+7} L\${bx+bw/2+3} \${by+bh+7} L\${bx+bw/2+1} \${by+bh+30} L\${bx+bw/2-1} \${by+bh+30}Z" fill="var(--glass)" stroke="var(--ink)"/><text x="\${bx-6}" y="\${by+20}" font-size="11" text-anchor="end" fill="var(--muted)">\${o.acidName}</text>\`;
+    s+=\`<path d="M60 290 L60 420 Q60 430 70 430 L250 430 Q260 430 260 420 L260 290" fill="var(--glass)" fill-opacity=".2" stroke="var(--ink)" stroke-width="1.6"/>\`;
+    if(S.cup){s+=\`<path d="M100 300 L220 300 L206 410 L114 410Z" fill="#f2efe8" stroke="#9a937f" stroke-width="1.6"/>\`;if(S.base){const top=380-S.V*1.4;const w=(410-top)/110*14;s+=\`<path d="M\${100+w} \${top} L\${220-w} \${top} L206 410 L114 410Z" fill="rgba(180,215,240,.6)"/>\`;}}
+    if(S.therm){s+=\`<rect x="165" y="140" width="8" height="262" rx="4" fill="#fff" stroke="var(--ink)"/><circle cx="169" cy="400" r="7" fill="#c62828"/>\`;const h=Math.max(0,Math.min(250,(S.T+10)/120*250));s+=\`<rect x="167" y="\${400-h}" width="4" height="\${h}" fill="#c62828"/>\`;}
+    if(S.stir)s+=\`<path d="M140 330 q20 -12 40 0 q-20 12 -40 0" fill="none" stroke="var(--accent)" stroke-width="2"/>\`;
+    $(".t-svg",R).innerHTML=s;$(".t-vol",R).textContent=S.therm?\`\${S.V.toFixed(2)} cm³\`:"—";lens();}
+  const lens=()=>drawScale($(".t-lens",R),S.therm?S.T:null,{k:30,min:-10,max:110,minor:1,major:5,liquid:"#c62828",empty:"@@no thermometer|||термометр алга@@"});
+  let lt=performance.now();(function loop(now){const dt=Math.min(0.2,(now-lt)/1000);lt=now;
+    if(S.therm){S.H*=Math.exp(-LOSS*dt);const te=Teq();if(S.stir){S.mixed=Math.min(1,S.mixed+dt*0.9);S.stirred=true;}
+      const mix=S.step>0?(0.55+0.45*S.mixed):1;const target=S.step>0?S.T0+(te-S.T0)*mix:te;S.T+=(target-S.T)*(1-Math.exp(-dt/(S.stir?0.9:3.5)));
+      if(S.step>=0&&(S.peaks[S.step]==null||S.T>S.peaks[S.step]))S.peaks[S.step]=S.T;store.set(o.key+"peaks",S.peaks);
+      if(!loop.l||now-loop.l>90){loop.l=now;lens();if(!loop.f||now-loop.f>400){loop.f=now;draw();}}}
+    requestAnimationFrame(loop);})(lt);draw();
+  return{supD,peaks:()=>store.get(o.key+"peaks",[]),noStir:()=>S.noStir};}
+
+/* ============ TITRATION (burette into flask) + results table ============ */
+function Titration(box,o){/* o:{key,titrant,analyte,aVol,E,ind:{start,end,over,flash},indName,hot,titrantColour,readTop,note} */
+  const K=o.key;const truth=store.get(K+"truth",[null,null,null,null,null]);
+  $(box).innerHTML=\`<div class="grid-sim"><div><svg class="app-svg ti-svg" viewBox="0 0 360 520"></svg><div class="readouts"><div class="readout"><b>@@Current titration|||Одоогийн титрлэлт@@</b><span class="ti-run">—</span></div>\${o.hot?'<div class="readout"><b>@@Flask temperature|||Колбын температур@@</b><span class="ti-temp">—</span></div>':""}</div></div>
+   <div><div class="btnrow"><label class="small">@@Record in column:|||Аль баганад бүртгэх вэ:@@ <select class="ti-col" data-nopersist><option value="0">Rough</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label></div>
+    <ol class="steps ti-steps"><li data-s="fill"><button class="btn" data-ti="fill">@@Fill the burette with|||Бюретийг@@ \${o.titrant}@@|||-оор дүүргэх@@</button></li>
+     <li data-s="pip"><button class="btn" data-ti="pip">\${o.aVol.toFixed(1)} cm³ \${o.analyte} @@by pipette|||пипеткээр хийх@@</button></li>
+     \${o.indName?\`<li data-s="ind"><button class="btn" data-ti="ind">\${o.indName}@@: add a few drops|||-оос хэдэн дусал нэмэх@@</button></li>\`:""}
+     \${o.hot?\`<li data-s="heat"><button class="btn" data-ti="heat">@@Heat (+≈6 °C)|||Халаах (+≈6 °C)@@</button></li>\`:""}
+     <li data-s="add">\${o.titrant} @@to add:|||нэмэх:@@ <div class="btnrow"><button class="btn" data-add="1">+1.00</button><button class="btn" data-add="0.5">+0.50</button><button class="btn" data-add="0.1">+0.10</button><button class="btn" data-add="0.05">@@1 drop|||1 дусал@@</button><button class="btn ti-stream">@@Run (press and hold)|||Урсгах (дарж барих)@@</button></div></li>
+     <li data-s="end"><button class="btn primary" data-ti="end">@@End point: finish|||Төгсгөлийн цэг — дуусгах@@</button> <button class="btn ghost" data-ti="discard">@@Empty the flask|||Колбыг асгах@@</button></li></ol>
+    <div class="grid2" style="gap:10px;align-items:start"><div><svg class="lens ti-lens" viewBox="0 0 170 300"></svg><p class="small muted" style="max-width:180px">@@Close-up of the burette.|||Томруулсан бюрет.@@ \${o.readTop?"@@Dark solution, so read the meniscus at its|||Бараан уусмал тул менискийн@@ <b>@@top|||дээд@@</b> @@edge.|||ирмэгээр@@":"@@Read the meniscus at its|||Менискийн@@ <b>@@bottom|||доод@@</b> @@edge.|||ирмэгээр@@"} @@Read to 0.05 cm³.|||уншина. 0.05 cm³ нарийвчлалтай.@@</p></div>
+     <div><div class="note small"><b class="t">@@Observation|||Ажиглалт@@</b><span class="ti-obs">@@Fill the burette to start.|||Эхлэхийн тулд бюретийг дүүргэнэ үү.@@</span></div><div class="note warn small ti-warn" hidden></div></div></div></div></div>\`;
+  const R=$(box);const T={level:null,filled:false,pip:false,ind:!o.indName,temp:22,added:0,E:null,flash:0,col:0,start:null,ended:false,stream:false};
+  const obs=t=>$(".ti-obs",R).textContent=t,warn=t=>{const w=$(".ti-warn",R);w.hidden=!t;w.textContent=t||"";};
+  const st=(s,on)=>{const e=$(\`.ti-steps li[data-s="\${s}"]\`,R);if(e)e.classList.toggle("done",!!on);};
+  function flask(){T.pip=false;T.ind=!o.indName;T.added=0;T.flash=0;T.ended=false;T.start=null;T.E=null;T.temp=22;["pip","ind","heat","add","end"].forEach(s=>st(s,0));}
+  const can=()=>{if(!T.filled){toast("@@The burette is empty.|||Бюрет хоосон.@@");return false;}if(!T.pip){toast(\`@@In the flask:|||Колбонд@@ \${o.analyte} @@is missing.|||алга.@@\`);return false;}if(T.ended){toast("@@This titration is finished. Prepare a new flask.|||Энэ титрлэлт дууссан. Шинэ колбо бэлтгэнэ үү.@@");return false;}if(!T.ind){toast("@@No indicator added!|||Индикатор нэмээгүй байна!@@");return false;}if(o.hot&&T.temp<55){toast("@@First heat to about 70 °C.|||Эхлээд ~70 °C хүртэл халаа.@@");return false;}return true;};
+  function add(v){if(!can())return;if(T.level+v>50){warn("@@The burette is empty! Refill it and start with a new flask.|||Бюрет хоосорлоо! Дахин дүүргэж, шинэ колбоор эхэл.@@");T.level=50;return draw();}
+    if(T.start==null)T.start=T.level;T.level+=v;T.added+=v;st("add",1);if(T.added<T.E){T.flash=Math.min(1,T.flash+v*1.5);}draw();}
+  const act={fill(){T.level=Math.random()*1.9;T.filled=true;st("fill",1);obs("@@The burette is filled. Read the starting value in the close-up and record it.|||Бюрет дүүрлээ. Томруулсан хэсгээс эхний заалтыг уншиж бич.@@");warn("");},
+    pip(){flask();T.pip=true;T.col=+$(".ti-col",R).value;T.E=o.E+gauss()*0.035;st("pip",1);$(".ti-run",R).textContent=T.col===0?"Rough":"@@Accurate #|||Нарийн #@@"+T.col;obs(\`@@In the flask:|||Колбонд@@ \${o.aVol.toFixed(1)} cm³ \${o.analyte} @@.|||байна.@@\`);warn("");},
+    ind(){if(!T.pip)return toast("@@The flask is empty.|||Колбо хоосон.@@");T.ind=true;st("ind",1);obs(o.indObs||"@@Indicator added.|||Индикатор нэмэгдлээ.@@");},
+    heat(){if(!T.pip)return toast("@@The flask is empty.|||Колбо хоосон.@@");T.temp=Math.min(95,T.temp+5+Math.random()*2.5);st("heat",T.temp>=60);if(T.temp>85)warn("@@Too hot: keep it at about 70 °C.|||Хэт халлаа — ~70 °C орчимд барь.@@");else warn("");},
+    end(){if(!T.pip||T.start==null)return toast("@@The titration has not started.|||Титрлэлт эхлээгүй байна.@@");T.ended=true;st("end",1);truth[T.col]={init:T.start,fin:T.level,E:T.E};store.set(K+"truth",truth);
+      const ex=T.added-T.E;let m="@@Titration finished. Read the final value and record it in the table.|||Титрлэлт дууслаа. Эцсийн заалтыг уншиж хүснэгтэд бич.@@ ";if(T.col>0){if(ex<-0.02)m+="@@(Note: the end point may not have been reached.)|||(Анхаар: төгсгөлийн цэгт хүрээгүй байж магадгүй.)@@";else if(ex>0.25)m+="@@(The end point seems to have been passed. Add drop by drop near the end.)|||(Төгсгөлийн цэгийг давсан бололтой. Төгсгөлд дуслаар нэм.)@@";}obs(m);},
+    discard(){flask();$(".ti-run",R).textContent="—";obs(\`@@Flask rinsed and emptied. Put in fresh|||Колбыг угааж асгалаа. Шинээр@@ \${o.analyte} @@.|||хийнэ үү.@@\`);warn("");}};
+  $$("[data-ti]",R).forEach(b=>b.onclick=()=>{act[b.dataset.ti]();draw();});$$("[data-add]",R).forEach(b=>b.onclick=()=>add(+b.dataset.add));
+  const sb=$(".ti-stream",R);sb.addEventListener("pointerdown",e=>{e.preventDefault();if(can())T.stream=true;});["pointerup","pointerleave","pointercancel"].forEach(t=>sb.addEventListener(t,()=>T.stream=false));
+  function colour(){if(!T.pip)return null;if(!T.ind)return"rgba(210,230,245,.45)";const ex=T.added-(T.E??99);const c=o.ind;
+    if(ex>=0.12)return c.over;if(ex>=-0.01)return c.end;return T.flash>0.15?c.flash||c.end:c.start;}
+  function draw(){const L=T.level;const bx=160,by=10,bh=330,bw=22;const y=v=>by+20+(v/50)*(bh-40);let s="";
+    s+=\`<rect x="40" y="500" width="160" height="10" rx="2" fill="var(--muted)"/><rect x="58" y="20" width="8" height="482" fill="var(--muted)"/><rect x="62" y="150" width="\${bx-62}" height="6" fill="var(--muted)"/><rect x="\${bx}" y="\${by}" width="\${bw}" height="\${bh}" rx="4" fill="var(--glass)" fill-opacity=".35" stroke="var(--ink)" stroke-width="1.5"/>\`;
+    if(T.filled)s+=\`<rect x="\${bx+2}" y="\${y(L)}" width="\${bw-4}" height="\${by+bh-y(L)-2}" fill="\${o.titrantColour||"rgba(200,225,240,.85)"}"/>\`;
+    for(let v=0;v<=50;v+=5)s+=\`<line x1="\${bx}" x2="\${bx+8}" y1="\${y(v)}" y2="\${y(v)}" stroke="var(--ink)"/><text x="\${bx-4}" y="\${y(v)+4}" font-size="9" text-anchor="end" fill="var(--muted)" font-family="monospace">\${v}</text>\`;
+    s+=\`<rect x="\${bx-6}" y="\${by+bh}" width="\${bw+12}" height="8" rx="2" fill="var(--ink)"/><path d="M\${bx+bw/2-3} \${by+bh+8} L\${bx+bw/2+3} \${by+bh+8} L\${bx+bw/2+1} \${by+bh+34} L\${bx+bw/2-1} \${by+bh+34}Z" fill="var(--glass)" stroke="var(--ink)"/>\`;
+    if(T.stream)s+=\`<line x1="\${bx+bw/2}" x2="\${bx+bw/2}" y1="\${by+bh+34}" y2="440" stroke="\${o.titrantColour||"#9cc"}" stroke-width="2"/>\`;
+    s+=\`<rect x="105" y="488" width="140" height="10" fill="#f4f4f4" stroke="var(--line)"/>\`;const cx=bx+bw/2;
+    s+=\`<path d="M\${cx-11} 400 L\${cx-11} 430 L\${cx-55} 486 L\${cx+55} 486 L\${cx+11} 430 L\${cx+11} 400" fill="var(--glass)" fill-opacity=".25" stroke="var(--ink)" stroke-width="1.6"/>\`;
+    const fc=colour();if(fc){const lv=452;const dx=11+44*(lv-430)/56;s+=\`<path d="M\${cx-dx} \${lv} L\${cx-55} 486 L\${cx+55} 486 L\${cx+dx} \${lv}Z" fill="\${fc}"/>\`;}
+    s+=\`<text x="\${bx+bw+8}" y="\${by+16}" font-size="11" fill="var(--muted)">\${o.titrant}</text>\`;$(".ti-svg",R).innerHTML=s;if(o.hot)$(".ti-temp",R).textContent=T.pip?\`\${T.temp.toFixed(0)} °C\`:"—";
+    drawScale($(".ti-lens",R),T.level,{k:110,min:0,max:50,minor:0.1,major:1,mid:0.5,down:true,liquid:o.titrantColour||"rgba(170,205,235,.85)",meniscus:o.readTop?"down":"down",empty:"@@empty|||хоосон@@",fmt:v=>v.toFixed(0)});}
+  let lt=performance.now();(function loop(now){const dt=Math.min(0.1,(now-lt)/1000);lt=now;let rd=false;
+    if(T.stream){if(!can())T.stream=false;else{const v=0.9*dt;if(T.level+v>50)T.stream=false;else{if(T.start==null)T.start=T.level;T.level+=v;T.added+=v;st("add",1);if(T.added<T.E)T.flash=Math.min(1,T.flash+dt*1.5);}}rd=true;}
+    if(T.flash>0&&!T.stream){const near=T.E-T.added<0.4;T.flash=Math.max(0,T.flash-dt/(near?2:0.6));rd=true;}
+    if(o.hot&&T.pip&&T.temp>22.05){T.temp-=0.0025*dt*(T.temp-22);}
+    if(rd&&(!loop.l||now-loop.l>70)){loop.l=now;draw();}requestAnimationFrame(loop);})(lt);draw();
+  return{truth:()=>store.get(K+"truth",[])};}
+
+function TitrTable(box,o){/* o:{key,titrant,E,partA,partB,analyteVol} */
+  const K=o.key;$(box).innerHTML=\`<p class="small">@@Write the row|||Мөрийн@@ <b>@@headings, with units,|||гарчгийг нэгжтэй нь@@</b> @@in English (for example:|||англиар бичнэ (жишээ:@@ <span class="mono">initial burette reading / cm3</span>@@). Record readings to 0.05 cm³, to 2 decimal places.|||). Заалтуудыг 0.05 cm³-ийн нарийвчлалтай, 2 аравтын оронтой бичнэ.@@</p>
+   <div class="tablewrap"><table class="rt tt"><thead><tr><th>@@Heading (with unit)|||Гарчиг (нэгжтэй)@@</th><th>Rough</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead><tbody>
+   \${[0,1,2].map(r=>\`<tr><td><input class="head" id="\${K}h\${r}" placeholder="..."></td>\${[0,1,2,3,4].map(c=>\`<td><input id="\${K}r\${r}c\${c}"></td>\`).join("")}</tr>\`).join("")}</tbody></table></div>
+   <div class="btnrow"><button class="btn primary tt-a">@@Check the results table|||Үр дүнгийн хүснэгтийг шалгах@@</button></div><div class="fb tt-fa"></div>
+   <h3>@@Mean titre|||Дундаж титр@@</h3><p class="small">@@Tick (✓) the accurate titres to use in the calculation and write their mean to 2 decimal places.|||Тооцоонд ашиглах нарийн титрүүдээ сонгож (✓), дунджийг 2 аравтын оронтой бичнэ.@@</p><div class="btnrow tt-pick"></div>
+   <div class="calc"><div class="row">\${o.analyteVol||"25.0 cm³"}@@:|||-т@@ <input id="\${K}mean" placeholder="@@e.g. 24.60|||жишээ 24.60@@"> cm³ \${o.titrant} @@used.|||зарцуулагдсан.@@</div><div class="fb tt-fb"></div></div>
+   <button class="btn primary tt-b">@@Check the mean|||Дундажийг шалгах@@</button>\`;
+  const R=$(box);const g=(r,c)=>$(\`#\${K}r\${r}c\${c}\`).value;
+  const read=()=>[0,1,2,3,4].map(c=>{const a=g(0,c),b=g(1,c),t=g(2,c);return{c,a,b,t,an:num(a),bn:num(b),tn:num(t),filled:a!==""||b!==""||t!==""};});
+  function picks(){const cols=read();const pk=store.get(K+"picks",[]);const bx=$(".tt-pick",R);bx.innerHTML="";
+    cols.slice(1).forEach(x=>{if(!x.filled)return;const ti=isFinite(x.bn)&&isFinite(x.an)?r2(x.bn-x.an):x.tn;bx.insertAdjacentHTML("beforeend",\`<label class="btn"><input type="checkbox" data-c="\${x.c}" \${pk.includes(x.c)?"checked":""}> #\${x.c}: \${isFinite(ti)?ti.toFixed(2):"?"}</label>\`);});
+    if(!bx.children.length)bx.innerHTML='<span class="small muted">@@This appears once accurate titration data are in the table.|||Хүснэгтэд нарийн титрлэлтийн өгөгдөл оруулсны дараа энд гарна.@@</span>';
+    $$("input",bx).forEach(i=>i.addEventListener("change",()=>store.set(K+"picks",$$("input:checked",bx).map(x=>+x.dataset.c))));}
+  $("table",R).addEventListener("input",picks);
+  function best(ts){const t=ts.slice().sort((a,b)=>a-b);if(t.length<2)return NaN;for(let tol=0;tol<=5;tol+=0.05){let bb=null;for(let i=0;i<t.length;i++){let j=i;while(j+1<t.length&&t[j+1]-t[i]<=tol+1e-9)j++;if(j>i&&(!bb||j-i>bb[1]-bb[0]))bb=[i,j];}
+    if(bb){const s=t.slice(bb[0],bb[1]+1);return s.reduce((a,b)=>a+b,0)/s.length;}}return NaN;}
+  const ok05=s=>dp(s)===2&&Math.round(num(s)*100)%5===0;
+  $(".tt-a",R).onclick=()=>{const cols=read();const H=[0,1,2].map(i=>$(\`#\${K}h\${i}\`).value.toLowerCase());const L=[];let m=0;const rough=cols[0];const acc=cols.slice(1).filter(x=>isFinite(x.an)&&isFinite(x.bn));
+    const I=isFinite(rough.an)&&isFinite(rough.bn)&&isFinite(rough.tn)&&acc.length>=2;L.push(li(I,"<b>I</b> @@Rough: 2 readings + titre, and initial/final readings of at least 2 accurate titrations.|||Rough: 2 заалт + титр, ба ≥2 нарийн титрлэлтийн эхний/эцсийн заалт.@@"));m+=I;
+    const unit=h=>/(\\/\\s*cm\\s*(3|³)|\\(\\s*cm\\s*(3|³)\\s*\\)|in\\s*cm\\s*(3|³))/.test(h);const h0=/(initial|start)/.test(H[0])&&/(reading|volume)/.test(H[0]),h1=/(final|end)/.test(H[1])&&/(reading|volume)/.test(H[1]);
+    const tre=new RegExp("titre|volume.*(used|added)|"+o.titrant.toLowerCase().replace(/\\s+/,"\\\\s*")+".*(used|added)");const h2=tre.test(H[2]);const tr=acc.every(x=>isFinite(x.tn));
+    const II=tr&&h0&&h1&&h2&&H.every(unit);L.push(li(II,"<b>II</b> @@Accurate titres recorded, with correct headings and units.|||Нарийн титрүүд бичигдсэн ба гарчиг + нэгж зөв.@@"+(II?"":\` <span class="small muted">(\${[!h0&&"@@row 1 «initial burette reading»|||1-р мөр «initial burette reading»@@",!h1&&"@@row 2 «final burette reading»|||2-р мөр «final burette reading»@@",!h2&&\`@@row 3 «titre» or «volume of|||3-р мөр «titre» эсвэл «volume of@@ \${o.titrant} added»\`,!H.every(unit)&&"@@unit «/ cm3» in every heading|||нэгж «/ cm3» гарчиг бүрт@@",!tr&&"@@titre missing|||титр дутуу@@"].filter(Boolean).join("; ")})</span>\`)));m+=II;
+    const III=acc.length>=1&&acc.flatMap(x=>[x.a,x.b]).every(ok05);L.push(li(III,"<b>III</b> @@Every accurate reading to 0.05 cm³.|||Нарийн титрлэлтийн бүх заалт 0.05 cm³-ийн нарийвчлалтай.@@"));m+=III;
+    const ts=acc.map(x=>r2(x.bn-x.an));let IV=false;if(ts.length>=2){const last=ts[ts.length-1];IV=ts.slice(0,-1).some(t=>Math.abs(t-last)<=0.10+1e-9);}
+    L.push(li(IV,"<b>IV</b> @@The last accurate titre is within 0.10 cm³ of another.|||Хамгийн сүүлийн нарийн титр өөр нэгээс ≤0.10 cm³ зөрүүтэй.@@"));m+=IV;
+    const tru=store.get(K+"truth",[]);const wrong=[];cols.forEach(x=>{const t=tru[x.c];if(!t)return;const nm=x.c?"#"+x.c:"Rough";if(isFinite(x.an)&&Math.abs(x.an-t.init)>0.051)wrong.push(nm+" @@initial|||эхний@@");if(isFinite(x.bn)&&Math.abs(x.bn-t.fin)>0.051)wrong.push(nm+" @@final|||эцсийн@@");if(isFinite(x.an)&&isFinite(x.bn)&&isFinite(x.tn)&&Math.abs(x.bn-x.an-x.tn)>0.005)wrong.push(nm+" @@subtraction|||хасах үйлдэл@@");});
+    const mean=best(ts);let q=0,dt="@@At least 2 accurate titres are needed.|||Дор хаяж 2 нарийн титр хэрэгтэй.@@";if(isFinite(mean)){const d=Math.abs(mean-o.E);q=d<=0.20?3:d<=0.30?2:d<=0.50?1:0;dt=\`@@Your best mean|||Таны хамгийн сайн дундаж@@ \${mean.toFixed(2)} @@cm³, supervisor’s|||cm³, хянагчийнх@@ \${o.E.toFixed(2)} @@cm³, difference δ =|||cm³, зөрүү δ =@@ \${d.toFixed(2)} cm³.\`;}
+    L.push(li(q>=1,"<b>V</b> δ ≤ 0.50 cm³"),li(q>=2,"<b>VI</b> δ ≤ 0.30 cm³"),li(q>=3,"<b>VII</b> δ ≤ 0.20 cm³"),\`<div class="small muted">\${dt}</div>\`);m+=q;
+    $(".tt-fa",R).innerHTML=fbBlock(L,m,7)+(wrong.length?\`<div class="note warn small">@@Mismatch in the burette readings or calculation:|||Бюретийн уншилт/тооцоонд зөрүү:@@ \${wrong.join(", ")}.</div>\`:"");setScore(o.partA,m);picks();};
+  $(".tt-b",R).onclick=()=>{const cols=read();const pk=$$(".tt-pick input:checked",R).map(x=>+x.dataset.c);const ts=pk.map(c=>{const x=cols[c];return isFinite(x.bn)&&isFinite(x.an)?r2(x.bn-x.an):x.tn;}).filter(isFinite);
+    const s=$(\`#\${K}mean\`).value;let ok=false,why="";if(ts.length<2)why="@@Tick (✓) at least 2 titres.|||Дор хаяж 2 титр сонгоно уу (✓).@@";else{const sp=Math.max(...ts)-Math.min(...ts);const mean=r2(ts.reduce((a,b)=>a+b,0)/ts.length);
+      if(sp>0.20+1e-9)why=\`@@Spread of the chosen titres|||Сонгосон титрүүдийн тархалт@@ \${sp.toFixed(2)} cm³ > 0.20 cm³.\`;else if(dp(s)!==2)why="@@Write the mean to exactly 2 decimal places.|||Дундажийг яг 2 аравтын оронтой бич.@@";else if(Math.abs(num(s)-mean)>1e-4)why=\`@@The mean of the chosen titres should be|||Сонгосон титрүүдийн дундаж@@ \${mean.toFixed(2)} @@cm³.|||cm³ байх ёстой.@@\`;else ok=true;}
+    $(".tt-fb",R).innerHTML=fbBlock([li(ok,ok?"@@Correct: titres within 0.20 cm³, mean to 2 decimal places.|||Зөв: титрүүд ≤0.20 cm³ тархалттай, дундаж 2 аравтын оронтой.@@":why)],ok?1:0,1);setScore(o.partB,ok?1:0);};
+  setTimeout(picks,0);return{mean:()=>num($(\`#\${K}mean\`).value)};}
+
+/* ============ GAS COLLECTION over water (inverted 250 cm3 cylinder) ============ */
+function GasCollect(box,o){/* o:{key,acid,acidVol,solid,mass:[lo,hi],molGas(m,acidVol),Mr,retain:[lo,hi],solidColour,leftover:true/false,first:"weigh"|"set"} */
+  const K=o.key;$(box).innerHTML=\`<div class="grid-sim"><div><svg class="app-svg gc-svg" viewBox="0 0 360 380"></svg><div class="readouts"><div class="readout"><b>@@Fizzing|||Хийн бөмбөлөг@@</b><span class="gc-fizz">—</span></div></div></div>
+   <div><p><span class="balance gc-bal">--.--</span> <span class="small muted">@@g · balance|||g · жинлүүр@@</span></p><ol class="steps gc-steps">
+    <li data-s="set"><button class="btn" data-gc="set">@@Set up the trough, the upturned 250 cm³ cylinder and the flask|||Тэвш, хөмөрсөн 250 cm³ цилиндр, колбыг угсрах@@</button></li>
+    <li data-s="acid">@@Into the 50 cm³ cylinder|||50 cm³ цилиндрт@@ \${o.acid}: <button class="btn" data-pour="5">+5</button> <button class="btn" data-pour="1">+1</button> <button class="btn" data-pour="0.2">+0.2</button> <button class="btn" data-pour="-0.2">−0.2</button> <button class="btn" data-gc="xfer">@@Pour into the flask|||Колбонд хийх@@</button></li>
+    <li data-s="w"><button class="btn primary" data-gc="weigh">@@Weigh the container (with contents)|||Савыг (агуулгатай нь) жинлэх@@</button></li>
+    <li data-s="add"><button class="btn" data-gc="add">\${o.solid}@@: add it and stopper at once|||-ийг хийгээд тэр даруй бөглөх@@</button> <button class="btn ghost" data-gc="addslow">@@Add it, stopper slowly|||Хийж, удаан бөглөх@@</button></li>
+    <li data-s="wait"><button class="btn" data-gc="wait">@@Swirl and wait 1 min|||Эргүүлээд 1 мин хүлээх@@</button></li></ol>
+    <div class="grid2" style="gap:10px;align-items:start"><div><svg class="lens gc-lens" viewBox="0 0 170 300"></svg><p class="small muted" style="max-width:180px">@@A 50 cm³ cylinder for measuring the acid; an upside-down 250 cm³ cylinder for collecting the gas (scale|||Хүчил хэмжих үед 50 cm³ цилиндр; хий цуглуулах үед хөмөрсөн 250 cm³ цилиндр (хуваарь@@ <b>@@increasing downwards|||доош өснө@@</b>@@, every 2 cm³). Read to 1 cm³ at the water level.|||, 2 cm³ тутамд). Усны түвшнээр 1 cm³ хүртэл уншина.@@</p></div>
+     <div><div class="note small"><b class="t">@@Observation|||Ажиглалт@@</b><span class="gc-obs">@@Start by setting up the apparatus.|||Төхөөрөмжөө угсарч эхэлнэ үү.@@</span></div><div class="note warn small gc-warn" hidden></div><p class="small muted">@@Action log:|||Үйлдлийн бүртгэл:@@</p><div class="log gc-log"></div>
+      <div class="btnrow"><button class="btn ghost" data-gc="reset">@@Start again|||Шинээр эхлэх@@</button></div></div></div></div></div>\`;
+  const R=$(box);let Q;const Lg={arr:[],add(t){this.arr.push(t);$(".gc-log",R).innerHTML=this.arr.map(esc).join("<br>");$(".gc-log",R).scrollTop=1e6;}};
+  function nw(){Q={set:false,cyl:0,acid:0,cont:+(9+Math.random()*6).toFixed(2),m:+(o.mass[0]+Math.random()*(o.mass[1]-o.mass[0])).toFixed(3),resid:o.residual?+(o.residual*Math.random()).toFixed(3):0.002,added:false,ext:0,lost:0,ret:o.retain[0]+Math.random()*(o.retain[1]-o.retain[0]),reads:[],log:[]};}
+  nw();{const sv=store.get(K,null);if(sv&&sv.cont){Q=sv;Q.log.forEach(t=>Lg.add(t));if(Q.reads.length)$(".gc-bal",R).textContent=Q.reads[Q.reads.length-1];}}
+  const obs=t=>$(".gc-obs",R).textContent=t,warn=t=>{const w=$(".gc-warn",R);w.hidden=!t;w.textContent=t||"";};const st=(s,on)=>{const e=$(\`.gc-steps li[data-s="\${s}"]\`,R);if(e)e.classList.toggle("done",!!on);};
+  const log=t=>{Q.log.push(t);Lg.add(t);};const total=()=>Math.max(0,o.molGas(Q.m-Q.resid,Q.acid)*24000*Q.ret-Q.lost);const now=()=>Q.added?total()*Q.ext:0;
+  function draw(){let g=\`<path d="M170 250 L170 350 L350 350 L350 250" fill="rgba(170,205,235,.35)" stroke="var(--ink)" stroke-width="1.6"/><rect x="171" y="262" width="178" height="87" fill="rgba(150,195,235,.45)"/>\`;
+    if(Q.set){const V=now(),top=40,bot=330,lv=top+Math.min(250,V)/250*(bot-top);g+=\`<rect x="240" y="\${top}" width="40" height="\${bot-top}" fill="var(--glass)" fill-opacity=".2" stroke="var(--ink)" stroke-width="1.5"/><rect x="241" y="\${lv}" width="38" height="\${bot-lv}" fill="rgba(150,195,235,.75)"/>\`;
+      for(let v=0;v<=250;v+=50)g+=\`<line x1="280" x2="290" y1="\${top+v/250*(bot-top)}" y2="\${top+v/250*(bot-top)}" stroke="var(--ink)"/><text x="294" y="\${top+v/250*(bot-top)+4}" font-size="9" fill="var(--muted)">\${v}</text>\`;
+      g+=\`<path d="M110 120 Q150 120 160 330 L250 330" fill="none" stroke="var(--ink)" stroke-width="2.5"/>\`;if(Q.added&&Q.ext<0.995)for(let i=0;i<5;i++)g+=\`<circle cx="\${256+Math.random()*10}" cy="\${300-Math.random()*30}" r="2.5" fill="#fff" stroke="var(--ink)" stroke-width=".6"/>\`;}
+    g+=\`<path d="M60 110 L60 150 L20 230 L130 230 L90 150 L90 110" fill="var(--glass)" fill-opacity=".25" stroke="var(--ink)" stroke-width="1.6"/>\`;if(Q.acid>0)g+=\`<path d="M33 205 L117 205 L130 230 L20 230Z" fill="rgba(200,225,240,.75)"/>\`;
+    if(Q.set)g+=\`<rect x="56" y="98" width="38" height="16" rx="3" fill="#666"/>\`;
+    if(Q.added){if(o.leftover||Q.ext<0.995)for(let i=0;i<6;i++)g+=\`<rect x="\${40+i*12}" y="222" width="7" height="5" fill="\${o.solidColour}" opacity="\${Q.ext<0.995?1:0.6}"/>\`;if(Q.ext<0.995)for(let i=0;i<12;i++)g+=\`<circle cx="\${30+Math.random()*90}" cy="\${208+Math.random()*20}" r="1.6" fill="none" stroke="var(--ink)" stroke-width=".7"/>\`;}
+    g+=\`<rect x="20" y="300" width="40" height="40" rx="4" fill="#eee" stroke="var(--ink)"/><text x="40" y="295" font-size="10" text-anchor="middle" fill="var(--muted)">\${o.solid}</text>\`;if(!Q.added)for(let i=0;i<4;i++)g+=\`<rect x="\${26+i*7}" y="330" width="6" height="5" fill="\${o.solidColour}"/>\`;
+    g+=\`<rect x="110" y="270" width="40" height="80" rx="3" fill="var(--glass)" fill-opacity=".2" stroke="var(--ink)"/><text x="130" y="362" font-size="9" text-anchor="middle" fill="var(--muted)">50 cm³</text>\`;if(Q.cyl>0)g+=\`<rect x="112" y="\${348-Q.cyl/50*76}" width="36" height="\${Q.cyl/50*76}" fill="rgba(200,225,240,.85)"/>\`;
+    $(".gc-svg",R).innerHTML=g;$(".gc-fizz",R).textContent=!Q.added?"—":Q.ext<0.98?"@@fizzing|||ялгарч байна@@":Q.ext<0.999?"@@slight|||бага зэрэг@@":"@@stopped|||зогссон@@";
+    if(Q.cyl>0&&!Q.acid)drawScale($(".gc-lens",R),Q.cyl,{k:40,min:0,max:50,minor:1,major:5,liquid:"rgba(150,190,220,.8)"});
+    else if(Q.set&&Q.acid>0)drawScale($(".gc-lens",R),now(),{k:12,min:0,max:250,minor:2,major:10,down:true,liquid:"rgba(150,195,235,.75)",meniscus:"up"});else drawScale($(".gc-lens",R),null,{empty:"—"});}
+  $$("[data-pour]",R).forEach(b=>b.onclick=()=>{if(Q.acid>0)return toast("@@The acid is already in the flask.|||Хүчил аль хэдийн колбонд байна.@@");Q.cyl=Math.max(0,Math.min(50,Q.cyl+(+b.dataset.pour)*(0.9+Math.random()*0.2)));obs(\`@@Read the 50 cm³ cylinder in the close-up and adjust it to|||50 cm³ цилиндрийг томруулсан хэсгээс уншиж@@ \${o.acidVol.toFixed(1)} @@cm³.|||cm³ хүртэл тааруул.@@\`);draw();store.set(K,Q);});
+  const a={set(){Q.set=true;st("set",1);obs("@@The cylinder is full of water and upturned, with the delivery tube inside it.|||Цилиндр усаар дүүрэн, хөмөрсөн, хоолой нь цилиндр дотор байна.@@");log("@@apparatus set up|||төхөөрөмж угсарсан@@");},
+    xfer(){if(Q.cyl<=0)return toast("@@The cylinder is empty.|||Цилиндр хоосон.@@");if(Q.acid>0)return toast("@@Already added.|||Аль хэдийн хийсэн.@@");if(!Q.set)return toast("@@First set up the apparatus.|||Эхлээд төхөөрөмжөө угсар.@@");Q.acid=Q.cyl;Q.cyl=0;st("acid",1);log(\`\${o.acid} @@poured into the flask (~|||колбонд хийв (~@@\${Q.acid.toFixed(1)} cm³)\`);warn(Math.abs(Q.acid-o.acidVol)>0.6?\`@@In the cylinder:|||Цилиндрт@@ \${Q.acid.toFixed(1)} @@cm³, which differs from|||cm³ орчим байсан —@@ \${o.acidVol.toFixed(1)} @@cm³.|||cm³-ээс зөрүүтэй.@@\`:"");obs(\`@@In the flask:|||Колбонд@@ \${o.acid} @@.|||байна.@@\`);},
+    weigh(){const r=(Q.cont+(Q.added?Q.resid:Q.m)).toFixed(2);$(".gc-bal",R).textContent=r;Q.reads.push(r);st("w",1);const l=Q.added?"@@container (with residue)|||сав (үлдэгдэлтэй)@@":\`@@container +|||сав +@@ \${o.solid}\`;log(\`@@weighed (|||жинлэв (@@\${l}): \${r} g\`);obs(\`\${l}: \${r} @@g. Record it in the table.|||g. Хүснэгтэд бүртгэ.@@\`);},
+    add(slow){if(!Q.acid)return toast("@@There is no acid in the flask.|||Колбонд хүчил алга.@@");if(Q.added)return toast("@@Already added.|||Аль хэдийн хийсэн.@@");if(!Q.reads.length)return toast(\`@@First weigh the container with|||Эхлээд@@ \${o.solid}@@.|||-тэй савыг жинлэнэ үү.@@\`);Q.added=true;Q.ext=0.45;
+      if(slow){Q.lost=12+Math.random()*12;warn("@@The stopper went on slowly, so the first gas escaped: the volume will come out too low.|||Бөглөөг удаан тавьсан тул эхний хий гадагшиллаа — эзлэхүүн бага гарна.@@");}else warn("");st("add",1);log(slow?"@@added, stoppered slowly|||хийж, удаан бөглөв@@":"@@added, stoppered at once|||хийж, тэр даруй бөглөв@@");obs(o.addObs||"@@Vigorous fizzing; the solid is reacting.|||Хүчтэй хийн бөмбөлөг ялгарч, хатуу бодис урвалд орж байна.@@");},
+    addslow(){a.add(true);},wait(){if(!Q.added)return toast("@@The reaction has not started.|||Урвал эхлээгүй.@@");Q.ext=1-(1-Q.ext)*0.2;if(Q.ext>0.9995)Q.ext=1;st("wait",Q.ext>=1);log("@@swirled and waited 1 min|||эргүүлж 1 мин хүлээв@@");obs(Q.ext<0.98?"@@Gas is still being given off.|||Хий ялгарсаар байна.@@":Q.ext<1?"@@The fizzing has almost stopped.|||Хийн бөмбөлөг бараг зогсож байна.@@":(o.endObs||"@@The fizzing has stopped. Read the volume to 1 cm³.|||Хийн бөмбөлөг зогслоо. Эзлэхүүнийг 1 cm³ хүртэл уншина уу.@@"));},
+    reset(){if(!confirm("@@Start the simulation again?|||Симуляцийг шинээр эхлүүлэх үү?@@"))return;nw();Lg.arr=[];$(".gc-log",R).innerHTML="";$(".gc-bal",R).textContent="--.--";["set","acid","w","add","wait"].forEach(s=>st(s,0));warn("");obs("@@Start by setting up the apparatus.|||Төхөөрөмжөө угсарч эхэлнэ үү.@@");}};
+  $$("[data-gc]",R).forEach(b=>b.onclick=()=>{a[b.dataset.gc]();draw();store.set(K,Q);});draw();
+  return{reads:()=>Q.reads,V:()=>now(),done:()=>Q.added&&Q.ext>=1};}
+
+/* simple heading/value results list */
+function ResultsList(box,o){const K=o.key;const sv=store.get(K,[]);$(box).innerHTML=\`<div class="tablewrap" data-nopersist><table class="rt"><thead><tr><th>@@Heading (with unit)|||Гарчиг (нэгжтэй)@@</th><th>@@Value|||Утга@@</th></tr></thead><tbody>\${[...Array(o.n).keys()].map(i=>\`<tr><td><input class="head" data-h="\${i}" placeholder="..." value="\${esc(sv[i]?.h||"")}"></td><td><input data-v="\${i}" value="\${esc(sv[i]?.v||"")}"></td></tr>\`).join("")}</tbody></table></div>\`;
+  const R=$(box);R.addEventListener("input",()=>store.set(K,[...Array(o.n).keys()].map(i=>({h:$(\`[data-h="\${i}"]\`,R).value,v:$(\`[data-v="\${i}"]\`,R).value}))));
+  return{rows(){return[...Array(o.n).keys()].map(i=>({h:$(\`[data-h="\${i}"]\`,R).value.toLowerCase(),v:$(\`[data-v="\${i}"]\`,R).value})).filter(r=>r.h||r.v);},
+    pick(rows,tests){const used=new Set();return tests.map(f=>{const i=rows.findIndex((r,j)=>!used.has(j)&&f(r.h));if(i>=0)used.add(i);return i;});}};}
+const UNIT={g:h=>/(\\/\\s*g\\b|\\(\\s*g\\s*\\)|\\bin\\s*g(ram)?s?\\b)/.test(h),cm3:h=>/(\\/\\s*cm\\s*(3|³)|\\(\\s*cm\\s*(3|³)\\s*\\)|in\\s*cm\\s*(3|³))/.test(h),s:h=>/(\\/\\s*s\\b|\\(\\s*s\\s*\\)|in\\s*s(ec(ond)?s?)?\\b)/.test(h),C:h=>/(\\/\\s*°?\\s*c\\b|\\(\\s*°?\\s*c\\s*\\)|in\\s*°\\s*c)/.test(h),bad:h=>/\\b(ml|cc|weight|gm)\\b/.test(h)};
+
+/* ======================= 9701/35 M/J 2024 ======================= */
+const N=s=>String(s||"").toLowerCase().replace(/\\s+/g,"").replace(/[\\^]/g,"").replace(/²/g,"2").replace(/³/g,"3").replace(/⁺/g,"+").replace(/[⁻−–]/g,"-").replace(/₂/g,"2").replace(/₃/g,"3").replace(/₄/g,"4").replace(/→|=>|->/g,"→");
+const bracket=(sup,d)=>{const t=sup<5?[0.5,0]:sup<10?[1.0,0.5]:sup<15?[2.0,1.5]:[2.5,2.0];return(d<=t[0]+1e-9?1:0)+(d<=t[1]+1e-9?1:0);};
+
+/* ---------------- Q1 iodine clock ---------------- */
+const K1=0.15625/45;
+const CK=store.get("ck",{f:0.92+Math.random()*0.16,r1:+(Math.random()*1.5).toFixed(2),r2:+(Math.random()*1.5).toFixed(2),e:{1:null,2:null}});
+let E=null,cyl={v:0,what:null},lensMode=null,timer=null;
+const ckLog=Logger("#ck_log");const ckObs=t=>$("#ck_obs").textContent=t;const ckWarn=t=>{const w=$("#ck_warn");w.hidden=!t;w.textContent=t||"";};
+function newE(){E={a:0,b:0,ki:0,w:0,starch:false,t0:null,tEnd:null,stop:null,mixed:false};}
+newE();
+const expNo=()=>+$("#ck_exp").value;
+function tEnd(){if(!E.starch)return Infinity;if(E.b<=0)return 0.5;if(E.a<=0||E.ki<=0)return Infinity;const Vt=E.a+E.b+E.ki+E.w;
+  const C=E.b*0.005/2/Vt,S=0.02*E.a/Vt,I=1.0*E.ki/Vt;return C/(K1*CK.f*S*I);}
+function simT(){if(E.t0==null)return 0;if(E.stop!=null)return E.stop;return (performance.now()-E.t0)/1000*($("#ck_fast").checked?4:1);}
+function fmtT(s){const m=Math.floor(s/60);const ss=Math.floor(s%60);return \`\${m}:\${String(ss).padStart(2,"0")}\`;}
+function drawCK(){const t=simT();const dark=E.mixed&&t>=E.tEnd;let g="";
+  const beaker=(x,label,vol,col)=>{let s=\`<path d="M\${x} 170 L\${x} 300 Q\${x} 310 \${x+10} 310 L\${x+100} 310 Q\${x+110} 310 \${x+110} 300 L\${x+110} 170" fill="var(--glass)" fill-opacity=".2" stroke="var(--ink)" stroke-width="1.6"/><text x="\${x+55}" y="330" font-size="13" text-anchor="middle" fill="var(--ink)" font-weight="700">\${label}</text>\`;
+    if(vol>0){const h=Math.min(130,vol*1.6);s+=\`<rect x="\${x+2}" y="\${308-h}" width="106" height="\${h}" fill="\${col}"/>\`;}return s;};
+  g+=\`<rect x="20" y="315" width="320" height="8" fill="#f4f4f4" stroke="var(--line)"/>\`;
+  g+=beaker(30,"A",E.mixed?0:E.a,"rgba(210,230,245,.6)");
+  const vb=E.b+E.ki+E.w+(E.mixed?E.a:0);g+=beaker(210,"B",vb,dark?"#13173a":(E.starch&&!E.mixed?"rgba(225,232,240,.75)":"rgba(210,230,245,.6)"));
+  if(cyl.v>0)g+=\`<rect x="160" y="\${300-cyl.v*4}" width="20" height="\${cyl.v*4}" fill="rgba(200,225,240,.8)"/>\`;g+=\`<rect x="158" y="190" width="24" height="112" fill="none" stroke="var(--ink)"/><text x="170" y="185" font-size="9" text-anchor="middle" fill="var(--muted)">@@cylinder|||цилиндр@@</text>\`;
+  g+=\`<rect x="60" y="10" width="14" height="140" fill="var(--glass)" fill-opacity=".4" stroke="var(--ink)"/><text x="67" y="165" font-size="10" text-anchor="middle" fill="var(--muted)">FA 1</text><rect x="250" y="10" width="14" height="140" fill="var(--glass)" fill-opacity=".4" stroke="var(--ink)"/><text x="257" y="165" font-size="10" text-anchor="middle" fill="var(--muted)">FA 2</text>\`;
+  $("#ck_svg").innerHTML=g;$("#ck_watch").textContent=fmtT(t);
+  if(lensMode==="1")drawScale($("#ck_lens"),CK.r1,{k:110,min:0,max:50,minor:0.1,major:1,down:true,liquid:"rgba(200,225,240,.9)"});
+  else if(lensMode==="2")drawScale($("#ck_lens"),CK.r2,{k:110,min:0,max:50,minor:0.1,major:1,down:true,liquid:"rgba(200,225,240,.9)"});
+  else if(lensMode==="c")drawScale($("#ck_lens"),cyl.v||null,{k:40,min:0,max:25,minor:0.5,major:1,liquid:"rgba(150,190,220,.8)",empty:"@@empty|||хоосон@@",fmt:v=>v.toFixed(0)});
+  else drawScale($("#ck_lens"),null,{k:1,min:0,max:1,minor:1,major:1});}
+$$("[data-ck]").forEach(b=>b.onclick=()=>{const c=b.dataset.ck;
+  if(E.mixed&&!["stop","wash"].includes(c))return toast("@@This experiment has started. Finish it and wash the beakers.|||Энэ туршилт эхэлсэн. Дуусгаад стакануудыг угаана уу.@@");
+  if(c[0]==="a"){const d=+c.slice(1);CK.r1=+(CK.r1+d).toFixed(2);E.a=+(E.a+d).toFixed(2);lensMode="1";$("#ck_lenscap").textContent="@@FA 1 burette: bottom of the meniscus, to 0.05 cm³.|||FA 1-ийн бюрет — менискийн доод ирмэгээр, 0.05 cm³ хүртэл.@@";ckLog.add(\`FA 1 → A (+\${d.toFixed(2)})\`);}
+  else if(c[0]==="b"){const d=+c.slice(1);CK.r2=+(CK.r2+d).toFixed(2);E.b=+(E.b+d).toFixed(2);lensMode="2";$("#ck_lenscap").textContent="@@FA 2 burette: read it to 0.05 cm³.|||FA 2-ын бюрет — 0.05 cm³ хүртэл уншина.@@";ckLog.add(\`FA 2 → B (+\${d.toFixed(2)})\`);}
+  else if(c==="kiCyl"||c==="wCyl"){if(cyl.v>0)return toast("@@Pour out the cylinder first.|||Цилиндрийг эхлээд асгана уу.@@");cyl.what=c==="kiCyl"?"ki":"w";lensMode="c";$("#ck_lenscap").textContent=(cyl.what==="ki"?"FA 3":"@@Distilled water|||Нэрмэл ус@@")+" @@(25 cm³ cylinder, 0.5 cm³ divisions)|||— 25 cm³ цилиндр, 0.5 cm³ хуваарь.@@";ckObs(\`@@In the cylinder:|||Цилиндрт@@ \${cyl.what==="ki"?"FA 3":"@@distilled water|||нэрмэл ус@@"} @@(being measured). Read it and adjust the volume.|||хийж байна. Уншаад тааруул.@@\`);}
+  else if(c[0]==="c"&&c!=="ck"){if(!cyl.what)return toast("@@First choose what to measure (FA 3 or water).|||Эхлээд юу хэмжихээ сонго (FA 3 эсвэл ус).@@");const d=+c.slice(1)*(0.92+Math.random()*0.16);cyl.v=Math.max(0,Math.min(25.5,cyl.v+d));lensMode="c";}
+  else if(c==="pour"){if(!cyl.v)return toast("@@The cylinder is empty.|||Цилиндр хоосон.@@");E[cyl.what]+=cyl.v;ckLog.add(\`\${cyl.what==="ki"?"FA 3":"@@water|||ус@@"} → B (~\${cyl.v.toFixed(1)} cm³)\`);if(cyl.what==="w"&&expNo()===1)ckWarn("@@No water is added in experiment 1!|||Туршилт 1-д ус нэмэхгүй!@@");cyl={v:0,what:null};}
+  else if(c==="starch"){E.starch=true;ckLog.add("@@10 drops of FA 4 into B|||B-д 10 дусал FA 4@@");}
+  else if(c==="mix"){if(E.a<=0)return toast("@@Beaker A is empty.|||Стакан A хоосон.@@");E.tEnd=tEnd();E.mixed=true;E.t0=performance.now();ckLog.add(\`@@Experiment|||Туршилт@@ \${expNo()}@@: A → B, clock started|||: A → B, цаг эхэллээ@@\`);ckObs("@@Stirred once and placed on a white tile. Stop the clock as soon as the solution goes dark.|||Нэг удаа хутгаад цагаан хавтан дээр тавилаа. Уусмал бараан болмогц цагийг зогсоо.@@");
+    if(!E.starch)ckWarn("@@No starch (FA 4) added: no colour will appear!|||Цардуул (FA 4) нэмээгүй — өнгө гарахгүй!@@");else ckWarn("");}
+  else if(c==="stop"){if(!E.mixed||E.stop!=null)return toast("@@The clock is not running.|||Цаг явахгүй байна.@@");E.stop=simT();const late=E.stop-E.tEnd;
+    CK.e[expNo()]={a:E.a,b:E.b,ki:E.ki,w:E.w,tEnd:E.tEnd,stop:Math.floor(E.stop)};store.set("ck",CK);ckLog.add(\`@@stopped:|||зогсоов:@@ \${fmtT(E.stop)}\`);
+    ckObs(late<0?"@@Stopped before the colour appeared! You need to do it again.|||Өнгө гараагүй байхад зогсоосон! Шинээр хийх хэрэгтэй.@@":\`@@Clock stopped:|||Цаг зогслоо:@@ \${Math.floor(E.stop)} @@s. Record it in the table.|||s. Хүснэгтэд бүртгэ.@@\`+(late>3?" @@(You stopped it a few seconds after the colour appeared.)|||(Өнгө гарснаас хэдэн секундын дараа зогсоосон байна.)@@":""));}
+  else if(c==="wash"){newE();cyl={v:0,what:null};ckLog.add("@@beakers washed and dried|||стакануудыг угааж хатаав@@");ckObs(\`@@Experiment|||Туршилт@@ \${expNo()} @@is ready. Start by reading the initial burette reading.|||бэлэн. Бюретийн эхний заалтыг уншиж эхэл.@@\`);ckWarn("");}
+  store.set("ck",CK);drawCK();});
+$("#ck_exp").onchange=()=>{if(E.mixed&&E.stop==null)toast("@@Finish the experiment that is running.|||Явагдаж буй туршилтаа дуусгана уу.@@");};
+(function tick(){if(E.mixed&&E.stop==null)drawCK();requestAnimationFrame(tick);})();drawCK();
+
+function q1rows(){const H=[0,1,2,3].map(i=>$("#r1h"+i).value.toLowerCase());const V=e=>[0,1,2,3].map(i=>$(\`#r1v\${i}e\${e}\`).value);
+  const used=new Set();const pick=f=>{const i=H.findIndex((h,j)=>!used.has(j)&&f(h));if(i>=0)used.add(i);return i;};
+  const iR=pick(h=>/rate/.test(h)),iT=pick(h=>/time/.test(h)),iW=pick(h=>/water/.test(h)),iA=pick(h=>/(fa\\s*1|peroxodisulfate|k2s2o8|s2o8)/.test(h));return{H,v1:V(1),v2:V(2),iA,iW,iT,iR};}
+const sInv=h=>/(s\\s*[-−]\\s*1|s\\s*\\^\\s*-\\s*1|s⁻¹)/.test(h);
+$("#q1checkA").onclick=()=>{const{H,v1,v2,iA,iW,iT,iR}=q1rows();const L=[];let m=0;const all=[iA,iW,iT,iR].every(i=>i>=0);
+  const both=!!(CK.e[1]&&CK.e[2]);const I=all&&both;L.push(li(I,"<b>I</b> @@One table with 4 headings and both experiments done.|||4 гарчигтай нэг хүснэгт ба хоёр туршилт хийгдсэн.@@"+(both?"":" <span class='small muted'>@@(finish both experiments in the simulation and stop the clock)|||(симуляцид хоёр туршилтаа дуусгаж цагийг зогсооно уу)@@</span>")));m+=I;
+  const II=all&&UNIT.cm3(H[iA])&&/vol/.test(H[iA])&&UNIT.cm3(H[iW])&&UNIT.s(H[iT])&&sInv(H[iR]);
+  L.push(li(II,"<b>II</b> @@Headings and units: volume of FA 1 / cm3; volume of water / cm3; time / s; rate / s-1.|||Гарчиг ба нэгж: volume of FA 1 / cm3; volume of water / cm3; time / s; rate / s-1.@@"));m+=II;
+  let III=false,IV=false,q=0,tx="";
+  if(all){const ok05=(s,d)=>dp(s)===d&&/[05]$/.test(clean(s));III=ok05(v1[iA],2)&&ok05(v2[iA],2)&&ok05(v1[iW],1)&&ok05(v2[iW],1)&&/^\\d+$/.test(clean(v1[iT]))&&/^\\d+$/.test(clean(v2[iT]));
+    L.push(li(III,"<b>III</b> @@FA 1: 2 decimal places (0/5); water: 1 decimal place (0/5, 0.0 in experiment 1); times in whole seconds.|||FA 1: 2 аравтын орон (0/5); ус: 1 аравтын орон (0/5, туршилт 1-д 0.0); хугацаа бүхэл секунд.@@"));m+=III;
+    const t1=num(v1[iT]),t2=num(v2[iT]);IV=close(num(v1[iR]),1000/t1,0.006)&&close(num(v2[iR]),1000/t2,0.006);L.push(li(IV,\`<b>IV</b> @@rate = 1000 / time correct (|||rate = 1000 / time зөв (@@\${isFinite(t1)?(1000/t1).toPrecision(3):"?"}; \${isFinite(t2)?(1000/t2).toPrecision(3):"?"})\`));m+=IV;
+    if(t1>0&&t2>0){const r=Math.round(t2/t1*100)/100;q=(r>=1.80&&r<=2.20?1:0)+(r>=1.90&&r<=2.10?1:0);tx=\`t₂ / t₁ = \${t2} / \${t1} = \${r.toFixed(2)} @@(theory 2.00)|||(онол 2.00)@@\`;}
+    const warn=[];[1,2].forEach(e=>{const tr=CK.e[e];const v=e===1?v1:v2;if(tr&&isFinite(num(v[iT]))&&Math.abs(num(v[iT])-tr.stop)>1)warn.push(\`@@experiment|||туршилт@@ \${e}@@: the time differs from the stopwatch (|||-ийн хугацаа секундомероос (@@\${tr.stop} @@s)|||s) зөрүүтэй@@\`);
+      if(tr&&isFinite(num(v[iA]))&&Math.abs(num(v[iA])-tr.a)>0.051)warn.push(\`@@experiment|||туршилт@@ \${e}@@: the volume of FA 1 differs from the simulation (|||-ийн FA 1-ийн эзлэхүүн симуляцийнхаас (@@\${tr.a.toFixed(2)}@@)|||) зөрүүтэй@@\`);});
+    if(warn.length)L.push(\`<div class="note warn small">\${warn.join("; ")}.</div>\`);}
+  else L.push(li(false,"<b>III, IV</b> @@(headings not recognised: use the words «volume of FA 1», «water», «time», «rate»)|||(гарчиг танигдаагүй — «volume of FA 1», «water», «time», «rate» гэх үгсийг ашигла)@@"));
+  L.push(li(q>=1,"<b>V</b> t₂/t₁ = 1.80–2.20"));L.push(li(q>=2,"<b>VI</b> t₂/t₁ = 1.90–2.10"));if(tx)L.push(\`<div class="small muted">\${tx}</div>\`);m+=q;
+  $("#q1fbA").innerHTML=fbBlock(L,m,6);setScore("q1a",m);};
+$("#q1checkB").onclick=()=>{const t=$("#q1bi").value.toLowerCase();const L=[];
+  const i=/(total|overall|same|constant).{0,40}(volume)|volume.{0,40}(same|constant)|20\\s*cm/.test(t);L.push(li(i,"<b>(i)</b> @@The total volume is the same in both experiments (FA 1 + water = 20 cm³).|||Нийт эзлэхүүн хоёр туршилтад ижил (FA 1 + ус = 20 cm³).@@"));
+  const a=num($("#t11a").value),b=num($("#t11b").value),c=num($("#t11c").value),d=num($("#t11d").value);
+  const M1=isFinite(a)&&isFinite(d)&&Math.abs(a+d-20)<0.01&&a>0&&Math.abs(a-20)>=2.5&&Math.abs(a-10)>=2.5;
+  const M2=Math.abs(b-10)<0.01&&Math.abs(c-20)<0.01;
+  L.push(li(M1,"<b>(ii) M1</b> @@FA 1 + water = 20.00 cm³ and FA 1 at least 2.5 cm³ different from the earlier experiments.|||FA 1 + ус = 20.00 cm³ ба FA 1 өмнөх туршилтуудаас ≥ 2.5 cm³ зөрүүтэй.@@"));L.push(li(M2,"<b>(ii) M2</b> FA 2 = 10.0 cm³, FA 3 = 20.0 cm³."));
+  const m=(i?1:0)+(M1?1:0)+(M2?1:0);$("#q1fbB").innerHTML=fbBlock(L,m,3);setScore("q1b",m);};
+$("#q1checkC").onclick=()=>{const c=$("#q1c").value.toLowerCase(),d=$("#q1d").value.toLowerCase();
+  const C=/(longer|increase|more time|slower|take longer)/.test(c)&&/(thiosulfate|s2o3).{0,60}(iodine|i2)|(more|extra) iodine/.test(c);
+  const D=/(constant|unchanged|does ?n[o']t change|stays the same|remain).{0,40}|only.{0,40}(peroxodisulfate|s2o8|fa\\s*1)/.test(d)&&/(iodide|i-|i⁻|ki|concentration|peroxodisulfate|s2o8|fa\\s*1)/.test(d);
+  const L=[li(C,"<b>(c)</b> @@The time is longer and more thiosulfate reacts with more iodine / more iodine has to form.|||Хугацаа уртсана ба илүү тиосульфат илүү их иодтой урвалдана / илүү их иод үүсэх шаардлагатай.@@"),li(D,"<b>(d)</b> @@[I⁻] is almost constant / only [S₂O₈²⁻] affects the rate.|||[I⁻] бараг тогтмол / зөвхөн [S₂O₈²⁻] хурдад нөлөөлнө.@@"),
+    \`<div class="small muted">@@Model answer:|||Загвар:@@ <i>(c) The time would increase, because the extra thiosulfate reacts with more iodine, so more iodine must form before it reacts with starch. (d) So that the concentration of iodide stays almost constant and only the concentration of S₂O₈²⁻ affects the rate.</i></div>\`];
+  const m=(C?1:0)+(D?1:0);$("#q1fbC").innerHTML=fbBlock(L,m,2);setScore("q1c",m);};
+
+/* ---------------- Q2 enthalpy of solution ---------------- */
+const DH=14800,EF=0.88,WRM=0.30,TAU=0.3;
+const EN=store.get("en",null)||{T0:+(19+Math.random()*4).toFixed(2),drift:(Math.random()-0.5)*0.08,cont:+(8+Math.random()*6).toFixed(2),fa5:+(4.92+Math.random()*0.16).toFixed(3),res:+(0.02+Math.random()*0.03).toFixed(3),t:null,water:false,tip:null,tipped:false,reads:[]};
+const enLog=Logger("#en_log");const enObs=t=>$("#en_obs").textContent=t;const enWarn=t=>{const w=$("#en_warn");w.hidden=!t;w.textContent=t||"";};
+function Dfor(m){return m/53.5*DH*EF/(25*4.18);}
+function Tat(t,o){o=o||EN;let T=o.T0+o.drift*t;if(o.tip!=null&&t>o.tip){const x=t-o.tip;T+=-Dfor(o.fa5-o.res)*(1-Math.exp(-x/TAU))+WRM*x;}return T;}
+const SCHED=[0,0.5,1,1.5,2,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8];
+const SUPD2=(()=>{const o={T0:20,drift:0,tip:2,fa5:5.0,res:0.03};const r=SCHED.map(t=>Math.round(Tat(t,o)*2)/2);return r[0]-Math.min(...r);})();
+function drawEN(){let g=\`<path d="M60 170 L60 340 Q60 350 70 350 L250 350 Q260 350 260 340 L260 170" fill="var(--glass)" fill-opacity=".2" stroke="var(--ink)" stroke-width="1.6"/><path d="M100 180 L220 180 L206 330 L114 330Z" fill="#f2efe8" stroke="#9a937f" stroke-width="1.6"/>\`;
+  if(EN.water)g+=\`<path d="M107 250 L213 250 L206 330 L114 330Z" fill="rgba(180,215,240,.6)"/>\`;if(EN.tipped)g+=\`<path d="M118 322 L202 322 L204 328 L116 328Z" fill="#fff"/>\`;
+  if(EN.water){const T=Tat(EN.t||0);g+=\`<rect x="165" y="40" width="8" height="282" rx="4" fill="#fff" stroke="var(--ink)"/><circle cx="169" cy="320" r="7" fill="#c62828"/>\`;const h=Math.max(0,Math.min(270,(T+10)/120*270));g+=\`<rect x="167" y="\${320-h}" width="4" height="\${h}" fill="#c62828"/>\`;}
+  g+=\`<rect x="280" y="290" width="40" height="40" rx="5" fill="#eee" stroke="var(--ink)"/><text x="300" y="285" font-size="10" text-anchor="middle" fill="var(--muted)">FA 5</text>\`;if(!EN.tipped)g+=\`<rect x="284" y="306" width="32" height="22" fill="#fff" stroke="#bbb"/>\`;
+  $("#en_svg").innerHTML=g;$("#en_time").textContent=EN.t==null?"—":\`\${EN.t.toFixed(1)} @@min|||мин@@\`;
+  drawScale($("#en_lens"),EN.water?Tat(EN.t||0):null,{k:30,min:-10,max:110,minor:1,major:5,liquid:"#c62828",empty:"@@no thermometer|||термометр алга@@"});store.set("en",EN);}
+$$("[data-en]").forEach(b=>b.onclick=()=>{const c=b.dataset.en;
+  if(c==="weigh"){const r=(EN.cont+(EN.tipped?EN.res:EN.fa5)).toFixed(2);EN.reads.push(r);$("#en_bal").textContent=r;enLog.add(\`@@weighed (|||жинлэв (@@\${EN.tipped?"@@container + residue|||сав + үлдэгдэл@@":"@@container + FA 5|||сав + FA 5@@"}): \${r} g\`);enObs(\`\${EN.tipped?"@@Container + residue|||Сав + үлдэгдэл@@":"@@Container + FA 5|||Сав + FA 5@@"}: \${r} @@g. Record it.|||g. Бүртгэ.@@\`);}
+  else if(c==="water"){EN.water=true;enObs("@@25.0 cm³ of water in the cup, thermometer in. Start the stopwatch and write down the temperature at t = 0.|||Аяганд 25.0 cm³ ус, термометр дүрэгдсэн. Секундомерийг эхлүүлж t = 0 үеийн температурыг бич.@@");}
+  else if(c==="start"){if(!EN.water)return toast("@@First put water in the cup.|||Эхлээд аяганд ус хийнэ үү.@@");EN.t=0;enLog.add("t = 0");enObs("@@t = 0.0 min. Read the thermometer and write it down.|||t = 0.0 мин. Термометрийг уншиж бич.@@");}
+  else if(c==="wait"){if(EN.t==null)return toast("@@The stopwatch has not started.|||Секундомер эхлээгүй.@@");if(EN.t>=8)return toast("@@8 minutes reached: the experiment is over.|||8 минут хүрсэн — туршилт дууслаа.@@");EN.t=+(EN.t+0.5).toFixed(1);
+    if(EN.tipped&&EN.t===2.5){enObs("@@t = 2.5 min: no reading at this time (keep stirring).|||t = 2.5 мин — энэ үед хэмжилт хийхгүй (хутгасаар байна).@@");}else enObs(\`t = \${EN.t.toFixed(1)} @@min. Read the temperature and write it down.|||мин. Температурыг уншиж бич.@@\`);
+    if(EN.t>2&&!EN.tipped)enWarn("@@t = 2 min has passed but FA 5 has not been added!|||t = 2 мин өнгөрсөн боловч FA 5 нэмээгүй байна!@@");}
+  else if(c==="tip"){if(EN.t==null)return toast("@@The stopwatch has not started.|||Секундомер эхлээгүй.@@");if(EN.tipped)return toast("@@Already added.|||Аль хэдийн нэмсэн.@@");EN.tipped=true;EN.tip=EN.t;enLog.add(\`t = \${EN.t.toFixed(1)} @@min: FA 5 added|||мин: FA 5 нэмэв@@\`);
+    enWarn(Math.abs(EN.t-2)>1e-9?\`@@FA 5 added at t =|||FA 5-ыг t =@@ \${EN.t.toFixed(1)} @@min; the method says t = 2 min.|||мин-д нэмсэн — аргачлалаар t = 2 мин.@@\`:"");enObs("@@The white crystals are dissolving; stirring. Next reading at t = 3.0 min.|||Цагаан талстууд уусч байна; хутгаж байна. Дараагийн хэмжилт t = 3.0 мин-д.@@");}
+  else if(c==="reset"){if(!confirm("@@Start the question 2 simulation again?|||2-р асуултын симуляцийг шинээр эхлүүлэх үү?@@"))return;Object.assign(EN,{T0:+(19+Math.random()*4).toFixed(2),t:null,water:false,tip:null,tipped:false,reads:[]});$("#en_bal").textContent="--.--";enWarn("");enObs("@@Start by weighing the container with FA 5.|||FA 5-тай савыг жинлэж эхэлнэ үү.@@");}
+  drawEN();});
+if(EN.reads.length)$("#en_bal").textContent=EN.reads[EN.reads.length-1];drawEN();
+const RL2=ResultsList("#en_res",{key:"en_rl",n:3});
+{const tb=$("#en_tt tbody");SCHED.forEach((t,i)=>tb.insertAdjacentHTML("beforeend",\`<tr><td><input id="en_t\${i}"></td><td><input id="en_T\${i}"></td></tr>\`));}
+function enData(){const d=[];SCHED.forEach((_,i)=>{const x=num($("#en_t"+i).value),y=num($("#en_T"+i).value);if(isFinite(x)&&isFinite(y))d.push([x,y]);});return d;}
+const tipX=()=>{const d=enData();return d.length&&Math.max(...d.map(p=>p[0]))>20?120:2;};
+$("#q2checkA").onclick=()=>{const L=[];let m=0;const h0=$("#en_h0").value.toLowerCase(),h1=$("#en_h1").value.toLowerCase();const d=enData();const Ts=SCHED.map((_,i)=>$("#en_T"+i).value);
+  const sec=tipX()===120;const times=d.map(p=>p[0]/(sec?60:1));const timesOK=SCHED.every(t=>times.some(x=>Math.abs(x-t)<1e-6));
+  const I=d.length===16&&timesOK&&/time/.test(h0)&&(/(\\/\\s*min|\\(\\s*min|in\\s*min)/.test(h0)||UNIT.s(h0))&&/temp/.test(h1)&&UNIT.C(h1);
+  L.push(li(I,"<b>I</b> @@16 temperatures with their matching times (0–2, 3–8 min), correct units.|||16 температур тохирох хугацаатайгаа (0–2, 3–8 мин), нэгж зөв.@@"+(I?"":" <span class='small muted'>@@(time / min, temperature / °C; t = 2.5 min must not be included)|||(time / min, temperature / °C; t = 2.5 мин ороогүй байх)@@</span>")));m+=I;
+  const rows=RL2.rows();const[iF,iE,iM]=RL2.pick(rows,[h=>/(container|bottle|tube)/.test(h)&&/(fa\\s*5|nh4cl|ammonium)/.test(h)&&!/(residu|empty|after)/.test(h),h=>/(container|bottle|tube)/.test(h)&&/(residu|empty|after|remain)/.test(h),h=>/(fa\\s*5|nh4cl|ammonium)/.test(h)&&!/(container|bottle|tube)/.test(h)]);
+  let II=false,dps=[];if([iF,iE,iM].every(i=>i>=0)){const a=num(rows[iF].v),b=num(rows[iE].v),c=num(rows[iM].v);dps=[dp(rows[iF].v),dp(rows[iE].v)];
+    II=[rows[iF].h,rows[iE].h,rows[iM].h].every(UNIT.g)&&Math.abs(a-b-c)<0.0051&&isFinite(c);}
+  L.push(li(II,"<b>II</b> @@Both weighings and the mass of FA 5 added worked out correctly, correct unit (/ g).|||Хоёр жинлэлт ба нэмсэн FA 5-ын масс зөв тооцогдож, нэгж (/ g) зөв.@@"));m+=II;
+  const tOK=Ts.every(s=>dp(s)===1&&/[05]$/.test(clean(s)))&&Ts.some(s=>/\\.0$/.test(clean(s)))&&Ts.some(s=>/\\.5$/.test(clean(s)));const III=dps.length===2&&dps[0]===dps[1]&&(dps[0]===2||dps[0]===3)&&tOK;
+  L.push(li(III,"<b>III</b> @@Weighings to the same number of decimal places (2/3) and all temperatures .0/.5, at least one .0 and one .5.|||Жинлэлтүүд ижил аравтын оронтой (2/3) ба бүх температур .0/.5, дор хаяж нэг .0, нэг .5.@@"));m+=III;
+  let q=0,tx="";if(d.length>=10){const T0=num(Ts[0]);const dT=T0-Math.min(...d.map(p=>p[1]));const diff=Math.abs(dT-SUPD2);q=bracket(SUPD2,diff);tx=\`@@Your ΔT =|||Таны ΔT =@@ \${dT.toFixed(1)} @@°C, supervisor’s ≈|||°C, хянагчийнх ≈@@ \${SUPD2.toFixed(1)} @@°C, difference|||°C, зөрүү@@ \${diff.toFixed(1)} °C.\`;}
+  L.push(li(q>=1,"<b>IV</b> @@Difference in ΔT ≤ 2.0 °C (supervisor’s ΔT 10–14.5)|||ΔT-ийн зөрүү ≤ 2.0 °C (хянагчийн ΔT 10–14.5)@@"));L.push(li(q>=2,"<b>V</b> @@Difference in ΔT ≤ 1.5 °C|||ΔT-ийн зөрүү ≤ 1.5 °C@@"));if(tx)L.push(\`<div class="small muted">\${tx}</div>\`);m+=q;
+  $("#q2fbA").innerHTML=fbBlock(L,m,5);setScore("q2a",m);};
+const GR=Graph("#en_graph",{key:"g2",lines:true,W:180,H:160,l1n:2,xopts:[0.5,1,2,2.5,3,4,30,60],yopts:[0.5,1,2,2.5,3,4,5],l1label:"@@Line 1 (before adding: straight)|||Шугам 1 (нэмэхийн өмнө — шулуун)@@",l2label:"@@Line 2 (warming: straight)|||Шугам 2 (халалт — шулуун)@@",
+  l1hint:"@@Line 1: 2 points of a straight line through the points before adding, from t = 0 to t = 2 min (or beyond).|||Шугам 1: нэмэхийн өмнөх цэгүүдийг дагасан шулууны 2 цэг — t = 0-ээс t = 2 мин хүртэл (эсвэл цааш).@@",l2hint:"@@Line 2: 2 points of a straight line through the warming points, from t = 2 min to 8 min.|||Шугам 2: халалтын цэгүүдийг дагасан шулууны 2 цэг — t = 2 мин-ээс 8 мин хүртэл.@@"});
+$("#q2checkB").onclick=()=>{const L=[];let m=0;const d=enData();const tx=tipX();const lab=GR.labels(/time/,/temp/);const s=GR.sc();
+  const xl=$$("#en_graph [data-g=xl]")[0].value.toLowerCase(),yl=$$("#en_graph [data-g=yl]")[0].value.toLowerCase();
+  const I=lab.x&&lab.y&&(/(min|\\/\\s*s\\b|\\(\\s*s\\s*\\))/.test(xl))&&UNIT.C(yl);L.push(li(I,"<b>I</b> @@Temperature on y, time on x; with labels and units.|||y-д температур, x-д хугацаа; нэр, нэгжтэй.@@"));m+=I;
+  const minT=d.length?Math.min(...d.map(p=>p[1])):NaN;const ext=d.concat([[tx,minT-2]]);
+  const II=GR.goodScale()&&d.length>0&&GR.inGrid(tx,minT-2)&&ext.every(p=>GR.inGrid(p[0],p[1]))&&GR.half(ext);
+  L.push(li(II,"<b>II</b> @@Scales of 1, 2 or 5 (or multiples) and the points (including the lowest − 2 °C) using more than half of each axis.|||Масштаб 1, 2, 5-ын үржвэр ба цэгүүд (хамгийн бага − 2 °C-ийг оруулаад) тэнхлэг бүрийн хагасаас илүүг эзэлнэ.@@"));m+=II;
+  const III=d.length>=9&&GR.points(d);L.push(li(III,"<b>III</b> @@All points plotted to within half a square, at least 9 temperatures.|||Бүх цэг хагас нүдний нарийвчлалтай, дор хаяж 9 температур.@@"));m+=III;
+  let IV=false,why="";const f1=GR.fn(GR.G.L1),f2=GR.fn(GR.G.L2);
+  if(!(f1&&GR.G.L1.length===2&&f2&&GR.G.L2.length===2))why="@@two straight lines (2 points each) are needed|||хоёр шулуун (тус бүр 2 цэг) хэрэгтэй@@";
+  else{const pre=GR.nonAnom(d.filter(p=>p[0]<=tx+1e-9));const imin=d.findIndex(p=>p[1]===minT);const post=GR.nonAnom(d.filter(p=>p[0]>=d[imin][0]-1e-9));
+    const r1=GR.G.L1.map(p=>p[0]),r2=GR.G.L2.map(p=>p[0]);const hs=GR.halfSq();
+    const ext1=Math.max(...r1)>=tx-hs.x,ext2=Math.min(...r2)<=tx+hs.x;const fit1=GR.fit("L1",pre,0.3),fit2=GR.fit("L2",post,0.3);const below=f2(tx)<=minT+hs.y;
+    IV=ext1&&ext2&&fit1&&fit2&&below;why=IV?"":[!fit1&&"@@line 1 does not fit the points before adding well|||шугам 1 нэмэхийн өмнөх цэгүүдийг сайн дагахгүй@@",!fit2&&"@@line 2 does not fit the warming points well|||шугам 2 халалтын цэгүүдийг сайн дагахгүй@@",!(ext1&&ext2)&&"@@extend both lines to t = 2 min|||хоёр шугамыг t = 2 мин хүртэл сунга@@",!below&&\`@@the value of line 2 at t = 2 min (|||шугам 2-ын t = 2 мин дахь утга (@@\${f2(tx).toFixed(1)}@@) is higher than the lowest measured (|||) хэмжсэн хамгийн бага (@@\${minT}@@)|||) -аас их@@\`].filter(Boolean).join("; ");}
+  L.push(li(IV,"<b>IV</b> @@Two straight lines, extended to t = 2 min, the value of line 2 at t = 2 ≤ the lowest temperature.|||Хоёр шулуун, t = 2 мин хүртэл сунгасан, 2-р шугамын t = 2 дахь утга ≤ хамгийн бага температур.@@"+(why?\` <span class="small muted">(\${why})</span>\`:"")));m+=IV;
+  $("#q2fbB").innerHTML=fbBlock(L,m,4);setScore("q2b",m);};
+$("#q2checkC").onclick=()=>{const L=[];let m=0;const tx=tipX();const f1=GR.fn(GR.G.L1),f2=GR.fn(GR.G.L2);const s=GR.sc();
+  const gT=f1&&f2?f1(tx)-f2(tx):NaN;const a=$("#c2i").value;const A=num(a);
+  const i=isFinite(gT)&&dp(a)===1&&Math.abs(A-gT)<=Math.max(s.ys/20,0.1)+1e-9;L.push(li(i,\`<b>(i)</b> @@ΔT from the graph, to 1 decimal place|||ΔT графикаас, 1 аравтын оронтой@@\`+(isFinite(gT)?\` @@(from your lines ≈|||(таны шугамуудаас ≈@@ \${gT.toFixed(1)} °C)\`:" @@(no lines in 2(b))|||(2(b)-ийн шугамууд алга)@@")));m+=i;
+  const dT=isFinite(A)?A:gT;const e2=25*4.18*dT;const b=$("#c2ii").value;const ii=close(num(b),e2,0.006)&&sfIn(b,2,4);L.push(li(ii,\`<b>(ii)</b> q = 25 × 4.18 × \${isFinite(dT)?dT.toFixed(1):"ΔT"} = \${isFinite(e2)?e2.toPrecision(4):"?"} J (2–4 s.f.)\`));m+=ii;
+  const rows=RL2.rows();const[iM]=RL2.pick(rows,[h=>/(fa\\s*5|nh4cl|ammonium)/.test(h)&&!/(container|bottle|tube)/.test(h)]);const mass=iM>=0?num(rows[iM].v):NaN;const ms=isFinite(mass)?mass:5.0;
+  const e3=ms/53.5;const c=$("#c2iii").value;const iii=close(num(c),e3,0.006)&&sfIn(c,2,4);L.push(li(iii,\`<b>(iii)</b> n = \${ms.toFixed(2)} / 53.5 = \${e3.toPrecision(3)} mol\`+(isFinite(mass)?"":" <span class='small muted'>@@(mass not found: 5.00 g used)|||(масс олдсонгүй — 5.00 g-аар)@@</span>")));m+=iii;
+  const B=isFinite(num(b))?num(b):e2,C=isFinite(num(c))?num(c):e3;const e4=B/C/1000;const v=$("#c2iv").value;const iv=$("#c2ivs").value==="+"&&close(num(v),e4,0.006)&&sfIn(v,2,4);
+  L.push(li(iv,\`<b>(iv)</b> ΔH = + \${isFinite(e4)?e4.toPrecision(3):"?"} @@kJ mol⁻¹ (sign +, 2–4 s.f.)|||kJ mol⁻¹ (тэмдэг +, 2–4 s.f.)@@\`+($("#c2ivs").value==="−"?" <span class='small'>@@(the temperature fell → endothermic → +)|||— температур буурсан → эндотерм → +@@</span>":"")));m+=iv;
+  $("#q2fbC").innerHTML=fbBlock(L,m,4);setScore("q2c",m);};
+$("#q2checkD").onclick=()=>{const T0=num($("#en_T0").value);const i4=SCHED.indexOf(4);const T4=num($("#en_T"+i4).value);const e=isFinite(T0)&&isFinite(T4)?100/(T0-T4):NaN;
+  const ok=close(num($("#c2d").value),e,0.01);$("#q2fbD").innerHTML=fbBlock([li(ok,\`(0.5 × 2) / (T₀ − T₄) × 100\`+(isFinite(e)?\` = 1.0 / \${(T0-T4).toFixed(1)} × 100 = \${e.toPrecision(3)} %\`:" @@(the readings at t = 0 and t = 4 min in the table are needed)|||(хүснэгтийн t = 0 ба t = 4 мин-ийн заалт хэрэгтэй)@@"))],ok?1:0,1);setScore("q2d",ok?1:0);};
+
+/* ---------------- Q3 ---------------- */
+const S3={FA6:{name:"FA 6",info:"@@Solid FA 6: dark purple crystals.|||Хатуу FA 6 — бараан нил ягаан талст.@@",init:{solid:"#3a1048",label:"FA 6 (s)"}},
+  FA7:{name:"FA 7",info:"@@FA 7: the black residue left after heating FA 6 (cooled).|||FA 7 — FA 6-г халаасны дараах хар үлдэгдэл (хөргөсөн).@@",init:{solid:"#161616",label:"FA 7"}},
+  FA8:{name:"FA 8",info:"@@FA 8: colourless solution.|||FA 8 — өнгөгүй уусмал.@@",init:{liq:COL.colourless,label:"FA 8"}},
+  FA9:{name:"FA 9",info:"@@FA 9: pale blue solution.|||FA 9 — цайвар хөх уусмал.@@",init:{liq:COL.paleblue,label:"FA 9"}}};
+const A3={
+ FA6:[A("heat","@@(a)(i) Heat gently, then strongly|||(a)(i) Зөөлөн, дараа нь хүчтэй халаах@@",[{solid:"#3a1048",flame:true,label:"@@gently|||зөөлөн@@"},{solid:"#1a1a1a",flame:true,label:"@@crystals spit|||талст үсэрнэ@@"},{solid:"#121212",label:"@@black residue|||хар үлдэгдэл@@"}],"Dark purple crystals jump about (crackle); solid darkens; black residue forms."),
+      A("splint","@@Test the gas with a glowing splint|||Хийг цогтой хэлтэрхийгээр шалгах@@",[{solid:"#121212",flame:true,splint:"relight",label:"@@splint|||хэлтэрхий@@"}],"Glowing splint relights → oxygen.",{need:"heat"})],
+ FA7:[A("mn","@@(a)(ii) acidified KMnO₄ + NaOH + FA 7, stir and filter|||(a)(ii) хүчиллэг KMnO₄ + NaOH + FA 7, хутгаад шүүх@@",[{liq:"#6a1b7a",label:"KMnO₄ + NaOH"},{liq:"#2f6b3e",solid:"#161616",label:"@@FA 7 added|||FA 7 нэмэв@@"},{liq:"#1f5a33",label:"@@filtrate|||шүүсэн уусмал@@"}],"Filtrate is (dark) green."),
+      A("acid","@@Excess H₂SO₄ to the filtrate|||Шүүсэн уусмалд H₂SO₄ илүүдлээр@@",[{liq:"#1f5a33",label:"+ H₂SO₄"},{liq:"#9b2f8a",ppt:"#4a2a14",label:"@@excess H₂SO₄|||илүүдэл H₂SO₄@@"}],"Green solution turns pink / purple (a little brown-black solid may form).",{need:"mn"})],
+ FA8:[A("t1","@@Test 1: add H₂SO₄|||Test 1: H₂SO₄ нэмэх@@",[{liq:COL.colourless,bub:true,label:"+ H₂SO₄"}],"Effervescence (fizzing)."),
+      A("lime","@@Test the gas from Test 1 with limewater|||Test 1-ийн хийг шохойн усаар шалгах@@",[{liq:COL.colourless,bub:true,lime:"rgba(240,240,240,.95)",label:"@@limewater|||шохойн ус@@"}],"Gas turns limewater milky (white ppt) → CO₂.",{need:"t1",slow:true}),
+      A("t2","@@Test 2: add NaOH(aq)|||Test 2: NaOH(aq) нэмэх@@",[{liq:COL.colourless,label:"+ NaOH"}],"No change."),
+      A("t2w","@@Test 2: heat in a boiling tube, test with red litmus|||Test 2: boiling tube-д халааж, улаан лакмусаар шалгах@@",[{liq:COL.colourless,flame:true,litmus:"#d9534f",label:"@@heating|||халааж байна@@"}],"On warming: no change; damp red litmus stays red (no ammonia).",{need:"t2"}),
+      A("t3","@@Test 3: add BaCl₂(aq)|||Test 3: BaCl₂(aq) нэмэх@@",[{liq:COL.colourless,ppt:COL.white,label:"+ Ba²⁺"}],"White ppt."),
+      A("t3n","@@Test 3: then HNO₃|||Test 3: дараа нь HNO₃@@",[{liq:COL.colourless,ppt:COL.white,bub:true,label:"+ HNO₃"},{liq:COL.colourless,bub:true,label:"@@ppt dissolved|||тунадас уусав@@"}],"Effervescence; white ppt dissolves to give a colourless solution.",{need:"t3"})],
+ FA9:[A("t1","@@Test 1: add H₂SO₄|||Test 1: H₂SO₄ нэмэх@@",[{liq:COL.paleblue,label:"+ H₂SO₄"}],"No change; solution stays (pale) blue."),
+      A("t2","@@Test 2: NaOH(aq), then excess|||Test 2: NaOH(aq), дараа нь илүүдэл@@",[{liq:COL.paleblue,label:"+ NaOH"},{liq:COL.colourless,ppt:"#5b8fd9",label:"@@excess NaOH|||илүүдэл NaOH@@"}],"Pale blue ppt; insoluble in excess."),
+      A("t2w","@@Test 2: heat in a boiling tube|||Test 2: boiling tube-д халаах@@",[{liq:COL.colourless,ppt:"#5b8fd9",flame:true,label:"@@heating|||халааж байна@@"},{liq:COL.colourless,ppt:"#1c1c1c",flame:true,label:"@@turned black|||хар болов@@"}],"On warming the (blue) ppt turns black.",{need:"t2",slow:true}),
+      A("t3","@@Test 3: add BaCl₂(aq)|||Test 3: BaCl₂(aq) нэмэх@@",[{liq:COL.paleblue,ppt:COL.white,label:"+ Ba²⁺"}],"White ppt."),
+      A("t3n","@@Test 3: then HNO₃|||Test 3: дараа нь HNO₃@@",[{liq:COL.paleblue,ppt:COL.white,label:"+ HNO₃"}],"White ppt insoluble in nitric acid (no change).",{need:"t3"}),
+      A("t4","@@Test 4: add FA 8 with shaking until in excess|||Test 4: FA 8-ыг сэгсэрсээр илүүдэл хүртэл нэмэх@@",[{liq:COL.paleblue,bub:true,label:"+ FA 8"},{liq:"rgba(190,215,240,.5)",ppt:"#79a6e6",bub:true,label:"@@excess FA 8|||илүүдэл FA 8@@"}],"Effervescence; then a (pale) blue ppt forms.")]};
+Bench("#benchBox",S3,A3);
+$("#q3checkA").onclick=()=>{const t=$("#q3ai").value,g=$("#q3aig").value,f1=$("#q3aii1").value,f2=$("#q3aii2").value;
+  const two=[/(purple|violet)/i.test(t),/(jump|crackl|spit|decrepit|move)/i.test(t),/(black|dark(en)?)/i.test(t)].filter(Boolean).length>=2;
+  const M2=/glowing/i.test(t+" "+g)&&RX.RELIGHT.test(t+" "+g);const M3=/(oxygen|\\bo2\\b|o₂)/i.test(g);const N1=/green/i.test(f1);const N2=/(pink|purple|violet)/i.test(f2);
+  const L=[li(two,"<b>(i) M1</b> @@Two of: purple crystals; spits; darkens to a black residue.|||Хоёроос: нил ягаан талст; үсэрнэ; бараантаж хар үлдэгдэл.@@"),li(M2,"<b>(i) M2</b> @@The gas relights a glowing splint.|||Хий цогтой хэлтэрхийг дахин асаана.@@"),li(M3,"<b>(i) M3</b> gas produced: oxygen"),li(N1,"<b>(ii) M1</b> @@The filtrate is (dark) green.|||Шүүсэн уусмал (бараан) ногоон.@@"),li(N2,"<b>(ii) M2</b> @@Turns pink / purple on adding acid.|||Хүчил нэмэхэд ягаан / нил ягаан.@@")];
+  const a=(two?1:0)+(M2?1:0)+(M3?1:0),b=(N1?1:0)+(N2?1:0);$("#q3fbA").innerHTML=fbBlock(L,a+b,5);setScore("q3a1",a);setScore("q3a2",b);};
+$("#q3checkB").onclick=()=>{const v=id=>$("#"+id).value;const L=[];const lime=x=>/limewater|lime water/i.test(x);
+  const items=[[RX.BUB.test(v("b11")),"FA 8 / T1: effervescence"],[lime(v("b11")),"FA 8 / T1: gas tested with limewater"],[lime(v("b11"))&&/(milky|cloudy|white ppt|white precipitate|turbid)/i.test(v("b11")),"FA 8 / T1: limewater white ppt / milky"],
+    [RX.NC.test(v("b21")),"FA 8 / T2: NaOH — no change"],[/(warm|heat)/i.test(v("b21"))&&(/(no gas|no change|stays red|remains red|no ammonia)/i.test(v("b21").split(/warm|heat/i).slice(1).join(" "))),"FA 8 / T2: on warming no change / no NH₃"],
+    [/white/i.test(v("b31"))&&RX.PPT.test(v("b31")),"FA 8 / T3: white ppt"],[RX.BUB.test(v("b31")),"FA 8 / T3: effervescence with acid"],[/(dissolve|soluble|colourless solution|clear solution|disappear)/i.test(v("b31"))&&!/insoluble/i.test(v("b31")),"FA 8 / T3: ppt dissolves"],
+    [RX.NC.test(v("b12"))||/stays blue|remains blue/i.test(v("b12")),"FA 9 / T1: no change / stays blue"],
+    [/blue/i.test(v("b22"))&&RX.PPT.test(v("b22")),"FA 9 / T2: (pale) blue ppt"],[/(insoluble|does ?n[o']t dissolve|not dissolve)/i.test(v("b22")),"FA 9 / T2: insoluble in excess"],[/black/i.test(v("b22")),"FA 9 / T2: on warming ppt turns black"],
+    [/white/i.test(v("b32"))&&RX.PPT.test(v("b32")),"FA 9 / T3: white ppt"],[/(insoluble|does ?n[o']t dissolve|not dissolve|no change|remains)/i.test(v("b32")),"FA 9 / T3: insoluble in acid / no change"],
+    [RX.BUB.test(v("b41")),"T4: effervescence"],[/blue/i.test(v("b41"))&&RX.PPT.test(v("b41")),"T4: (pale) blue ppt"]];
+  const m=starMark(L,items,7);$("#q3fbB").innerHTML=fbBlock(L,m,7);setScore("q3b1",m);};
+$("#q3checkC").onclick=()=>{const n=id=>N($("#"+id).value);const s8=[n("i81"),n("i82")],s9=[n("i91"),n("i92"),n("i93")];
+  const has=(arr,re)=>arr.some(x=>re.test(x));let c=0;
+  if(has(s8,/^unknown$/))c++;if(has(s8,/^co32-$|^co3\\(2-\\)$/))c++;if(has(s9,/^cu2\\+$|^cu\\(2\\+\\)$/))c++;if(has(s9,/^h\\+$/))c++;if(has(s9,/^so42-$|^so4\\(2-\\)$/))c++;
+  const bad=s8.concat(s9).filter(x=>x&&!/^(unknown|co32-|cu2\\+|h\\+|so42-)$/.test(x)).length;const ii=c-bad>=5?2:c-bad>=3?1:0;
+  const e=N($("#q3eq").value);const iii=(/cu2\\+\\(aq\\)\\+2oh-\\(aq\\)→cu\\(oh\\)2\\(s\\)/.test(e))||(/cu\\(oh\\)2\\(s\\)→cuo\\(s\\)\\+h2o\\(l\\)/.test(e));
+  const L=[li(ii===2,\`<b>(ii)</b> FA 8: unknown, CO₃²⁻; FA 9: Cu²⁺, H⁺, SO₄²⁻ — \${c} @@correct|||зөв@@\${bad?\`, \${bad} @@incorrect|||буруу@@\`:""} → \${ii} @@marks|||оноо@@\`),li(iii,"<b>(iii)</b> @@Cu²⁺(aq) + 2OH⁻(aq) → Cu(OH)₂(s)  or  Cu(OH)₂(s) → CuO(s) + H₂O(l)|||Cu²⁺(aq) + 2OH⁻(aq) → Cu(OH)₂(s)  эсвэл  Cu(OH)₂(s) → CuO(s) + H₂O(l)@@")];
+  $("#q3fbC").innerHTML=fbBlock(L,ii+(iii?1:0),3);setScore("q3b2",ii+(iii?1:0));};
+
+{
+/* =====================================================================
+   WHITEBOARD
+   ===================================================================== */
+const WB={page:"Q1",tool:"pen",color:"#1d2433",size:3.5,grid:true,data:{},redo:{}};
+const COLORS=["#1d2433","#b3261e","#1f5f9a","#1f7a4c","#6b2f8f","#d97706"];
+const cv=$("#wbCanvas"),ctx=cv.getContext("2d");let drawing=null;
+function wbLoad(p){if(!WB.data[p])WB.data[p]=store.get("_wb_"+p,[]);if(!WB.redo[p])WB.redo[p]=[];}
+function wbSave(){store.set("_wb_"+WB.page,WB.data[WB.page]);}
+function wbSize(){const r=$("#wbStage").getBoundingClientRect();const d=window.devicePixelRatio||1;cv.width=Math.max(1,r.width*d);cv.height=Math.max(1,r.height*d);ctx.setTransform(d,0,0,d,0,0);wbDraw();}
+function strokeDraw(st){if(!st.pts.length)return;ctx.save();ctx.lineCap="round";ctx.lineJoin="round";
+  if(st.tool==="eraser"){ctx.globalCompositeOperation="destination-out";ctx.strokeStyle="#000";ctx.lineWidth=st.size*5;}
+  else if(st.tool==="hl"){ctx.globalAlpha=.3;ctx.strokeStyle=st.color;ctx.lineWidth=st.size*5;}
+  else{ctx.strokeStyle=st.color;ctx.lineWidth=st.size;}
+  ctx.beginPath();ctx.moveTo(st.pts[0][0],st.pts[0][1]);
+  if(st.tool==="line"){const p=st.pts[st.pts.length-1];ctx.lineTo(p[0],p[1]);}
+  else{for(let i=1;i<st.pts.length;i++){const a=st.pts[i-1],b=st.pts[i];ctx.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2);}if(st.pts.length===1)ctx.lineTo(st.pts[0][0]+.1,st.pts[0][1]);}
+  ctx.stroke();ctx.restore();}
+function wbDraw(){const w=cv.width/(window.devicePixelRatio||1),h=cv.height/(window.devicePixelRatio||1);ctx.clearRect(0,0,w,h);
+  (WB.data[WB.page]||[]).forEach(strokeDraw);if(drawing)strokeDraw(drawing);}
+function wbBg(){const st=$("#wbStage");st.style.backgroundColor="#fff";
+  st.style.backgroundImage=WB.grid?"linear-gradient(#e3e9f0 1px,transparent 1px),linear-gradient(90deg,#e3e9f0 1px,transparent 1px)":"none";
+  st.style.backgroundSize="24px 24px";$("#wbGrid").classList.toggle("on",WB.grid);}
+function pos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];}
+cv.addEventListener("pointerdown",e=>{cv.setPointerCapture(e.pointerId);const p=pos(e);drawing={tool:WB.tool,color:WB.color,size:WB.size*(e.pointerType==="pen"&&e.pressure?0.6+e.pressure:1),pts:[p]};wbDraw();});
+cv.addEventListener("pointermove",e=>{if(!drawing)return;const p=pos(e);if(drawing.tool==="line")drawing.pts=[drawing.pts[0],p];else drawing.pts.push(p);wbDraw();});
+const endStroke=()=>{if(!drawing)return;WB.data[WB.page].push(drawing);WB.redo[WB.page]=[];drawing=null;wbSave();wbDraw();};
+cv.addEventListener("pointerup",endStroke);cv.addEventListener("pointercancel",endStroke);
+function openWB(page){if(page){WB.page=page;$("#wbPage").value=page;}wbLoad(WB.page);$("#wb").classList.add("open");$("#wb").setAttribute("aria-hidden","false");wbBg();requestAnimationFrame(wbSize);}
+function closeWB(){$("#wb").classList.remove("open");$("#wb").setAttribute("aria-hidden","true");}
+$("#wbFab").onclick=()=>{const t=store.get("tab","ov");openWB({q1:"Q1",q2:"Q2",q3:"Q3"}[t]||WB.page);};
+$$("[data-wb]").forEach(b=>b.addEventListener("click",()=>openWB(b.dataset.wb)));
+$("#wbClose").onclick=closeWB;$("#wb").addEventListener("click",e=>{if(e.target.id==="wb")closeWB();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#wb").classList.contains("open"))closeWB();});
+$("#wbPage").onchange=e=>{WB.page=e.target.value;wbLoad(WB.page);wbDraw();};
+$$(".wb-bar .tool").forEach(b=>b.onclick=()=>{WB.tool=b.dataset.tool;$$(".wb-bar .tool").forEach(x=>x.classList.toggle("on",x===b));});
+{const cs=$("#wbColors");COLORS.forEach((c,i)=>{cs.insertAdjacentHTML("beforeend",\`<button class="sw \${i===0?"on":""}" data-col="\${c}" style="background:\${c}" aria-label="@@colour|||өнгө@@"></button> \`);});
+ $$("#wbColors .sw").forEach(b=>b.onclick=()=>{WB.color=b.dataset.col;$$("#wbColors .sw").forEach(x=>x.classList.toggle("on",x===b));if(WB.tool==="eraser"){WB.tool="pen";$$(".wb-bar .tool").forEach(x=>x.classList.toggle("on",x.dataset.tool==="pen"));}});}
+$("#wbSize").onchange=e=>WB.size=+e.target.value;
+$("#wbGrid").onclick=()=>{WB.grid=!WB.grid;wbBg();};
+$("#wbUndo").onclick=()=>{const a=WB.data[WB.page];if(a&&a.length){WB.redo[WB.page].push(a.pop());wbSave();wbDraw();}};
+$("#wbRedo").onclick=()=>{const r=WB.redo[WB.page];if(r&&r.length){WB.data[WB.page].push(r.pop());wbSave();wbDraw();}};
+$("#wbClear").onclick=()=>{if(!confirm("@@Clear this whole page?|||Энэ хуудсыг бүхэлд нь арилгах уу?@@"))return;WB.data[WB.page]=[];WB.redo[WB.page]=[];wbSave();wbDraw();};
+$("#wbSave").onclick=()=>{const t=document.createElement("canvas");t.width=cv.width;t.height=cv.height;const c=t.getContext("2d");c.fillStyle="#fff";c.fillRect(0,0,t.width,t.height);c.drawImage(cv,0,0);
+  const a=document.createElement("a");a.href=t.toDataURL("image/png");a.download=\`9701-35-"+CFG.id+"-\${WB.page}.png\`;a.click();};
+window.addEventListener("resize",()=>{if($("#wb").classList.contains("open"))wbSize();});
+
+
+}
+persistInputs();renderScore();showTab(store.get("tab","ov"));
+})();
+<\/script>
+</body>
+</html>
+`;export{e as default};
