@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Language, UserRole } from '../types/chemistry';
 import { examPapers, paperLabel } from '../exams/papers';
 import {
@@ -11,6 +11,7 @@ import {
   benchHowNaoh,
   extraNames,
   findPaperPrep,
+  paperPreps,
 } from '../exams/examPrep';
 import { HazardCode, findRecipe, hazardCodeGhs, todayText } from '../data/solutionRecipes';
 import { getGhsName } from '../data/labLabels';
@@ -18,7 +19,23 @@ import { useStoredState } from '../hooks/useStoredState';
 import { ChemText } from './ChemText';
 import { StaffCard } from './StaffCard';
 import { GhsPictogram } from './art/GhsPictogram';
-import { BellRing, CheckCircle2, ChevronDown, ClipboardCheck, FlaskConical, Lock, Printer, Send, ShieldCheck, TestTubes } from 'lucide-react';
+import { BellRing, CheckCircle2, ChevronDown, ClipboardCheck, FlaskConical, Lock, Printer, Search, Send, ShieldCheck, TestTubes } from 'lucide-react';
+
+// ---- Finding the same and similar solutions across all the papers ----
+interface Found { paperId: string; material: PrepMaterial }
+const allMaterials: Found[] = paperPreps.flatMap((spec) => spec.materials.map((material) => ({ paperId: spec.paperId, material })));
+/** Lower case, ordinary digits, no spaces or punctuation, so «KMnO₄», «kmno4» and «KMnO 4» match. */
+const normalise = (text: string) =>
+  text.toLowerCase().replace(/[₀-₉]/g, (c) => String(c.charCodeAt(0) - 0x2080)).replace(/[\s·.,()\-–:;«»]/g, '');
+const searchText = new Map(allMaterials.map((f) => [f, normalise([f.material.label, f.material.identity.en, f.material.identity.mn, f.material.how.en].join(' '))]));
+const benchText = Object.values(benchDefaults).map((b) => normalise([b.label, b.identity.en, b.identity.mn].join(' ')));
+/** Materials in other papers with exactly the same description: the same solution or substance. */
+const sameElsewhere = (paperId: string, material: PrepMaterial) =>
+  material.identity.en === 'distilled water' ? [] : allMaterials.filter((f) => f.paperId !== paperId && f.material.identity.en === material.identity.en);
+const shortPaper = (paperId: string) => {
+  const p = examPapers.find((item) => item.id === paperId);
+  return p ? `${p.series} ${p.year}` : paperId;
+};
 
 // The lab technician gets the solutions, materials and apparatus of an exam paper ready, following its
 // Confidential Instructions, and the teacher sees how far it has got. Saved in this browser only.
@@ -161,6 +178,19 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
   const [paperId, setPaperId] = useStoredState<string>('chem_lab_exam_prep_paper', examPapers[0].id);
   const [allStates, setAllStates] = useStoredState<Record<string, ExamPrepState>>('chem_lab_exam_prep', {});
   const [openId, setOpenId] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+
+  // Opening a material from the search or from «also in» brings it into view and marks it for a moment.
+  useEffect(() => {
+    if (!focusKey) return;
+    const timer = window.setTimeout(() => document.getElementById(`prep-${focusKey}`)?.scrollIntoView({ block: 'center' }), 50);
+    const clear = window.setTimeout(() => setFocusKey(null), 2500);
+    return () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(clear);
+    };
+  }, [focusKey, paperId]);
 
   if (role === 'student') {
     return (
@@ -224,6 +254,25 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
   };
 
   const started = examPapers.filter((p) => allStates[p.id] && findPaperPrep(p.id));
+
+  const openMaterial = (otherPaperId: string, key: string) => {
+    setPaperId(otherPaperId);
+    setOpenId(key);
+    setFocusKey(key);
+  };
+
+  // Search results, one group per description: a group found in several papers is the same solution,
+  // and the other groups are similar ones (the same substance at another concentration or amount).
+  const needle = normalise(query);
+  const groups = needle.length >= 2
+    ? [...allMaterials.filter((f) => searchText.get(f)!.includes(needle)).reduce((map, f) => {
+        const list = map.get(f.material.identity.en) ?? [];
+        list.push(f);
+        return map.set(f.material.identity.en, list);
+      }, new Map<string, Found[]>()).values()].sort((a, b) => b.length - a.length || a[0].material.identity.en.localeCompare(b[0].material.identity.en))
+    : [];
+  const benchMatch = needle.length >= 2 && benchText.some((text) => text.includes(needle));
+  const chipClass = 'inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-[11px] text-slate-700 hover:border-cyan-400 hover:bg-cyan-50 transition-colors';
 
   const prepDetails = (id: string, how: Bi | undefined, recipeId: string | undefined) => {
     const recipe = findRecipe(recipeId);
@@ -322,6 +371,63 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
         </p>
       </StaffCard>
 
+      {/* Finding a solution in every paper */}
+      <StaffCard
+        icon={Search}
+        title={en ? 'Find a Solution' : 'Уусмалаар хайх'}
+        subtitle={en
+          ? 'Type a name or formula, such as thiosulfate or KMnO4, to see the same and similar solutions in every paper.'
+          : 'Нэр эсвэл томьёо бичнэ үү (жишээ нь тиосульфат, KMnO4). Бүх шалгалтаас ижил болон төстэй уусмалыг гаргана.'}
+        className="print:hidden"
+      >
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          aria-label={en ? 'Solution name or formula' : 'Уусмалын нэр эсвэл томьёо'}
+          placeholder={en ? 'e.g. sodium thiosulfate, KMnO4, FeSO4' : 'жишээ нь натрийн тиосульфат, KMnO4, FeSO4'}
+          className={inputClass}
+        />
+        {needle.length >= 2 && (
+          <div className="space-y-3">
+            <p className="text-[11px] text-slate-500">
+              {groups.length === 0
+                ? (en ? 'No exam material matches this.' : 'Тохирох шалгалтын бодис олдсонгүй.')
+                : en
+                  ? `${groups.length} matching description${groups.length === 1 ? '' : 's'}. «Same solution» means the identical description in several papers; the rest are similar: the same substance at another concentration or amount.`
+                  : `${groups.length} тохирох тайлбар. «Ижил уусмал» нь хэд хэдэн шалгалтад яг ижил тайлбартай; бусад нь төстэй: ижил бодис, өөр концентрац эсвэл хэмжээтэй.`}
+            </p>
+            {benchMatch && (
+              <p className="p-2.5 rounded-lg bg-cyan-50 border border-cyan-100 text-[11px] text-cyan-900">
+                {en ? 'This also matches a bench reagent, which every paper needs.' : 'Энэ нь бүх шалгалтад хэрэгтэй ширээний урвалжтай мөн таарч байна.'}
+              </p>
+            )}
+            <ul className="space-y-2">
+              {groups.slice(0, 30).map((group) => (
+                <li key={group[0].material.identity.en} className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold text-slate-900"><ChemText text={t(group[0].material.identity)} /></span>
+                    {group.length > 1 && (
+                      <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-900 border border-emerald-200">
+                        {en ? `Same solution · ${group.length} papers` : `Ижил уусмал · ${group.length} шалгалт`}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.map((f) => (
+                      <button key={`${f.paperId}-${f.material.id}`} type="button" onClick={() => openMaterial(f.paperId, `m:${f.material.id}`)} className={chipClass}>
+                        <strong className="text-slate-900">{shortPaper(f.paperId)}</strong>
+                        <span>· {f.material.label} · {perCandidateText(f.material, en)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </StaffCard>
+
       {!spec || !progress ? (
         <p className="p-6 rounded-xl border border-dashed border-slate-300 text-center text-xs text-slate-600">
           {en ? 'There are no preparation details for this paper yet.' : 'Энэ шалгалтын бэлтгэлийн мэдээлэл одоогоор алга.'}
@@ -417,8 +523,9 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
               {spec.materials.map((material) => {
                 const key = `m:${material.id}`;
                 const status = state.items[key]?.status ?? 'todo';
+                const elsewhere = sameElsewhere(paper.id, material);
                 return (
-                  <li key={key} className={`p-3 rounded-xl border border-l-4 text-xs break-inside-avoid ${status === 'ready' ? 'border-l-emerald-500 border-emerald-100 bg-emerald-50/30' : status === 'doing' ? 'border-l-amber-400 border-slate-200 bg-white' : 'border-l-slate-300 border-slate-200 bg-white'}`}>
+                  <li id={`prep-${key}`} key={key} className={`p-3 rounded-xl border border-l-4 text-xs break-inside-avoid scroll-mt-24 transition-shadow ${focusKey === key ? 'ring-2 ring-cyan-500 ring-offset-2' : ''} ${status === 'ready' ? 'border-l-emerald-500 border-emerald-100 bg-emerald-50/30' : status === 'doing' ? 'border-l-amber-400 border-slate-200 bg-white' : 'border-l-slate-300 border-slate-200 bg-white'}`}>
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div className="min-w-0 space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
@@ -435,6 +542,17 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
                       </div>
                       <StatusPicker value={status} onChange={(next) => setStatus(key, next)} en={en} name={material.label} />
                     </div>
+                    {elsewhere.length > 0 && (
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5 print:hidden">
+                        <span className="text-[11px] font-semibold text-emerald-800">{en ? 'Same in' : 'Мөн ашигласан'}:</span>
+                        {elsewhere.map((f) => (
+                          <button key={`${f.paperId}-${f.material.id}`} type="button" onClick={() => openMaterial(f.paperId, `m:${f.material.id}`)} className={chipClass}>
+                            <strong className="text-slate-900">{shortPaper(f.paperId)}</strong>
+                            <span>· {f.material.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                     {prepDetails(key, material.how, material.recipe)}
                   </li>
                 );

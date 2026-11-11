@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import interFontUrl from 'inter-ui/variable/InterVariable.woff2?url';
 import { Language, UserRole } from '../types/chemistry';
 import { examPapers, paperLabel } from '../exams/papers';
+import { questionsOn, topics } from '../exams/examTopics';
 import { useStoredState } from '../hooks/useStoredState';
 
 // Each paper is a complete page with its own script, so a frame keeps it apart from the rest of the site.
@@ -31,6 +32,7 @@ export const ExamPractice: React.FC<{ language: Language; role: UserRole }> = ({
   const en = language === 'en';
   const staff = role !== 'student';
   const [paperId, setPaperId] = useStoredState<string>('chem_lab_exam_paper', examPapers[0].id);
+  const [topicKey, setTopicKey] = useStoredState<string>('chem_lab_exam_topic', '');
   const paper = examPapers.find((p) => p.id === paperId) ?? examPapers[0];
   const [loaded, setLoaded] = useState<{ id: string; html: string } | null>(null);
 
@@ -47,39 +49,80 @@ export const ExamPractice: React.FC<{ language: Language; role: UserRole }> = ({
   const page = useMemo(() => (loaded && loaded.id === paper.id ? paperIn(loaded.html, language, staff) : null), [loaded, paper.id, language, staff]);
   const label = paperLabel(paper, language);
 
+  // With a topic chosen, only the papers that test it are listed, and the paper opens at its first question on it.
+  const topic = topics.find((item) => item.key === topicKey) ?? null;
+  const listed = topic ? examPapers.filter((p) => questionsOn(p.id, topic.key).length > 0) : examPapers;
+  const target = topic ? questionsOn(paper.id, topic.key)[0] : undefined;
+  const optionLabel = (p: (typeof examPapers)[number]) => {
+    if (!topic) return paperLabel(p, language);
+    const qs = questionsOn(p.id, topic.key);
+    return `${paperLabel(p, language)} · ${en ? `Q${qs.join(', Q')}` : `${qs.join(', ')}-р асуулт`}`;
+  };
+  const chooseTopic = (key: string) => {
+    setTopicKey(key);
+    const chosen = topics.find((item) => item.key === key);
+    if (chosen && questionsOn(paper.id, chosen.key).length === 0) {
+      const first = examPapers.find((p) => questionsOn(p.id, chosen.key).length > 0);
+      if (first) setPaperId(first.id);
+    }
+  };
+
+  const frame = useRef<HTMLIFrameElement>(null);
+  const [frameReady, setFrameReady] = useState<string | null>(null);
+  useEffect(() => {
+    if (!target || frameReady !== paper.id) return;
+    frame.current?.contentDocument?.querySelector<HTMLButtonElement>(`#tabs button[data-tab="q${target}"]`)?.click();
+  }, [target, frameReady, paper.id]);
+
+  const selectClass = 'min-w-0 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500';
+
   return (
-    <div>
-      <div className="h-12 px-4 sm:px-6 flex items-center gap-3 bg-white border-b border-slate-200">
-        <label htmlFor="exam-paper" className="text-xs font-semibold text-slate-600 whitespace-nowrap">
-          {en ? 'Exam paper' : 'Шалгалт'}
-        </label>
-        <select
-          id="exam-paper"
-          value={paper.id}
-          onChange={(event) => setPaperId(event.target.value)}
-          className="min-w-0 max-w-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500"
-        >
-          {years.map((year) => (
-            <optgroup key={year} label={String(year)}>
-              {examPapers.filter((p) => p.year === year).map((p) => (
-                <option key={p.id} value={p.id}>{paperLabel(p, language)}</option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+    <div className="h-[calc(100dvh-4rem)] lg:h-dvh flex flex-col">
+      <div className="min-h-12 px-4 sm:px-6 py-2 flex flex-wrap items-center gap-x-4 gap-y-2 bg-white border-b border-slate-200">
+        <div className="flex items-center gap-2 min-w-0 max-w-full">
+          <label htmlFor="exam-topic" className="text-xs font-semibold text-slate-600 whitespace-nowrap">
+            {en ? 'Topic' : 'Сэдэв'}
+          </label>
+          <select id="exam-topic" value={topic?.key ?? ''} onChange={(event) => chooseTopic(event.target.value)} className={`${selectClass} max-w-[16rem]`}>
+            <option value="">{en ? 'All topics' : 'Бүх сэдэв'}</option>
+            {topics.map((item) => {
+              const count = examPapers.filter((p) => questionsOn(p.id, item.key).length > 0).length;
+              return <option key={item.key} value={item.key}>{`${item[language]} (${count})`}</option>;
+            })}
+          </select>
+        </div>
+        <div className="flex items-center gap-2 min-w-0 max-w-full">
+          <label htmlFor="exam-paper" className="text-xs font-semibold text-slate-600 whitespace-nowrap">
+            {en ? 'Exam paper' : 'Шалгалт'}
+          </label>
+          <select id="exam-paper" value={paper.id} onChange={(event) => setPaperId(event.target.value)} className={`${selectClass} max-w-xs`}>
+            {years.map((year) => {
+              const inYear = listed.filter((p) => p.year === year);
+              return inYear.length ? (
+                <optgroup key={year} label={String(year)}>
+                  {inYear.map((p) => <option key={p.id} value={p.id}>{optionLabel(p)}</option>)}
+                </optgroup>
+              ) : null;
+            })}
+          </select>
+        </div>
         <span className="hidden sm:inline text-xs text-slate-500 truncate">
-          {en ? `${examPapers.length} papers, newest first` : `${examPapers.length} шалгалт, сүүлийнх нь эхэндээ`}
+          {topic
+            ? (en ? `${listed.length} papers on this topic, newest first` : `Энэ сэдвээр ${listed.length} шалгалт, сүүлийнх нь эхэндээ`)
+            : (en ? `${examPapers.length} papers, newest first` : `${examPapers.length} шалгалт, сүүлийнх нь эхэндээ`)}
         </span>
       </div>
       {page ? (
         <iframe
+          ref={frame}
           key={paper.id}
           title={en ? `Exam practice: ${label}` : `Шалгалтын дадлага: ${label}`}
           srcDoc={page}
-          className="w-full h-[calc(100dvh-7rem)] lg:h-[calc(100dvh-3rem)] block border-0"
+          onLoad={() => setFrameReady(paper.id)}
+          className="w-full flex-1 min-h-0 block border-0"
         />
       ) : (
-        <div className="h-[calc(100dvh-7rem)] lg:h-[calc(100dvh-3rem)] flex items-center justify-center text-sm text-slate-500">
+        <div className="flex-1 flex items-center justify-center text-sm text-slate-500">
           {en ? 'Opening the paper…' : 'Шалгалтыг нээж байна…'}
         </div>
       )}
