@@ -8,6 +8,7 @@ import { HeroBanner } from './components/HeroBanner';
 import { ControlCenter } from './components/ControlCenter';
 import { SafetyHub } from './components/SafetyHub';
 import { PracticalLessons } from './components/PracticalLessons';
+import { ExamPractice } from './components/ExamPractice';
 import { GlasswareCatalog } from './components/GlasswareCatalog';
 import { ChemicalSafetyDb } from './components/ChemicalSafetyDb';
 import { ResultsAnalysisStudio } from './components/ResultsAnalysisStudio';
@@ -48,6 +49,7 @@ export default function App() {
   const [role, setRole] = useState<UserRole>('student');
   const [currentTab, setCurrentTab] = useState<NavigationTab>('dashboard');
   const [prepJobs, setPrepJobs] = useStoredState<PrepJob[]>('chem_lab_prep_jobs', []);
+  const [examVisited, setExamVisited] = useState(false);
 
   // Pre-lab authorization checklist state
   const [preLabChecks, setPreLabChecks] = useState(loadPreLabChecks);
@@ -68,6 +70,10 @@ export default function App() {
       // Storage can be blocked; the checklist then lasts only until reload.
     }
   }, [preLabChecks]);
+
+  useEffect(() => {
+    if (currentTab === 'exam_practice') setExamVisited(true);
+  }, [currentTab]);
 
   // Emergency Modal state
   const [emergencyModalOpen, setEmergencyModalOpen] = useState(false);
@@ -106,6 +112,9 @@ export default function App() {
     setCurrentTab('notebook');
   };
 
+  // The exam paper fills the screen under the navigation, so it has no page margins or footer.
+  const isFullScreenTab = currentTab === 'exam_practice';
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans lg:pl-60 print:pl-0">
       {/* Navigation Top Bar strictly adhering to Top Bar Contract */}
@@ -125,7 +134,7 @@ export default function App() {
       )}
 
       {/* Main Workspace Stage */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className={isFullScreenTab ? 'flex-1' : 'flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8'}>
         {currentTab === 'dashboard' && (
           <ControlCenter
             language={language}
@@ -148,6 +157,13 @@ export default function App() {
             onTestPassed={handleClearQuiz}
             onOpenSafetyRules={() => setCurrentTab('safety_hub')}
           />
+        )}
+
+        {/* Stays open once visited, so a titration in progress survives a look at another page. */}
+        {examVisited && (
+          <div hidden={currentTab !== 'exam_practice'}>
+            <ExamPractice language={language} role={role} />
+          </div>
         )}
 
         {currentTab === 'apparatus' && (
@@ -189,7 +205,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 mt-16 py-8 print:hidden">
+      {!isFullScreenTab && <footer className="bg-white border-t border-slate-200 mt-16 py-8 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3 text-xs text-slate-500 font-mono">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
@@ -203,7 +219,7 @@ export default function App() {
               : 'Бие даасан сургалтын хэрэгсэл, Cambridge эсвэл хэвлэлийн газрын албан ёсны бүтээгдэхүүн биш. Багшийнхаа заавар, сургуулийнхаа лабораторийн дүрмийг үргэлж мөрдөнө үү. Анх нээсний дараа энэ сайт интернэтгүй ч нээгдэнэ.'}
           </p>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 }

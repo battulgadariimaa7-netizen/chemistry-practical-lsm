@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { Language, PrepJob, UserRole } from '../types/chemistry';
 import { getTranslation } from '../data/translations';
 import { mockInventory, mockBreakage } from '../data/mockManagement';
@@ -10,6 +10,9 @@ import { SolutionPrep } from './SolutionPrep';
 import { StudentReports } from './StudentReports';
 import { SafetyArt } from './art/SafetyArt';
 import { BellRing, CheckCircle2 } from 'lucide-react';
+
+// Exam preparation is loaded only when its tab is opened.
+const ExamPrep = lazy(() => import('./ExamPrep').then((m) => ({ default: m.ExamPrep })));
 
 interface TeacherLabDashboardProps {
   language: Language;
@@ -85,7 +88,7 @@ const assessmentRubric = [
   },
 ];
 
-type StaffTab = 'solutions' | 'equipment' | 'journal' | 'rubric' | 'reports';
+type StaffTab = 'solutions' | 'exam' | 'equipment' | 'journal' | 'rubric' | 'reports';
 
 export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
   language,
@@ -111,6 +114,7 @@ export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
 
   const tabs: { id: StaffTab; label: string }[] = [
     { id: 'solutions', label: t.management.tabSolutions },
+    { id: 'exam', label: en ? 'Exam Preparation' : 'Шалгалтын бэлтгэл' },
     { id: 'equipment', label: t.management.tabEquipment },
     { id: 'journal', label: t.management.tabJournal },
     { id: 'rubric', label: t.management.tabGrading },
@@ -214,6 +218,9 @@ export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
 
       {/* SOLUTION PREPARATION */}
       {activeTab === 'solutions' && <SolutionPrep language={language} jobs={prepJobs} onChangeJobs={onChangePrepJobs} />}
+
+      {/* EXAM PREPARATION */}
+      {activeTab === 'exam' && <Suspense fallback={<p className="text-sm text-slate-500">{en ? 'Loading…' : 'Ачаалж байна…'}</p>}><ExamPrep language={language} role={role} /></Suspense>}
 
       {/* GLASSWARE, EQUIPMENT AND BREAKAGES */}
       {activeTab === 'equipment' && (

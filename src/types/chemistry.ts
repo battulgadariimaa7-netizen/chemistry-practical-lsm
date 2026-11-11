@@ -6,6 +6,7 @@ export type NavigationTab =
   | 'dashboard'
   | 'safety_hub'
   | 'lessons'
+  | 'exam_practice'
   | 'apparatus'
   | 'chemicals'
   | 'results'
