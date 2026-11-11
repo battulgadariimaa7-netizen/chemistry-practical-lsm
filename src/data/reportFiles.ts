@@ -2,7 +2,8 @@ import { LabNotebookEntry } from '../types/chemistry';
 
 // Students and teachers exchange reports as files, because the site has no server or accounts.
 const FILE_TYPE = 'chemistry-practical-report';
-const MAX_FILE_BYTES = 1_000_000;
+// Reports copied from an exam paper can carry whiteboard pictures, so files may be a few megabytes.
+const MAX_FILE_BYTES = 6_000_000;
 
 export const ao3Skills = [
   { id: 'mmo', labelEn: 'Manipulation, Measurement & Observation', labelMn: 'Ажиллагаа, хэмжилт ба ажиглалт' },
@@ -54,8 +55,17 @@ export const readReportFile = async (file: File): Promise<LabNotebookEntry> => {
   if (parsed?.type !== FILE_TYPE || !textFields.every(isText) || !measurementsValid) {
     throw new Error('invalid');
   }
+  // The exam fields are optional: anything that is not plain text or a JPEG/PNG picture is dropped.
+  const whiteboardImages = Array.isArray(entry.whiteboardImages)
+    ? entry.whiteboardImages.filter(
+        (wb: Record<string, unknown>) => isText(wb?.page) && isText(wb?.image) && /^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(wb.image as string)
+      )
+    : undefined;
   return {
     ...entry,
+    examPaperId: isText(entry.examPaperId) ? entry.examPaperId : undefined,
+    examScore: isText(entry.examScore) ? entry.examScore : undefined,
+    whiteboardImages: whiteboardImages?.length ? whiteboardImages : undefined,
     status: entry.status === 'graded' ? 'graded' : 'submitted',
   };
 };

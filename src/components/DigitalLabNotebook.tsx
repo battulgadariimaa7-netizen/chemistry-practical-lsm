@@ -25,7 +25,20 @@ interface DigitalLabNotebookProps {
   language: Language;
   preloadedExperiment?: PracticalExperiment | null;
   onPreloadUsed?: () => void;
+  /** A finished exam paper copied from Exam Practice. */
+  preloadedEntry?: LabNotebookEntry | null;
+  onEntryUsed?: () => void;
 }
+
+type ExamExtras = Pick<LabNotebookEntry, 'examPaperId' | 'examScore' | 'whiteboardImages'>;
+const ENTRIES_KEY = 'chem_lab_notebook_entries';
+const readEntries = (): LabNotebookEntry[] => {
+  try {
+    return JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]');
+  } catch {
+    return [];
+  }
+};
 
 const DRAFT_KEY = 'chem_lab_notebook_draft';
 const CUSTOM_TOPIC = 'custom';
@@ -66,6 +79,8 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
   language,
   preloadedExperiment,
   onPreloadUsed,
+  preloadedEntry,
+  onEntryUsed,
 }) => {
   const t = getTranslation(language);
 
@@ -86,6 +101,12 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
   const [savedEntries, setSavedEntries] = useState<LabNotebookEntry[]>([]);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [activeEntry, setActiveEntry] = useState<LabNotebookEntry | null>(null);
+  // The marks and whiteboard pictures of a report copied from an exam paper.
+  const [examExtras, setExamExtras] = useState<ExamExtras>(() => ({
+    examPaperId: initial.examPaperId,
+    examScore: initial.examScore,
+    whiteboardImages: initial.whiteboardImages,
+  }));
   const gradedFileInput = useRef<HTMLInputElement>(null);
 
   // Keep what the student has written when they visit another page or reload.
@@ -93,12 +114,12 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
     try {
       localStorage.setItem(
         DRAFT_KEY,
-        JSON.stringify({ studentName, date, experimentTitle, practicalId: topicId, chapterCode, aim, equipmentUsed, measurements, observations, calculations, conclusion, evaluations })
+        JSON.stringify({ studentName, date, experimentTitle, practicalId: topicId, chapterCode, aim, equipmentUsed, measurements, observations, calculations, conclusion, evaluations, ...examExtras })
       );
     } catch {
       // Storage can be full or blocked; the draft then lasts only while this page is open.
     }
-  }, [studentName, date, experimentTitle, topicId, chapterCode, aim, equipmentUsed, measurements, observations, calculations, conclusion, evaluations]);
+  }, [studentName, date, experimentTitle, topicId, chapterCode, aim, equipmentUsed, measurements, observations, calculations, conclusion, evaluations, examExtras]);
 
   // While the worked example is untouched, follow the language switch.
   useEffect(() => {
@@ -160,7 +181,7 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
   // Load from LocalStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('chem_lab_notebook_entries');
+      const stored = localStorage.getItem(ENTRIES_KEY);
       if (stored) {
         setSavedEntries(JSON.parse(stored));
       }
@@ -168,6 +189,23 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
       // ignore
     }
   }, []);
+
+  // A paper copied from Exam Practice is kept in the list and opened, ready to be sent to the teacher.
+  useEffect(() => {
+    if (!preloadedEntry) return;
+    const isSampleName = [notebookSamples.en.studentName, notebookSamples.mn.studentName].includes(studentName);
+    const entry = { ...preloadedEntry, studentName: preloadedEntry.studentName || (isSampleName ? '' : studentName) };
+    storeEntries([entry, ...readEntries().filter((e) => e.id !== entry.id)]);
+    handleLoadEntry(entry);
+    setSaveStatus(
+      language === 'en'
+        ? 'Copied from Exam Practice. Check your name, then press «Send to teacher (file)».'
+        : 'Шалгалтын дадлагаас хуулагдлаа. Нэрээ шалгаад «Багшид илгээх (файл)» товчийг дарна уу.'
+    );
+    setTimeout(() => setSaveStatus(null), 9000);
+    onEntryUsed?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preloadedEntry]);
 
   const handleAddMeasurementRow = () => {
     setMeasurements((prev) => [...prev, newMeasurementRow(language)]);
@@ -202,7 +240,7 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
   const storeEntries = (updated: LabNotebookEntry[]) => {
     setSavedEntries(updated);
     try {
-      localStorage.setItem('chem_lab_notebook_entries', JSON.stringify(updated));
+      localStorage.setItem(ENTRIES_KEY, JSON.stringify(updated));
     } catch (e) {
       // ignore
     }
@@ -223,6 +261,7 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
     conclusion,
     evaluations,
     status,
+    ...(examExtras.examPaperId ? examExtras : {}),
   });
 
   // The worked example belongs to practical 1.1, so it goes when another lesson is chosen. The student's own notes stay.
@@ -240,6 +279,7 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
   };
 
   const applyLesson = (practical: PracticalExperiment) => {
+    setExamExtras({});
     setTopicId(practical.id);
     setChapterCode(practical.chapterCode);
     setExperimentTitle(lessonTitle(practical, language));
@@ -306,6 +346,7 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
 
   const handleClearForm = () => {
     setActiveEntry(null);
+    setExamExtras({});
     setExperimentTitle('');
     setTopicId('');
     setChapterCode('');
@@ -332,6 +373,7 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
     setCalculations(entry.calculations);
     setConclusion(entry.conclusion);
     setEvaluations(entry.evaluations);
+    setExamExtras({ examPaperId: entry.examPaperId, examScore: entry.examScore, whiteboardImages: entry.whiteboardImages });
   };
 
   return (
@@ -434,6 +476,18 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
                 {language === 'en' ? 'Teacher grade' : 'Багшийн дүн'}: {activeEntry.gradeScore}
               </div>
               {activeEntry.teacherRemarks && <p className="whitespace-pre-wrap">{activeEntry.teacherRemarks}</p>}
+            </div>
+          )}
+
+          {/* A report copied from an exam paper */}
+          {examExtras.examPaperId && (
+            <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 text-xs text-cyan-950 flex flex-wrap items-center justify-between gap-2">
+              <span className="font-semibold">{language === 'en' ? 'Copied from Exam Practice' : 'Шалгалтын дадлагаас хуулсан'}</span>
+              {examExtras.examScore && (
+                <span className="px-2 py-0.5 rounded-full bg-white border border-cyan-200 font-bold tabular-nums">
+                  {language === 'en' ? 'Marks' : 'Оноо'}: {examExtras.examScore}
+                </span>
+              )}
             </div>
           )}
 
@@ -682,6 +736,31 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
               />
             </div>
           </div>
+
+          {/* Whiteboard pages copied with an exam paper */}
+          {!!examExtras.whiteboardImages?.length && (
+            <div className="space-y-2">
+              <h4 className="block text-xs font-bold uppercase text-slate-500">{language === 'en' ? 'Whiteboard' : 'Самбар'}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {examExtras.whiteboardImages.map((wb, i) => (
+                  <figure key={`${wb.page}-${i}`} className="border border-slate-200 rounded-lg overflow-hidden bg-white break-inside-avoid">
+                    <img src={wb.image} alt={`${language === 'en' ? 'Whiteboard' : 'Самбар'}: ${wb.page}`} className="w-full h-auto" />
+                    <figcaption className="flex items-center justify-between gap-2 px-2.5 py-1.5 text-[11px] text-slate-600 border-t border-slate-100">
+                      <span>{wb.page}</span>
+                      <button
+                        type="button"
+                        onClick={() => setExamExtras((x) => ({ ...x, whiteboardImages: x.whiteboardImages?.filter((_, j) => j !== i) }))}
+                        className="inline-flex items-center gap-1 text-slate-400 hover:text-rose-600 print:hidden"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>{language === 'en' ? 'Leave out' : 'Хасах'}</span>
+                      </button>
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column: Saved Reports / Previous Submissions (4 cols) */}

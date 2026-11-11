@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import interFontUrl from 'inter-ui/variable/InterVariable.woff2?url';
-import { Language, UserRole } from '../types/chemistry';
+import { LabNotebookEntry, Language, UserRole } from '../types/chemistry';
 import { examPapers, paperLabel } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
+import { captureExam } from '../exams/examCapture';
+import { NotebookPen } from 'lucide-react';
 import { useStoredState } from '../hooks/useStoredState';
 
 // Each paper is a complete page with its own script, so a frame keeps it apart from the rest of the site.
@@ -28,7 +30,14 @@ const paperIn = (html: string, language: Language, staff: boolean) => {
 
 const years = [...new Set(examPapers.map((p) => p.year))];
 
-export const ExamPractice: React.FC<{ language: Language; role: UserRole }> = ({ language, role }) => {
+interface ExamPracticeProps {
+  language: Language;
+  role: UserRole;
+  /** Takes the student's work in the open paper to the Lab Notebook, from where it is sent to the teacher. */
+  onCopyToNotebook: (entry: LabNotebookEntry) => void;
+}
+
+export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCopyToNotebook }) => {
   const en = language === 'en';
   const staff = role !== 'student';
   const [paperId, setPaperId] = useStoredState<string>('chem_lab_exam_paper', examPapers[0].id);
@@ -106,11 +115,24 @@ export const ExamPractice: React.FC<{ language: Language; role: UserRole }> = ({
             })}
           </select>
         </div>
-        <span className="hidden sm:inline text-xs text-slate-500 truncate">
+        <span className="hidden xl:inline text-xs text-slate-500 truncate">
           {topic
             ? (en ? `${listed.length} papers on this topic, newest first` : `Энэ сэдвээр ${listed.length} шалгалт, сүүлийнх нь эхэндээ`)
             : (en ? `${examPapers.length} papers, newest first` : `${examPapers.length} шалгалт, сүүлийнх нь эхэндээ`)}
         </span>
+        <button
+          type="button"
+          disabled={frameReady !== paper.id}
+          onClick={() => {
+            const entry = frame.current && captureExam(frame.current, paper, language);
+            if (entry) onCopyToNotebook(entry);
+          }}
+          title={en ? 'Your answers, marks and whiteboard go to the Lab Notebook, from where you send them to your teacher.' : 'Хариулт, оноо, самбараа цахим дэвтэрт хуулж, тэндээсээ багшдаа илгээнэ.'}
+          className="sm:ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-800 hover:bg-cyan-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+        >
+          <NotebookPen className="w-3.5 h-3.5" />
+          <span>{en ? 'Copy to Lab Notebook' : 'Цахим дэвтэрт хуулах'}</span>
+        </button>
       </div>
       {page ? (
         <iframe

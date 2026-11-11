@@ -174,15 +174,23 @@ export const StudentReports: React.FC<StudentReportsProps> = ({ language }) => {
             <>
               <div className="border-b border-slate-200 pb-3">
                 <div className="text-xs text-slate-500">
-                  {selected.date} · {language === 'en' ? 'Chapter' : 'Бүлэг'} {selected.chapterCode}
+                  {selected.date}
+                  {selected.chapterCode && <> · {language === 'en' ? 'Chapter' : 'Бүлэг'} {selected.chapterCode}</>}
                 </div>
                 <h4 className="text-lg font-bold text-slate-900">{selected.experimentTitle}</h4>
                 <div className="text-sm text-slate-600">{selected.studentName}</div>
+                {selected.examScore && (
+                  <div className="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-xs text-cyan-900">
+                    <span>{language === 'en' ? 'Exam Practice marks' : 'Шалгалтын дадлагын оноо'}:</span>
+                    <strong className="tabular-nums">{selected.examScore}</strong>
+                  </div>
+                )}
               </div>
 
               {section(language === 'en' ? 'Aim' : 'Зорилго', selected.aim)}
               {section(language === 'en' ? 'Apparatus' : 'Багаж', selected.equipmentUsed)}
 
+              {selected.measurements.length > 0 && (
               <div className="overflow-x-auto border border-slate-200 rounded-lg">
                 <table className="w-full text-xs text-left">
                   <thead className="bg-slate-50 text-slate-700 text-[11px] border-b border-slate-200">
@@ -209,11 +217,26 @@ export const StudentReports: React.FC<StudentReportsProps> = ({ language }) => {
                   </tbody>
                 </table>
               </div>
+              )}
 
-              {section(language === 'en' ? 'Observations' : 'Ажиглалт', selected.observations)}
+              {section(selected.examPaperId ? (language === 'en' ? 'Answers' : 'Хариултууд') : (language === 'en' ? 'Observations' : 'Ажиглалт'), selected.observations)}
               {section(language === 'en' ? 'Calculations' : 'Тооцоолол', selected.calculations)}
-              {section(language === 'en' ? 'Conclusion' : 'Дүгнэлт', selected.conclusion)}
+              {section(selected.examPaperId ? (language === 'en' ? 'Marks' : 'Оноо') : (language === 'en' ? 'Conclusion' : 'Дүгнэлт'), selected.conclusion)}
               {section(language === 'en' ? 'Evaluation' : 'Үнэлгээ', selected.evaluations)}
+
+              {!!selected.whiteboardImages?.length && (
+                <div className="space-y-2">
+                  <h5 className="text-xs font-bold uppercase text-slate-500">{language === 'en' ? 'Whiteboard' : 'Самбар'}</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selected.whiteboardImages.map((wb, i) => (
+                      <figure key={`${wb.page}-${i}`} className="border border-slate-200 rounded-lg overflow-hidden bg-white">
+                        <img src={wb.image} alt={`${language === 'en' ? 'Whiteboard' : 'Самбар'}: ${wb.page}`} className="w-full h-auto" />
+                        <figcaption className="px-2.5 py-1.5 text-[11px] text-slate-600 border-t border-slate-100">{wb.page}</figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
                 <div className="flex items-center justify-between">

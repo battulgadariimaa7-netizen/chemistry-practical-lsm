@@ -164,6 +164,12 @@ export interface LabNotebookEntry {
   gradeScore?: string;
   teacherRemarks?: string;
   skillScores?: Record<string, number>;
+  /** Set when the entry was copied from a paper in Exam Practice. */
+  examPaperId?: string;
+  /** The marks the paper gave, such as "23 / 40". */
+  examScore?: string;
+  /** The pages of the paper's whiteboard that have drawing on them, as JPEG images. */
+  whiteboardImages?: { page: string; image: string }[];
 }
 
 export interface InventoryItem {
