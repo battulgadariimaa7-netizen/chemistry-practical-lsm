@@ -5,6 +5,7 @@ import { chaptersData } from '../data/chapters';
 import { getEquipmentName } from '../data/labLabels';
 import { newMeasurementRow, notebookSamples } from '../data/notebookSamples';
 import { downloadReport, readReportFile, statusLabel } from '../data/reportFiles';
+import { getServerUrl, sendReport } from '../data/reportServer';
 import { pagePhotos } from '../data/pagePhotos';
 import { PhotoCredit } from './PhotoCredit';
 import {
@@ -315,15 +316,42 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
     showStatus(language === 'en' ? 'Report saved successfully!' : 'Тайлан амжилттай хадгалагдлаа!');
   };
 
-  // No server yet: "sending" downloads a file the student passes to the teacher.
-  const handleSendToTeacher = () => {
+  // With the teacher's report inbox connected, the report goes straight to the teacher's Google Sheet.
+  // Otherwise, or if the inbox cannot be reached, it is downloaded as a file for the student to pass on.
+  const serverUrl = getServerUrl();
+  const [sending, setSending] = useState(false);
+  const handleSendToTeacher = async () => {
+    const name = studentName.trim();
+    if (!name || [notebookSamples.en.studentName, notebookSamples.mn.studentName].includes(name)) {
+      showStatus(language === 'en' ? 'Write your own name first, so your teacher knows whose report it is.' : 'Эхлээд өөрийн нэрээ бичнэ үү, тэгвэл багш хэний тайлан болохыг мэднэ.');
+      return;
+    }
     const entry = buildEntry('submitted');
+    if (serverUrl) {
+      setSending(true);
+      try {
+        const reply = await sendReport(serverUrl, entry);
+        if (reply.ok) {
+          storeEntries([entry, ...savedEntries]);
+          showStatus(language === 'en' ? 'Sent. Your teacher can now see this report.' : 'Илгээгдлээ. Багш таны тайланг одоо харах боломжтой.');
+          return;
+        }
+      } catch {
+        // Offline or the inbox is not reachable: fall back to the file below.
+      } finally {
+        setSending(false);
+      }
+    }
     storeEntries([entry, ...savedEntries]);
     downloadReport(entry);
     showStatus(
-      language === 'en'
-        ? 'Report file downloaded. Send this file to your teacher.'
-        : 'Тайлангийн файл татагдлаа. Энэ файлыг багшдаа илгээнэ үү.'
+      serverUrl
+        ? language === 'en'
+          ? 'Your teacher’s inbox could not be reached, so the report file was downloaded. Send this file to your teacher.'
+          : 'Багшийн хайрцагт хүрч чадсангүй тул тайлангийн файл татагдлаа. Энэ файлыг багшдаа илгээнэ үү.'
+        : language === 'en'
+          ? 'Report file downloaded. Send this file to your teacher.'
+          : 'Тайлангийн файл татагдлаа. Энэ файлыг багшдаа илгээнэ үү.'
     );
   };
 
@@ -404,10 +432,19 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
 
             <button
               onClick={handleSendToTeacher}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200"
+              disabled={sending}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg transition-colors border disabled:opacity-60 ${
+                serverUrl ? 'text-white bg-emerald-700 hover:bg-emerald-800 border-emerald-700' : 'text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200'
+              }`}
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{language === 'en' ? 'Send to teacher (file)' : 'Багшид илгээх (файл)'}</span>
+              <span>
+                {sending
+                  ? (language === 'en' ? 'Sending…' : 'Илгээж байна…')
+                  : serverUrl
+                    ? (language === 'en' ? 'Send to teacher' : 'Багшид илгээх')
+                    : (language === 'en' ? 'Send to teacher (file)' : 'Багшид илгээх (файл)')}
+              </span>
             </button>
 
             <button
@@ -427,6 +464,12 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
             </button>
           </div>
         </div>
+
+        <p className="mt-3 text-[11px] text-slate-500">
+          {serverUrl
+            ? (language === 'en' ? 'Connected: «Send to teacher» puts your report straight into your teacher’s Google Sheet.' : 'Холбогдсон: «Багшид илгээх» нь тайланг багшийн Google Sheets руу шууд илгээнэ.')
+            : (language === 'en' ? 'Not connected to your teacher’s inbox: reports are sent as a file. Open the class link from your teacher once to connect.' : 'Багшийн хайрцагтай холбогдоогүй тул тайлан файлаар илгээгдэнэ. Холбогдохын тулд багшийн өгсөн ангийн холбоосыг нэг удаа нээнэ үү.')}
+        </p>
 
         {saveStatus && (
           <div className="mt-3 p-2 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded-lg flex items-center gap-2">

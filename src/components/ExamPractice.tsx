@@ -1,11 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import interFontUrl from 'inter-ui/variable/InterVariable.woff2?url';
 import { LabNotebookEntry, Language, UserRole } from '../types/chemistry';
-import { examPapers, paperLabel } from '../exams/papers';
+import { examPapers, paperLabel, questionPaper } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
 import { captureExam } from '../exams/examCapture';
-import { NotebookPen } from 'lucide-react';
+import { FileText, NotebookPen } from 'lucide-react';
 import { useStoredState } from '../hooks/useStoredState';
+
+// The question paper viewer brings in PDF.js, so it is loaded only when a question paper is opened.
+const QpViewer = lazy(() => import('./QpViewer'));
 
 // Each paper is a complete page with its own script, so a frame keeps it apart from the rest of the site.
 // It fills the screen under the navigation and the paper chooser: its whiteboard and buttons are placed against the screen.
@@ -17,8 +20,32 @@ import { useStoredState } from '../hooks/useStoredState';
 const teacherNotes = /<details class="teach">(\s*<summary>(?:(?!<\/summary>)[\s\S])*?(?:Teacher|Багшийн тайлбар|Багшид)(?:(?!<\/summary>)[\s\S])*<\/summary>)/g;
 const marksOnly = (language: Language) =>
   `'<div class="small muted">${language === 'en' ? 'The marking points are shown to the teacher and lab staff.' : 'Онооны дэлгэрэнгүйг багш, лаборантад харуулна.'}</div>'`;
-const paperIn = (html: string, language: Language, staff: boolean) => {
-  let page = html.replace('__INTER_FONT_URL__', interFontUrl).replace('__LANG__', language);
+// The questions in a paper are shortened. Under each question's heading, a link opens the original Cambridge
+// question paper at that question, so students can read it exactly as printed.
+const qpStyle =
+  '<style>.qp-link{display:inline-flex;align-items:center;gap:6px;margin:10px 0 2px;padding:7px 12px;border:1px solid #a2f4fd;' +
+  'border-radius:8px;background:var(--accent-soft,#ecfeff);color:var(--accent,#007595);font-size:14px;font-weight:600;' +
+  'line-height:1.35;text-decoration:none}.qp-link:hover{background:#cefafe}.qp-link svg{flex:none}</style>';
+const qpIcon =
+  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
+const addQpLinks = (page: string, paperId: string, language: Language) => {
+  if (!questionPaper(paperId)) return page;
+  return page
+    .replace('</head>', `${qpStyle}</head>`)
+    .replace(/<section class="tab" id="tab-q(\d+)">[\s\S]*?<div class="qhead">[\s\S]*?<\/div>/g, (heading: string, q: string) => {
+      const qp = questionPaper(paperId, Number(q));
+      if (!qp) return heading;
+      const text =
+        language === 'en'
+          ? `Read question ${q} as printed in the Cambridge question paper (QP, page ${qp.page}) ↗`
+          : `${q}-р асуултыг Cambridge-ийн эх асуултын хуудаснаас (QP, ${qp.page}-р хуудас) унших ↗`;
+      return `${heading}<a class="qp-link" href="${qp.url}" data-page="${qp.page}" target="_blank" rel="noopener">${qpIcon}<span>${text}</span></a>`;
+    });
+};
+
+const paperIn = (html: string, language: Language, staff: boolean, paperId: string) => {
+  let page = addQpLinks(html.replace('__INTER_FONT_URL__', interFontUrl).replace('__LANG__', language), paperId, language);
   if (!staff) {
     page = page
       .replace(teacherNotes, '<details class="teach teacher-only">$1')
@@ -55,7 +82,10 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
     };
   }, [paper]);
 
-  const page = useMemo(() => (loaded && loaded.id === paper.id ? paperIn(loaded.html, language, staff) : null), [loaded, paper.id, language, staff]);
+  const page = useMemo(() => (loaded && loaded.id === paper.id ? paperIn(loaded.html, language, staff, paper.id) : null), [loaded, paper.id, language, staff]);
+  const wholeQp = questionPaper(paper.id);
+  const [qpPage, setQpPage] = useState<number | null>(null);
+  useEffect(() => setQpPage(null), [paper.id]);
   const label = paperLabel(paper, language);
 
   // With a topic chosen, only the papers that test it are listed, and the paper opens at its first question on it.
@@ -120,6 +150,18 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
             ? (en ? `${listed.length} papers on this topic, newest first` : `Энэ сэдвээр ${listed.length} шалгалт, сүүлийнх нь эхэндээ`)
             : (en ? `${examPapers.length} papers, newest first` : `${examPapers.length} шалгалт, сүүлийнх нь эхэндээ`)}
         </span>
+        <div className="sm:ml-auto flex flex-wrap items-center gap-2">
+        {wholeQp && (
+          <button
+            type="button"
+            onClick={() => setQpPage(1)}
+            title={en ? 'The original Cambridge question paper, with every question exactly as printed.' : 'Cambridge-ийн эх асуултын хуудас: асуулт бүр хэвлэгдсэн чигээрээ.'}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>{en ? 'Question paper (QP)' : 'Эх асуултын хуудас (QP)'}</span>
+          </button>
+        )}
         <button
           type="button"
           disabled={frameReady !== paper.id}
@@ -128,11 +170,12 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
             if (entry) onCopyToNotebook(entry);
           }}
           title={en ? 'Your answers, marks and whiteboard go to the Lab Notebook, from where you send them to your teacher.' : 'Хариулт, оноо, самбараа цахим дэвтэрт хуулж, тэндээсээ багшдаа илгээнэ.'}
-          className="sm:ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-800 hover:bg-cyan-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-800 hover:bg-cyan-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
         >
           <NotebookPen className="w-3.5 h-3.5" />
           <span>{en ? 'Copy to Lab Notebook' : 'Цахим дэвтэрт хуулах'}</span>
         </button>
+        </div>
       </div>
       {page ? (
         <iframe
@@ -140,13 +183,33 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
           key={paper.id}
           title={en ? `Exam practice: ${label}` : `Шалгалтын дадлага: ${label}`}
           srcDoc={page}
-          onLoad={() => setFrameReady(paper.id)}
+          onLoad={(event) => {
+            setFrameReady(paper.id);
+            // A question's QP link opens the viewer at its page instead of leaving the site.
+            event.currentTarget.contentDocument?.addEventListener('click', (click) => {
+              const link = (click.target as Element | null)?.closest?.('a.qp-link');
+              if (!link) return;
+              click.preventDefault();
+              setQpPage(Number(link.getAttribute('data-page')) || 1);
+            });
+          }}
           className="w-full flex-1 min-h-0 block border-0"
         />
       ) : (
         <div className="flex-1 flex items-center justify-center text-sm text-slate-500">
           {en ? 'Opening the paper…' : 'Шалгалтыг нээж байна…'}
         </div>
+      )}
+      {wholeQp && qpPage !== null && (
+        <Suspense fallback={<div className="fixed inset-0 z-[70] bg-slate-800/80" />}>
+          <QpViewer
+            url={wholeQp.url}
+            page={qpPage}
+            title={`${en ? 'Question paper' : 'Эх асуултын хуудас'} · ${label}`}
+            language={language}
+            onClose={() => setQpPage(null)}
+          />
+        </Suspense>
       )}
     </div>
   );
