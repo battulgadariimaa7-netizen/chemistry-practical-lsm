@@ -1,10 +1,6 @@
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { adoptServerFromLink } from './data/reportServer';
-
-// A class link from the teacher connects this device to the teacher's report inbox.
-adoptServerFromLink();
 
 createRoot(document.getElementById('root')!).render(<App />);
 

@@ -4,7 +4,8 @@ import { LabNotebookEntry, Language, UserRole } from '../types/chemistry';
 import { examPapers, paperLabel, questionPaper } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
 import { captureExam } from '../exams/examCapture';
-import { FileText, NotebookPen } from 'lucide-react';
+import { FileText, NotebookPen, Send } from 'lucide-react';
+import { ExamSubmit } from './ExamSubmit';
 import { useStoredState } from '../hooks/useStoredState';
 
 // The question paper viewer brings in PDF.js, so it is loaded only when a question paper is opened.
@@ -85,6 +86,7 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
   const page = useMemo(() => (loaded && loaded.id === paper.id ? paperIn(loaded.html, language, staff, paper.id) : null), [loaded, paper.id, language, staff]);
   const wholeQp = questionPaper(paper.id);
   const [qpPage, setQpPage] = useState<number | null>(null);
+  const [submitEntry, setSubmitEntry] = useState<LabNotebookEntry | null>(null);
   useEffect(() => setQpPage(null), [paper.id]);
   const label = paperLabel(paper, language);
 
@@ -175,6 +177,19 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
           <NotebookPen className="w-3.5 h-3.5" />
           <span>{en ? 'Copy to Lab Notebook' : 'Цахим дэвтэрт хуулах'}</span>
         </button>
+        <button
+          type="button"
+          disabled={frameReady !== paper.id}
+          onClick={() => {
+            const entry = frame.current && captureExam(frame.current, paper, language);
+            if (entry) setSubmitEntry(entry);
+          }}
+          title={en ? 'Send your answers, marks and whiteboard straight to your teacher’s Student Reports.' : 'Хариулт, оноо, самбараа багшийн «Сурагчдын тайлан» руу шууд илгээнэ.'}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-emerald-700 bg-emerald-700 text-white hover:bg-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>{en ? 'Submit to teacher' : 'Багшид илгээх'}</span>
+        </button>
         </div>
       </div>
       {page ? (
@@ -211,6 +226,7 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
           />
         </Suspense>
       )}
+      {submitEntry && <ExamSubmit entry={submitEntry} language={language} onClose={() => setSubmitEntry(null)} />}
     </div>
   );
 };
