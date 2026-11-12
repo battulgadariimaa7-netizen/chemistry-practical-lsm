@@ -226,7 +226,18 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
           />
         </Suspense>
       )}
-      {submitEntry && <ExamSubmit entry={submitEntry} language={language} onClose={() => setSubmitEntry(null)} />}
+      {submitEntry && (
+        <ExamSubmit
+          entry={submitEntry}
+          details={[
+            [en ? 'Paper' : 'Шалгалт', label],
+            [en ? 'Marks' : 'Оноо', submitEntry.conclusion.split('\n')[0].replace(/^[^:]*:\s*/, '')],
+            [en ? 'Whiteboard pages' : 'Самбарын хуудас', String(submitEntry.whiteboardImages?.length ?? 0)],
+          ]}
+          language={language}
+          onClose={() => setSubmitEntry(null)}
+        />
+      )}
     </div>
   );
 };

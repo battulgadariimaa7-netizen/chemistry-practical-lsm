@@ -9,6 +9,7 @@ import { ControlCenter } from './components/ControlCenter';
 import { SafetyHub } from './components/SafetyHub';
 import { PracticalLessons } from './components/PracticalLessons';
 import { ExamPractice } from './components/ExamPractice';
+import { EnrichmentLessons } from './components/EnrichmentLessons';
 import { GlasswareCatalog } from './components/GlasswareCatalog';
 import { ChemicalSafetyDb } from './components/ChemicalSafetyDb';
 import { ResultsAnalysisStudio } from './components/ResultsAnalysisStudio';
@@ -119,8 +120,8 @@ export default function App() {
     setCurrentTab('notebook');
   };
 
-  // The exam paper fills the screen under the navigation, so it has no page margins or footer.
-  const isFullScreenTab = currentTab === 'exam_practice';
+  // The exam paper and the enrichment worksheet fill the screen under the navigation, so they have no page margins or footer.
+  const isFullScreenTab = currentTab === 'exam_practice' || currentTab === 'enrichment';
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans lg:pl-60 print:pl-0">
@@ -172,6 +173,8 @@ export default function App() {
             <ExamPractice language={language} role={role} onCopyToNotebook={handleExamToNotebook} />
           </div>
         )}
+
+        {currentTab === 'enrichment' && <EnrichmentLessons language={language} />}
 
         {currentTab === 'apparatus' && (
           <GlasswareCatalog language={language} />

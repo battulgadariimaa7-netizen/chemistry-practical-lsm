@@ -6,12 +6,14 @@ import { sendReport } from '../data/reportServer';
 import { notebookSamples } from '../data/notebookSamples';
 import { useStoredState } from '../hooks/useStoredState';
 
-// Sends a finished exam paper (answers, marks and whiteboard pages) straight to the teacher's Student Reports,
-// without going through the Lab Notebook. With no internet, the work is downloaded as a report file instead.
+// Sends a student's finished work (an exam paper or an enrichment worksheet) straight to the teacher's
+// Student Reports, without going through the Lab Notebook. With no internet, it is downloaded as a report file.
 
 interface ExamSubmitProps {
-  /** The student's work, as taken from the open paper. */
+  /** The student's work, as taken from the open paper or worksheet. */
   entry: LabNotebookEntry;
+  /** What is being sent, shown before sending: label and value. */
+  details: [string, string][];
   language: Language;
   onClose: () => void;
 }
@@ -28,10 +30,11 @@ const notebookName = () => {
   }
 };
 
-export const ExamSubmit: React.FC<ExamSubmitProps> = ({ entry, language, onClose }) => {
+export const ExamSubmit: React.FC<ExamSubmitProps> = ({ entry, details, language, onClose }) => {
   const en = language === 'en';
   const [savedName, setSavedName] = useStoredState<string>('chem_lab_student_name', '');
-  const [name, setName] = useState(() => savedName || notebookName());
+  // A name written on the worksheet itself comes first.
+  const [name, setName] = useState(() => entry.studentName.trim() || savedName || notebookName());
   const [state, setState] = useState<'ready' | 'sending' | 'sent' | 'file'>('ready');
   const [nameMissing, setNameMissing] = useState(false);
   const nameInput = useRef<HTMLInputElement>(null);
@@ -44,9 +47,6 @@ export const ExamSubmit: React.FC<ExamSubmitProps> = ({ entry, language, onClose
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
-
-  const pages = entry.whiteboardImages?.length ?? 0;
-  const checked = entry.conclusion.split('\n')[0];
 
   const handleSend = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -86,9 +86,13 @@ export const ExamSubmit: React.FC<ExamSubmitProps> = ({ entry, language, onClose
               <CheckCircle2 className={`w-5 h-5 flex-none ${state === 'sent' ? 'text-emerald-600' : 'text-amber-600'}`} />
               <p>
                 {state === 'sent'
-                  ? en
-                    ? 'Sent. Your teacher can now see your answers, marks and whiteboard in Student Reports.'
-                    : 'Илгээгдлээ. Багш таны хариулт, оноо, самбарыг «Сурагчдын тайлан» хэсгээс харах боломжтой.'
+                  ? entry.examPaperId
+                    ? en
+                      ? 'Sent. Your teacher can now see your answers, marks and whiteboard in Student Reports.'
+                      : 'Илгээгдлээ. Багш таны хариулт, оноо, самбарыг «Сурагчдын тайлан» хэсгээс харах боломжтой.'
+                    : en
+                      ? 'Sent. Your teacher can now see your worksheet in Student Reports.'
+                      : 'Илгээгдлээ. Багш таны ажлын хуудсыг «Сурагчдын тайлан» хэсгээс харах боломжтой.'
                   : en
                     ? 'Your teacher’s inbox could not be reached, so your work was downloaded as a file. Send this file to your teacher.'
                     : 'Багшийн хайрцагт хүрч чадсангүй тул таны ажил файл болж татагдлаа. Энэ файлыг багшдаа илгээнэ үү.'}
@@ -103,18 +107,12 @@ export const ExamSubmit: React.FC<ExamSubmitProps> = ({ entry, language, onClose
         ) : (
           <form onSubmit={handleSend} className="px-5 pb-5 pt-3 space-y-4">
             <dl className="text-sm rounded-lg bg-slate-50 border border-slate-200 divide-y divide-slate-200">
-              <div className="flex justify-between gap-3 px-3 py-2">
-                <dt className="text-slate-500">{en ? 'Paper' : 'Шалгалт'}</dt>
-                <dd className="font-medium text-slate-900 text-right">{entry.experimentTitle.replace(/^[^:]*:\s*/, '')}</dd>
-              </div>
-              <div className="flex justify-between gap-3 px-3 py-2">
-                <dt className="text-slate-500">{en ? 'Marks' : 'Оноо'}</dt>
-                <dd className="font-medium text-slate-900 text-right">{checked.replace(/^[^:]*:\s*/, '')}</dd>
-              </div>
-              <div className="flex justify-between gap-3 px-3 py-2">
-                <dt className="text-slate-500">{en ? 'Whiteboard pages' : 'Самбарын хуудас'}</dt>
-                <dd className="font-medium text-slate-900">{pages}</dd>
-              </div>
+              {details.map(([label, value]) => (
+                <div key={label} className="flex justify-between gap-3 px-3 py-2">
+                  <dt className="text-slate-500">{label}</dt>
+                  <dd className="font-medium text-slate-900 text-right">{value}</dd>
+                </div>
+              ))}
             </dl>
             <label className="block text-sm text-slate-700">
               <span className="block font-medium mb-1">{en ? 'Your name' : 'Таны нэр'}</span>
@@ -136,9 +134,13 @@ export const ExamSubmit: React.FC<ExamSubmitProps> = ({ entry, language, onClose
               )}
             </label>
             <p className="text-xs text-slate-500">
-              {en
-                ? 'Your answers, the marks of the parts you checked and your whiteboard pages are sent. Check them before you send.'
-                : 'Таны хариулт, шалгасан хэсгүүдийн оноо, самбарын хуудсууд илгээгдэнэ. Илгээхийн өмнө шалгаарай.'}
+              {entry.examPaperId
+                ? en
+                  ? 'Your answers, the marks of the parts you checked and your whiteboard pages are sent. Check them before you send.'
+                  : 'Таны хариулт, шалгасан хэсгүүдийн оноо, самбарын хуудсууд илгээгдэнэ. Илгээхийн өмнө шалгаарай.'
+                : en
+                  ? 'Everything you filled in on the worksheet is sent. Check it before you send.'
+                  : 'Ажлын хуудсанд бөглөсөн бүх зүйл илгээгдэнэ. Илгээхийн өмнө шалгаарай.'}
             </p>
             <div className="flex justify-end gap-2">
               <button type="button" onClick={onClose} disabled={state === 'sending'} className="px-4 py-2 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg disabled:opacity-50">
