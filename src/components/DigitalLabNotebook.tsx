@@ -26,20 +26,10 @@ interface DigitalLabNotebookProps {
   language: Language;
   preloadedExperiment?: PracticalExperiment | null;
   onPreloadUsed?: () => void;
-  /** A finished exam paper copied from Exam Practice. */
-  preloadedEntry?: LabNotebookEntry | null;
-  onEntryUsed?: () => void;
 }
 
 type ExamExtras = Pick<LabNotebookEntry, 'examPaperId' | 'examScore' | 'whiteboardImages'>;
 const ENTRIES_KEY = 'chem_lab_notebook_entries';
-const readEntries = (): LabNotebookEntry[] => {
-  try {
-    return JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]');
-  } catch {
-    return [];
-  }
-};
 
 const DRAFT_KEY = 'chem_lab_notebook_draft';
 const CUSTOM_TOPIC = 'custom';
@@ -80,8 +70,6 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
   language,
   preloadedExperiment,
   onPreloadUsed,
-  preloadedEntry,
-  onEntryUsed,
 }) => {
   const t = getTranslation(language);
 
@@ -190,23 +178,6 @@ export const DigitalLabNotebook: React.FC<DigitalLabNotebookProps> = ({
       // ignore
     }
   }, []);
-
-  // A paper copied from Exam Practice is kept in the list and opened, ready to be sent to the teacher.
-  useEffect(() => {
-    if (!preloadedEntry) return;
-    const isSampleName = [notebookSamples.en.studentName, notebookSamples.mn.studentName].includes(studentName);
-    const entry = { ...preloadedEntry, studentName: preloadedEntry.studentName || (isSampleName ? '' : studentName) };
-    storeEntries([entry, ...readEntries().filter((e) => e.id !== entry.id)]);
-    handleLoadEntry(entry);
-    setSaveStatus(
-      language === 'en'
-        ? 'Copied from Exam Practice. Check your name, then press «Send to teacher (file)».'
-        : 'Шалгалтын дадлагаас хуулагдлаа. Нэрээ шалгаад «Багшид илгээх (файл)» товчийг дарна уу.'
-    );
-    setTimeout(() => setSaveStatus(null), 9000);
-    onEntryUsed?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preloadedEntry]);
 
   const handleAddMeasurementRow = () => {
     setMeasurements((prev) => [...prev, newMeasurementRow(language)]);

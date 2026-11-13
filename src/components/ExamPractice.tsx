@@ -6,7 +6,7 @@ import { examPapers, paperLabel, questionPaper } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
 import { captureExam } from '../exams/examCapture';
 import { findPaperPrep } from '../exams/examPrep';
-import { ClipboardList, FileText, NotebookPen, Send, X } from 'lucide-react';
+import { ClipboardList, FileText, Send, X } from 'lucide-react';
 import { ExamSubmit } from './ExamSubmit';
 import { TaskChecklist } from './TaskChecklist';
 import { ExamPrepState, blankState, prepStorageKey } from './prepParts';
@@ -65,11 +65,9 @@ const years = [...new Set(examPapers.map((p) => p.year))];
 interface ExamPracticeProps {
   language: Language;
   role: UserRole;
-  /** Takes the student's work in the open paper to the Lab Notebook, from where it is sent to the teacher. */
-  onCopyToNotebook: (entry: LabNotebookEntry) => void;
 }
 
-export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCopyToNotebook }) => {
+export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role }) => {
   const en = language === 'en';
   const staff = role !== 'student';
   const [paperId, setPaperId] = useStoredState<string>('chem_lab_exam_paper', examPapers[0].id);
@@ -215,19 +213,6 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
             <span>{en ? 'Task checklist' : 'Шалгах жагсаалт'}</span>
           </button>
         )}
-        <button
-          type="button"
-          disabled={frameReady !== paper.id}
-          onClick={() => {
-            const entry = frame.current && captureExam(frame.current, paper, language);
-            if (entry) onCopyToNotebook(entry);
-          }}
-          title={en ? 'Your answers, marks and whiteboard go to the Lab Notebook, from where you send them to your teacher.' : 'Хариулт, оноо, самбараа цахим дэвтэрт хуулж, тэндээсээ багшдаа илгээнэ.'}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-800 hover:bg-cyan-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-        >
-          <NotebookPen className="w-3.5 h-3.5" />
-          <span>{en ? 'Copy to Lab Notebook' : 'Цахим дэвтэрт хуулах'}</span>
-        </button>
         <button
           type="button"
           disabled={frameReady !== paper.id}

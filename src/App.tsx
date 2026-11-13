@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Language, UserRole, NavigationTab, PracticalExperiment, PrepJob, LabNotebookEntry } from './types/chemistry';
+import { Language, UserRole, NavigationTab, PracticalExperiment, PrepJob } from './types/chemistry';
 import { teacherNotices } from './data/solutionRecipes';
 import { useStoredState } from './hooks/useStoredState';
 import { getTranslation } from './data/translations';
@@ -113,13 +113,6 @@ export default function App() {
     setCurrentTab('notebook');
   };
 
-  // A finished exam paper goes to the Lab Notebook, from where the student sends it to the teacher.
-  const [examEntry, setExamEntry] = useState<LabNotebookEntry | null>(null);
-  const handleExamToNotebook = (entry: LabNotebookEntry) => {
-    setExamEntry(entry);
-    setCurrentTab('notebook');
-  };
-
   // The exam paper and the enrichment worksheet fill the screen under the navigation, so they have no page margins or footer.
   const isFullScreenTab = currentTab === 'exam_practice' || currentTab === 'enrichment';
 
@@ -170,7 +163,7 @@ export default function App() {
         {/* Stays open once visited, so a titration in progress survives a look at another page. */}
         {examVisited && (
           <div hidden={currentTab !== 'exam_practice'}>
-            <ExamPractice language={language} role={role} onCopyToNotebook={handleExamToNotebook} />
+            <ExamPractice language={language} role={role} />
           </div>
         )}
 
@@ -193,8 +186,6 @@ export default function App() {
             language={language}
             preloadedExperiment={preloadedExperiment}
             onPreloadUsed={() => setPreloadedExperiment(null)}
-            preloadedEntry={examEntry}
-            onEntryUsed={() => setExamEntry(null)}
           />
         )}
 
