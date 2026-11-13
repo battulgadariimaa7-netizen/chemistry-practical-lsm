@@ -1,11 +1,15 @@
 import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import interFontUrl from 'inter-ui/variable/InterVariable.woff2?url';
 import { LabNotebookEntry, Language, UserRole } from '../types/chemistry';
 import { examPapers, paperLabel, questionPaper } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
 import { captureExam } from '../exams/examCapture';
-import { FileText, NotebookPen, Send } from 'lucide-react';
+import { findPaperPrep } from '../exams/examPrep';
+import { ClipboardList, FileText, NotebookPen, Send, X } from 'lucide-react';
 import { ExamSubmit } from './ExamSubmit';
+import { TaskChecklist } from './TaskChecklist';
+import { ExamPrepState, blankState, prepStorageKey } from './prepParts';
 import { useStoredState } from '../hooks/useStoredState';
 
 // The question paper viewer brings in PDF.js, so it is loaded only when a question paper is opened.
@@ -115,6 +119,41 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
     frame.current?.contentDocument?.querySelector<HTMLButtonElement>(`#tabs button[data-tab="q${target}"]`)?.click();
   }, [target, frameReady, paper.id]);
 
+  // The checklist by task opens beside the paper, at the question the paper is showing. It shares its ticks
+  // with Exam Preparation. A student sees the FA labels and apparatus but not the confidential identities.
+  const prepSpec = findPaperPrep(paper.id);
+  const [prepStates, setPrepStates] = useStoredState<Record<string, ExamPrepState>>(prepStorageKey, {});
+  const prepState = prepStates[paper.id] ?? blankState();
+  const updatePrep = (change: (current: ExamPrepState) => ExamPrepState) =>
+    setPrepStates((all) => ({ ...all, [paper.id]: change(all[paper.id] ?? blankState()) }));
+  const [checklistTask, setChecklistTask] = useState<number | null>(null);
+  useEffect(() => setChecklistTask(null), [paper.id]);
+  const closeChecklist = useRef<HTMLButtonElement>(null);
+  const checklistOpen = checklistTask !== null;
+  useEffect(() => {
+    if (!checklistOpen) return;
+    closeChecklist.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setChecklistTask(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [checklistOpen]);
+  const openChecklist = () => {
+    const tab = frame.current?.contentDocument?.querySelector('#tabs button[aria-selected="true"]')?.getAttribute('data-tab') ?? '';
+    setChecklistTask(Number(/^q(\d+)$/.exec(tab)?.[1]) || 1);
+  };
+  // Only the checklist is printed: the site behind it is hidden while the print dialog is open.
+  const printChecklist = () => {
+    document.body.dataset.printChecklist = 'true';
+    const clear = () => {
+      delete document.body.dataset.printChecklist;
+      window.removeEventListener('afterprint', clear);
+    };
+    window.addEventListener('afterprint', clear);
+    window.print();
+  };
+
   const selectClass = 'min-w-0 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500';
 
   return (
@@ -162,6 +201,18 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
           >
             <FileText className="w-3.5 h-3.5" />
             <span>{en ? 'Question paper (QP)' : 'Эх асуултын хуудас (QP)'}</span>
+          </button>
+        )}
+        {prepSpec && (
+          <button
+            type="button"
+            onClick={openChecklist}
+            aria-haspopup="dialog"
+            title={en ? 'The solutions, apparatus and glassware the open question needs, to tick off one by one.' : 'Нээлттэй байгаа асуултад хэрэгтэй уусмал, багаж, шил савыг нэг бүрчлэн тэмдэглэж шалгана.'}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition-colors whitespace-nowrap"
+          >
+            <ClipboardList className="w-3.5 h-3.5" />
+            <span>{en ? 'Task checklist' : 'Шалгах жагсаалт'}</span>
           </button>
         )}
         <button
@@ -226,6 +277,47 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role, onCo
           />
         </Suspense>
       )}
+      {prepSpec && checklistTask !== null &&
+        createPortal(
+          <div className="checklist-drawer fixed inset-0 z-[70] flex justify-end bg-slate-900/40" onClick={() => setChecklistTask(null)}>
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${en ? 'Task checklist' : 'Шалгах жагсаалт'} · ${label}`}
+              onClick={(event) => event.stopPropagation()}
+              className="checklist-panel h-full w-full max-w-2xl overflow-y-auto bg-slate-50 shadow-2xl p-3 sm:p-5 space-y-3"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">{en ? 'Exam practice' : 'Шалгалтын дадлага'}</div>
+                  <div className="text-sm font-semibold text-slate-900">{label}</div>
+                </div>
+                <button
+                  ref={closeChecklist}
+                  type="button"
+                  onClick={() => setChecklistTask(null)}
+                  aria-label={en ? 'Close' : 'Хаах'}
+                  className="p-2 rounded-lg text-slate-600 hover:bg-slate-200 transition-colors print:hidden"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <TaskChecklist
+                spec={prepSpec}
+                language={language}
+                state={prepState}
+                onToggle={(key) => updatePrep((s) => ({ ...s, ticks: { ...s.ticks, [key]: !s.ticks[key] } }))}
+                onTickAll={(keys, value) => updatePrep((s) => ({ ...s, ticks: { ...s.ticks, ...Object.fromEntries(keys.map((key) => [key, value])) } }))}
+                taskNo={checklistTask}
+                onTaskNo={setChecklistTask}
+                student={!staff}
+                onPrint={printChecklist}
+                onCandidates={staff ? (candidates) => updatePrep((s) => ({ ...s, candidates })) : undefined}
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
       {submitEntry && (
         <ExamSubmit
           entry={submitEntry}

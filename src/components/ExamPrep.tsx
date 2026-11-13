@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Language, UserRole } from '../types/chemistry';
 import { examPapers, paperLabel } from '../exams/papers';
-import {
-  Bi,
-  PaperPrepSpec,
-  PrepMaterial,
-  PrepUnit,
-  apparatusNames,
-  benchDefaults,
-  benchHowNaoh,
-  extraNames,
-  findPaperPrep,
-  paperPreps,
-} from '../exams/examPrep';
-import { HazardCode, findRecipe, hazardCodeGhs, todayText } from '../data/solutionRecipes';
-import { getGhsName } from '../data/labLabels';
+import { Bi, PaperPrepSpec, PrepMaterial, apparatusNames, benchDefaults, extraNames, findPaperPrep, paperPreps } from '../exams/examPrep';
+import { todayText } from '../data/solutionRecipes';
 import { useStoredState } from '../hooks/useStoredState';
 import { ChemText } from './ChemText';
 import { StaffCard } from './StaffCard';
-import { GhsPictogram } from './art/GhsPictogram';
-import { BellRing, CheckCircle2, ChevronDown, ClipboardCheck, FlaskConical, Lock, Printer, Search, Send, ShieldCheck, TestTubes } from 'lucide-react';
+import { TaskChecklist } from './TaskChecklist';
+import { Bar, ExamPrepState, Hazards, ItemStatus, PrepDetails, blankState, benchRows, perCandidateText, prepStorageKey, totalText, unitText } from './prepParts';
+import { BellRing, CheckCircle2, ClipboardCheck, FlaskConical, Lock, Printer, Search, Send, ShieldCheck, TestTubes } from 'lucide-react';
 
 // ---- Finding the same and similar solutions across all the papers ----
 interface Found { paperId: string; material: PrepMaterial }
@@ -40,35 +29,6 @@ const shortPaper = (paperId: string) => {
 // The lab technician gets the solutions, materials and apparatus of an exam paper ready, following its
 // Confidential Instructions, and the teacher sees how far it has got. Saved in this browser only.
 
-type ItemStatus = 'todo' | 'doing' | 'ready';
-
-interface ExamPrepState {
-  candidates: number;
-  examDate: string;
-  preparedBy: string;
-  /** Materials ("m:fa1") and bench reagents ("b:hcl"). */
-  items: Record<string, { status: ItemStatus; on?: string }>;
-  /** Apparatus ("a:burette50"), shared items ("x:litmus") and final checks ("c:labels"). */
-  ticks: Record<string, boolean>;
-  acknowledgedOn?: string;
-}
-
-const blankState = (): ExamPrepState => ({ candidates: 12, examDate: '', preparedBy: '', items: {}, ticks: {} });
-
-interface BenchRow { key: string; label: string; amount: number; identity: Bi; how?: Bi; recipe?: string; hazards: HazardCode[] }
-
-const benchRows = (spec: PaperPrepSpec): BenchRow[] =>
-  (Object.keys(benchDefaults) as (keyof typeof benchDefaults)[]).flatMap((key) => {
-    const change = spec.bench?.find((b) => b.key === key);
-    if (change?.omit) return [];
-    const base = benchDefaults[key];
-    const identity = change?.identity ?? base.identity;
-    // Sodium hydroxide at 2.0 mol/dm³ has no standard recipe in the app, so its preparation is given here.
-    const how = key === 'naoh' && !change?.identity ? benchHowNaoh : undefined;
-    const recipe = key === 'naoh' && change?.identity ? 'aqueous_sodium_hydroxide' : base.recipe;
-    return [{ key, label: base.label, amount: change?.amount ?? 10, identity, how, recipe, hazards: base.hazards }];
-  });
-
 const finalChecks = (spec: PaperPrepSpec): { key: string; text: Bi }[] => [
   { key: 'labels', text: { en: 'Every container is labelled exactly as in the label column: FA codes, never the identities.', mn: 'Сав бүрийг зөвхөн «label» баганад заасан нэрээр шошголсон: FA код, бодисын нэргүй.' } },
   { key: 'excess', text: { en: `At least ${spec.excess}% extra of every material is ready for spills and requests.`, mn: `Материал бүрийн дор хаяж ${spec.excess}% нөөц асгарах, нэмж хүсэхэд бэлэн.` } },
@@ -81,31 +41,6 @@ const finalChecks = (spec: PaperPrepSpec): { key: string; text: Bi }[] => [
     ? [{ key: 'ventilation', text: { en: `The laboratory is well ventilated: small amounts of ${spec.ventilation} may be given off.`, mn: `Лаборатори сайн агааржуулалттай: бага хэмжээний ${spec.ventilation} ялгарч болно.` } }]
     : []),
 ];
-
-// Totals for the candidates plus one set for the supervisor, with the extra the instructions ask for.
-const unitText = (unit: PrepUnit, en: boolean) => (unit === 'cm3' ? (en ? 'cm³' : 'см³') : unit === 'g' ? (en ? 'g' : 'г') : en ? 'pieces' : 'ширхэг');
-const totalText = (material: { amount: number; unit: PrepUnit }, sets: number, excess: number, en: boolean) => {
-  const raw = material.amount * sets * (1 + excess / 100);
-  if (material.unit === 'cm3') {
-    if (raw >= 1000) return `${(Math.ceil(raw / 100) / 10).toFixed(1)} ${en ? 'dm³' : 'дм³'}`;
-    return `${Math.ceil(raw / 10) * 10} ${unitText('cm3', en)}`;
-  }
-  if (material.unit === 'g') return `${raw < 10 ? (Math.ceil(raw * 10) / 10).toFixed(1) : Math.ceil(raw)} ${unitText('g', en)}`;
-  return `${Math.ceil(raw)} ${unitText('piece', en)}`;
-};
-const perCandidateText = (material: PrepMaterial, en: boolean) =>
-  material.amountNote ? material.amountNote[en ? 'en' : 'mn'] : `${material.amount} ${unitText(material.unit, en)}`;
-
-const Hazards: React.FC<{ codes?: HazardCode[]; language: Language }> = ({ codes, language }) =>
-  codes && codes.length > 0 ? (
-    <span className="inline-flex flex-wrap items-center gap-1">
-      {codes.map((code) => {
-        const ghs = hazardCodeGhs[code];
-        const label = `[${code}] ${getGhsName(ghs, language)}`;
-        return <span key={code} title={label}><GhsPictogram code={ghs} label={label} className="w-6 h-6" /></span>;
-      })}
-    </span>
-  ) : null;
 
 const statusStyle: Record<ItemStatus, string> = {
   todo: 'bg-slate-100 text-slate-700 border-slate-300',
@@ -137,12 +72,6 @@ const StatusPicker: React.FC<{ value: ItemStatus; onChange: (status: ItemStatus)
     </div>
   );
 };
-
-const Bar: React.FC<{ done: number; total: number; label: string }> = ({ done, total, label }) => (
-  <div role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={total} aria-valuenow={done} className="h-2 rounded-full bg-slate-100 overflow-hidden">
-    <div className={`h-full ${done === total ? 'bg-emerald-600' : 'bg-cyan-600'}`} style={{ width: `${total ? (done / total) * 100 : 0}%` }} />
-  </div>
-);
 
 const years = [...new Set(examPapers.map((p) => p.year))];
 
@@ -176,10 +105,11 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
   const en = language === 'en';
   const t = (text: Bi) => text[language];
   const [paperId, setPaperId] = useStoredState<string>('chem_lab_exam_prep_paper', examPapers[0].id);
-  const [allStates, setAllStates] = useStoredState<Record<string, ExamPrepState>>('chem_lab_exam_prep', {});
+  const [allStates, setAllStates] = useStoredState<Record<string, ExamPrepState>>(prepStorageKey, {});
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [focusKey, setFocusKey] = useState<string | null>(null);
+  const [taskNo, setTaskNo] = useState(1);
 
   // Opening a material from the search or from «also in» brings it into view and marks it for a moment.
   useEffect(() => {
@@ -234,6 +164,17 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
   };
   const days = daysUntil(state.examDate);
 
+  // The checklist by task prints on its own: the other cards are hidden while the print dialog is open.
+  const printTask = () => {
+    document.body.dataset.printTask = 'true';
+    const clear = () => {
+      delete document.body.dataset.printTask;
+      window.removeEventListener('afterprint', clear);
+    };
+    window.addEventListener('afterprint', clear);
+    window.print();
+  };
+
   // There is no server, so the phone or computer's own sharing passes the status on to the teacher.
   const handleShare = async () => {
     if (!progress) return;
@@ -274,31 +215,10 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
   const benchMatch = needle.length >= 2 && benchText.some((text) => text.includes(needle));
   const chipClass = 'inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-[11px] text-slate-700 hover:border-cyan-400 hover:bg-cyan-50 transition-colors';
 
-  const prepDetails = (id: string, how: Bi | undefined, recipeId: string | undefined) => {
-    const recipe = findRecipe(recipeId);
-    return (
-      <div className="mt-2">
-        <button
-          type="button"
-          onClick={() => setOpenId(openId === id ? null : id)}
-          aria-expanded={openId === id}
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-cyan-700 hover:text-cyan-800 print:hidden"
-        >
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openId === id ? 'rotate-180' : ''}`} />
-          <span>{en ? 'How to prepare' : 'Бэлтгэх заавар'}</span>
-        </button>
-        <div className={`${openId === id ? 'block' : 'hidden'} print:block mt-1.5 p-3 rounded-lg bg-white border border-slate-200 space-y-1.5 text-xs text-slate-700 leading-relaxed`}>
-          {how && <p><ChemText text={t(how)} /></p>}
-          {recipe && (
-            <p>
-              <span className="font-semibold text-cyan-800">{en ? 'Standard recipe' : 'Стандарт заавар'} ({en ? recipe.nameEn : recipe.nameMn}, <ChemText text={en ? recipe.identityEn : recipe.identityMn} />): </span>
-              <ChemText text={en ? recipe.instructionsEn : recipe.instructionsMn} />
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  };
+  // Opening one «How to prepare» closes the last one, and the search can open one in another paper.
+  const prepDetails = (id: string, how: Bi | undefined, recipeId: string | undefined) => (
+    <PrepDetails how={how} recipeId={recipeId} language={language} open={openId === id} onToggle={() => setOpenId(openId === id ? null : id)} />
+  );
 
   return (
     <div className="space-y-6">
@@ -437,6 +357,7 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
           {/* Readiness, for the teacher at a glance */}
           <StaffCard
             icon={ClipboardCheck}
+            className="prep-section"
             tone={progress.complete ? 'emerald' : 'cyan'}
             title={en ? 'Readiness' : 'Бэлэн байдал'}
             subtitle={role === 'teacher'
@@ -511,9 +432,23 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
             )}
           </StaffCard>
 
+          {/* One task at a time: what a single question needs */}
+          <TaskChecklist
+            spec={spec}
+            language={language}
+            state={state}
+            onToggle={toggle}
+            onTickAll={tickAll}
+            taskNo={taskNo}
+            onTaskNo={setTaskNo}
+            onPrint={printTask}
+            className="prep-task print:hidden"
+          />
+
           {/* FA materials and the other materials of this paper */}
           <StaffCard
             icon={FlaskConical}
+            className="prep-section"
             title={en ? 'Solutions and Materials' : 'Уусмал ба бодис'}
             subtitle={en
               ? `Per candidate, and the total for ${state.candidates} candidates + supervisor with ${spec.excess}% extra.`
@@ -563,6 +498,7 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
           {/* Bench reagents */}
           <StaffCard
             icon={TestTubes}
+            className="prep-section"
             title={en ? 'Bench Reagents' : 'Ширээний урвалж'}
             subtitle={en
               ? 'If needed, each can be a shared supply for up to 6 candidates; watch for contamination.'
@@ -600,6 +536,7 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
           <StaffCard
             icon={TestTubes}
             tone="amber"
+            className="prep-section"
             title={en ? 'Apparatus' : 'Багаж хэрэгсэл'}
             subtitle={en
               ? `For each candidate and one set for the supervisor (${sets} sets). Tick each line when it is counted and set out.`
@@ -646,7 +583,7 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
           </StaffCard>
 
           {/* The supervisor, special notes and the last checks */}
-          <StaffCard icon={ShieldCheck} tone="emerald" title={en ? 'Supervisor and Final Checks' : 'Хянагч ба эцсийн шалгалт'}>
+          <StaffCard icon={ShieldCheck} tone="emerald" className="prep-section" title={en ? 'Supervisor and Final Checks' : 'Хянагч ба эцсийн шалгалт'}>
             <div className="p-3 rounded-xl bg-cyan-50/70 border border-cyan-100 text-xs text-slate-800 space-y-1.5">
               <p><strong>{en ? 'Supervisor' : 'Хянагч'}:</strong> {t(spec.supervisor)}</p>
               {spec.notes?.map((n) => <p key={n.en}><ChemText text={t(n)} /></p>)}

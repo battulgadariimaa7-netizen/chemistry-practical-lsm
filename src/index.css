@@ -56,4 +56,28 @@
   tr {
     break-inside: avoid;
   }
+  /* Exam Preparation can print one task's checklist on its own instead of the whole paper's. */
+  body[data-print-task] .prep-section {
+    display: none !important;
+  }
+  body[data-print-task] .prep-task {
+    display: block !important;
+  }
+  /* Exam Practice prints its checklist panel without the site behind it. */
+  body[data-print-checklist] #root {
+    display: none !important;
+  }
+  body[data-print-checklist] .checklist-drawer {
+    position: static !important;
+    display: block !important;
+    background: none !important;
+  }
+  body[data-print-checklist] .checklist-panel {
+    max-width: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    padding: 0 !important;
+  }
 }
