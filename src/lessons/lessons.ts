@@ -197,6 +197,44 @@ const capturePhysical = (doc: Document) => {
   return { entry, summary };
 };
 
+const captureChloride = (doc: Document) => {
+  const ready = readyItems(doc, 3);
+  const trials = [1, 2, 3].map((i) => textOf(doc, `av${i}`));
+  const summary: [string, string][] = [
+    ['Ажлын хуудас', 'Хлорын ион (Морын арга)'],
+    ['Дундаж V(AgNO₃)', `${or(textOf(doc, 'aavg'))} мл`],
+    ['Cl⁻', `${or(textOf(doc, 'clVal'))} мг/л`],
+    ['Хариулсан асуулт', `${answeredOf(doc, 5)} / 5`],
+  ];
+  const entry: LabNotebookEntry = {
+    id: `lesson-water-chloride-${Date.now()}`,
+    date: valueOf(doc, 'date') || new Date().toISOString().split('T')[0],
+    studentName: valueOf(doc, 'name'),
+    experimentTitle: 'Хөгжүүлэх хичээл: Ундны усны хлорын ионыг тодорхойлох (Морын арга)',
+    practicalId: 'enrichment:water-chloride',
+    chapterCode: '',
+    aim: doc.querySelector('h2 + p')?.textContent?.trim() ?? '',
+    equipmentUsed: `Бэлэн гэж тэмдэглэсэн бодис: ${ready.length ? ready.join(', ') : '—'}`,
+    measurements: [{ parameter: 'V(AgNO₃), зарцуулсан', trial1: trials[0], trial2: trials[1], trial3: trials[2], mean: textOf(doc, 'aavg'), unit: 'мл' }],
+    observations: [
+      ...headerLines(doc),
+      `Индикатор нэмсний дараах өнгө: ${or(valueOf(doc, 'obs1'))}`,
+      `Титрлэлтийн явцад үүссэн тунадас: ${or(valueOf(doc, 'obs2'))}`,
+      `Төгсгөлийн цэгийн өнгө: ${or(valueOf(doc, 'obs3'))}`,
+      ...[1, 2, 3].map((i) => `${i}-р давталт: ${or(valueOf(doc, `as${i}`))} → ${or(valueOf(doc, `ae${i}`))} мл`),
+    ].join('\n'),
+    calculations: [
+      `Уусмал бэлтгэх: C = ${or(valueOf(doc, 'pC'))} М, V = ${or(valueOf(doc, 'pV'))} мл, сурагчийн бодсон m = ${or(valueOf(doc, 'pM'))} г${textOf(doc, 'msgP') ? ` (${textOf(doc, 'msgP')})` : ''}`,
+      `C(AgNO₃) = ${or(valueOf(doc, 'C'))} М, V(дээж) = ${or(valueOf(doc, 'V'))} мл`,
+      `C(Cl⁻) = ${or(textOf(doc, 'clExpr'))} = ${or(textOf(doc, 'clVal'))} мг/л`,
+    ].join('\n'),
+    conclusion: `Стандартын зөвшөөрөх дээд хэмжээ: ${or(valueOf(doc, 'std'))} мг/л → ${or(textOf(doc, 'sCmp'))}\n${or(valueOf(doc, 'concl'))}`,
+    evaluations: ['Шалгах асуултууд', ...questionsOf(doc, 5), '', 'Аюулгүй ажиллагаа', ...safetyOf(doc, 4)].join('\n'),
+    status: 'draft',
+  };
+  return { entry, summary };
+};
+
 // In the order of the work: the sample is taken, then its physical properties are measured, then it is titrated.
 export const enrichmentLessons: EnrichmentLesson[] = [
   {
@@ -212,6 +250,13 @@ export const enrichmentLessons: EnrichmentLesson[] = [
     language: 'mn',
     load: () => import('./water-physical.html?raw').then((m) => m.default),
     capture: capturePhysical,
+  },
+  {
+    id: 'water-chloride',
+    title: { en: 'Chloride in drinking water (Mohr titration)', mn: 'Ундны усны хлорын ионыг тодорхойлох (Морын арга)' },
+    language: 'mn',
+    load: () => import('./water-chloride.html?raw').then((m) => m.default),
+    capture: captureChloride,
   },
   {
     id: 'water-hardness',
