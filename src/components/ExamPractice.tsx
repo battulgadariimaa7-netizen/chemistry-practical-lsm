@@ -6,8 +6,9 @@ import { examPapers, paperLabel, questionPaper } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
 import { captureExam } from '../exams/examCapture';
 import { findPaperPrep } from '../exams/examPrep';
-import { ClipboardList, FileText, Send, X } from 'lucide-react';
+import { ClipboardList, FileText, Send, ShieldCheck, X } from 'lucide-react';
 import { ExamSubmit } from './ExamSubmit';
+import { ExamSafetyGate } from './ExamSafetyGate';
 import { TaskChecklist } from './TaskChecklist';
 import { ExamPrepState, blankState, prepStorageKey } from './prepParts';
 import { useStoredState } from '../hooks/useStoredState';
@@ -62,6 +63,17 @@ const paperIn = (html: string, language: Language, staff: boolean, paperId: stri
 
 const years = [...new Set(examPapers.map((p) => p.year))];
 
+// A student passes the lab safety check once per browser session, so on a shared school computer the next
+// student, who opens the browser again, reads the rules too.
+const safetyKey = 'chem_lab_exam_safety_passed';
+const safetyPassedBefore = () => {
+  try {
+    return sessionStorage.getItem(safetyKey) === 'yes';
+  } catch {
+    return false;
+  }
+};
+
 interface ExamPracticeProps {
   language: Language;
   role: UserRole;
@@ -70,6 +82,26 @@ interface ExamPracticeProps {
 export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role }) => {
   const en = language === 'en';
   const staff = role !== 'student';
+  // A student reads the lab safety slides and answers three questions before any paper opens.
+  const [safetyPassed, setSafetyPassed] = useState(safetyPassedBefore);
+  const passSafety = () => {
+    try {
+      sessionStorage.setItem(safetyKey, 'yes');
+    } catch {
+      // Without storage the pass lasts until the page is reloaded.
+    }
+    setSafetyPassed(true);
+  };
+  const gated = !staff && !safetyPassed;
+  const [safetyOpen, setSafetyOpen] = useState(false);
+  useEffect(() => {
+    if (!safetyOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSafetyOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [safetyOpen]);
   const [paperId, setPaperId] = useStoredState<string>('chem_lab_exam_paper', examPapers[0].id);
   const [topicKey, setTopicKey] = useStoredState<string>('chem_lab_exam_topic', '');
   const paper = examPapers.find((p) => p.id === paperId) ?? examPapers[0];
@@ -190,6 +222,18 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role }) =>
             : (en ? `${examPapers.length} papers, newest first` : `${examPapers.length} шалгалт, сүүлийнх нь эхэндээ`)}
         </span>
         <div className="sm:ml-auto flex flex-wrap items-center gap-2">
+        {!gated && (
+          <button
+            type="button"
+            onClick={() => setSafetyOpen(true)}
+            aria-haspopup="dialog"
+            title={en ? 'The lab safety rules, to read again.' : 'Лабораторийн аюулгүй ажиллагааны дүрмийг дахин унших.'}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100 transition-colors whitespace-nowrap"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>{en ? 'Lab safety' : 'Аюулгүй ажиллагаа'}</span>
+          </button>
+        )}
         {wholeQp && (
           <button
             type="button"
@@ -228,7 +272,11 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role }) =>
         </button>
         </div>
       </div>
-      {page ? (
+      {gated ? (
+        <div className="flex-1 min-h-0 overflow-y-auto bg-slate-50">
+          <ExamSafetyGate language={language} onPassed={passSafety} />
+        </div>
+      ) : page ? (
         <iframe
           ref={frame}
           key={paper.id}
@@ -262,6 +310,30 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role }) =>
           />
         </Suspense>
       )}
+      {safetyOpen &&
+        createPortal(
+          <div className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-slate-900/50 print:hidden" onClick={() => setSafetyOpen(false)}>
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label={en ? 'Lab safety rules' : 'Аюулгүй ажиллагааны дүрэм'}
+              onClick={(event) => event.stopPropagation()}
+              className="relative w-full max-w-4xl my-4 sm:my-8 mx-2 rounded-2xl bg-slate-50 shadow-2xl"
+            >
+              <div className="flex items-center justify-between gap-3 px-4 sm:px-6 pt-4">
+                <div className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-700" />
+                  {en ? 'Lab safety rules' : 'Лабораторийн аюулгүй ажиллагааны дүрэм'}
+                </div>
+                <button type="button" autoFocus onClick={() => setSafetyOpen(false)} aria-label={en ? 'Close' : 'Хаах'} className="p-2 rounded-lg text-slate-600 hover:bg-slate-200 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <ExamSafetyGate language={language} review />
+            </div>
+          </div>,
+          document.body,
+        )}
       {prepSpec && checklistTask !== null &&
         createPortal(
           <div className="checklist-drawer fixed inset-0 z-[70] flex justify-end bg-slate-900/40" onClick={() => setChecklistTask(null)}>
