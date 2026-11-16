@@ -134,7 +134,7 @@ const captureSampling = (doc: Document) => {
     id: `lesson-water-sampling-${Date.now()}`,
     date: new Date().toISOString().split('T')[0],
     studentName: '',
-    experimentTitle: 'Хөгжүүлэх хичээл: Ундны усны дээж авалт (интерактив хичээл)',
+    experimentTitle: 'Хөгжүүлэх хичээл: Ундны усны дээж авалт',
     practicalId: 'enrichment:water-sampling',
     chapterCode: '',
     aim: doc.querySelector('section .lead')?.textContent?.trim() ?? '',
@@ -161,7 +161,18 @@ const captureSampling = (doc: Document) => {
   return { entry, summary };
 };
 
+// In the order of the work: the sample is taken before it is analysed.
 export const enrichmentLessons: EnrichmentLesson[] = [
+  {
+    id: 'water-sampling',
+    title: {
+      en: 'Taking drinking water samples',
+      mn: 'Ундны усны дээж авалт',
+    },
+    language: 'mn',
+    load: () => import('./water-sampling.html?raw').then((m) => m.default),
+    capture: captureSampling,
+  },
   {
     id: 'water-hardness',
     title: {
@@ -171,15 +182,5 @@ export const enrichmentLessons: EnrichmentLesson[] = [
     language: 'mn',
     load: () => import('./water-hardness.html?raw').then((m) => m.default),
     capture: captureHardness,
-  },
-  {
-    id: 'water-sampling',
-    title: {
-      en: 'Taking drinking water samples (interactive lesson)',
-      mn: 'Ундны усны дээж авалт (интерактив хичээл)',
-    },
-    language: 'mn',
-    load: () => import('./water-sampling.html?raw').then((m) => m.default),
-    capture: captureSampling,
   },
 ];
