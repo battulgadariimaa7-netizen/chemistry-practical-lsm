@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Language } from '../types/chemistry';
 import { SAFETY_QUESTION_COUNT, SafetyQuestion, pickSafetyQuestions, safetySlides } from '../exams/examSafety';
-import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, ChevronDown, ClipboardCheck, LockOpen, RefreshCw, ShieldCheck, XCircle } from 'lucide-react';
+import { SlideViewer } from './SlideViewer';
+import { BookOpen, CheckCircle2, ClipboardCheck, LockOpen, RefreshCw, ShieldCheck, XCircle } from 'lucide-react';
 
 // Before a student opens an exam paper, they read the lab safety rules slide by slide and answer three
 // questions about them. All three must be right. With `review`, only the slides are shown, to read again.
@@ -19,31 +20,16 @@ export const ExamSafetyGate: React.FC<ExamSafetyGateProps> = ({ language, onPass
   const total = safetySlides.length;
   const [slide, setSlide] = useState(0);
   const [seen, setSeen] = useState<Set<number>>(() => new Set([0]));
-  const [showText, setShowText] = useState(false);
   const [step, setStep] = useState<'read' | 'quiz'>('read');
   const [questions, setQuestions] = useState<SafetyQuestion[]>(() => pickSafetyQuestions());
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [checked, setChecked] = useState(false);
 
   const goTo = (index: number) => {
-    const next = Math.max(0, Math.min(total - 1, index));
-    setSlide(next);
-    setSeen((prev) => new Set(prev).add(next));
+    setSlide(index);
+    setSeen((prev) => new Set(prev).add(index));
   };
   const allSeen = seen.size === total;
-
-  // The arrow keys turn the slides while reading.
-  useEffect(() => {
-    if (step !== 'read') return;
-    const onKey = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
-      if (event.key === 'ArrowRight') goTo(slide + 1);
-      if (event.key === 'ArrowLeft') goTo(slide - 1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
 
   const allAnswered = questions.every((q) => answers[q.id] !== undefined);
   const wrong = checked ? questions.filter((q) => answers[q.id] !== q.correct) : [];
@@ -59,7 +45,6 @@ export const ExamSafetyGate: React.FC<ExamSafetyGateProps> = ({ language, onPass
     goTo(number - 1);
   };
 
-  const current = safetySlides[slide];
   const stepClass = (active: boolean, done: boolean) =>
     `flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold border ${
       done ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : active ? 'bg-cyan-50 border-cyan-300 text-cyan-900' : 'bg-white border-slate-200 text-slate-500'
@@ -89,57 +74,14 @@ export const ExamSafetyGate: React.FC<ExamSafetyGateProps> = ({ language, onPass
       )}
 
       {step === 'read' && (
-        <div className="p-3 sm:p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-          {en && <p className="text-[11px] text-slate-500">The safety slides are in Mongolian, as the school wrote them.</p>}
-          <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-video">
-            <img src={current.picture} alt={current.text} className="w-full h-full object-contain" />
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <button
-              type="button"
-              onClick={() => goTo(slide - 1)}
-              disabled={slide === 0}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>{en ? 'Back' : 'Өмнөх'}</span>
-            </button>
-            <span className="text-xs font-semibold text-slate-700 tabular-nums" aria-live="polite">
-              {en ? `Slide ${slide + 1} of ${total}` : `${total}-аас ${slide + 1}-р слайд`}
-            </span>
-            <button
-              type="button"
-              onClick={() => goTo(slide + 1)}
-              disabled={slide === total - 1}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-cyan-700 bg-cyan-700 text-white hover:bg-cyan-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <span>{en ? 'Next' : 'Дараах'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-          <div className="flex flex-wrap justify-center gap-1.5" role="group" aria-label={en ? 'Slides' : 'Слайдууд'}>
-            {safetySlides.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => goTo(index)}
-                aria-label={en ? `Slide ${index + 1}${seen.has(index) ? ', read' : ''}` : `${index + 1}-р слайд${seen.has(index) ? ', уншсан' : ''}`}
-                aria-current={index === slide ? 'true' : undefined}
-                className={`w-7 h-7 rounded-full text-[11px] font-semibold tabular-nums border transition-colors ${
-                  index === slide ? 'bg-cyan-700 border-cyan-700 text-white' : seen.has(index) ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-slate-200 text-slate-500 hover:border-cyan-300'
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-          <div>
-            <button type="button" onClick={() => setShowText(!showText)} aria-expanded={showText} className="inline-flex items-center gap-1 text-[11px] font-semibold text-cyan-700 hover:text-cyan-800">
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showText ? 'rotate-180' : ''}`} />
-              <span>{en ? 'Read the slide as text' : 'Слайдын текстийг унших'}</span>
-            </button>
-            {showText && <p className="mt-1.5 p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed">{current.text}</p>}
-          </div>
+        <SlideViewer
+          slides={safetySlides}
+          language={language}
+          slide={slide}
+          onSlide={goTo}
+          seen={seen}
+          note={en ? 'The safety slides are in Mongolian, as the school wrote them.' : undefined}
+        >
           {!review && (
             <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
               <span className="text-xs text-slate-600">
@@ -158,7 +100,7 @@ export const ExamSafetyGate: React.FC<ExamSafetyGateProps> = ({ language, onPass
               </button>
             </div>
           )}
-        </div>
+        </SlideViewer>
       )}
 
       {step === 'quiz' && !review && (

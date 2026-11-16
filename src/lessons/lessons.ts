@@ -1,18 +1,37 @@
 import { LabNotebookEntry } from '../types/chemistry';
 
-// Enrichment lessons («Хөгжүүлэх хичээл»): worksheets beyond the Cambridge practicals. Each worksheet is a complete
-// page with its own script, shown in a frame, and loaded only when it is opened. To add one, put its HTML file in
-// this folder and add an entry below; `capture` reads the student's work from the open worksheet for the teacher.
+// Enrichment lessons («Хөгжүүлэх хичээл»): theory decks and worksheets beyond the Cambridge practicals. A worksheet is
+// a complete page with its own script, shown in a frame, and loaded only when it is opened. To add one, put its HTML
+// file in this folder and add an entry below; `capture` reads the student's work from the open worksheet for the
+// teacher. A theory lesson is a deck of slides exported from PowerPoint, read in the site's slide viewer.
 
-export interface EnrichmentLesson {
+/** One slide exported from PowerPoint: its picture, its own words, and its speaker notes. */
+export interface LessonSlide {
+  picture: string;
+  text: string;
+  notes?: string;
+}
+
+interface LessonBase {
   id: string;
   title: { en: string; mn: string };
-  /** The language the worksheet itself is written in. */
+  /** The language the lesson itself is written in. */
   language: 'en' | 'mn';
+}
+
+export interface WorksheetLesson extends LessonBase {
+  kind: 'worksheet';
   load: () => Promise<string>;
   /** The student's work as a report, and a few lines (label, value) shown before it is sent. */
   capture: (doc: Document) => { entry: LabNotebookEntry; summary: [string, string][] };
 }
+
+export interface TheoryLesson extends LessonBase {
+  kind: 'theory';
+  loadSlides: () => Promise<LessonSlide[]>;
+}
+
+export type EnrichmentLesson = WorksheetLesson | TheoryLesson;
 
 const valueOf = (doc: Document, id: string) => {
   const el = doc.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null;
@@ -235,11 +254,23 @@ const captureChloride = (doc: Document) => {
   return { entry, summary };
 };
 
-// In the order of the work: the sample is taken, then its physical properties are measured, then it is titrated.
+// The theory comes first. Then the worksheets in the order of the work: the sample is taken, its physical
+// properties are measured, then it is titrated.
 export const enrichmentLessons: EnrichmentLesson[] = [
+  {
+    id: 'water-theory',
+    kind: 'theory',
+    title: {
+      en: 'Theory: physical properties of drinking water and the ions of hardness',
+      mn: 'Онолын хичээл: Ундны усны физик үзүүлэлт ба хатуулгийн ионууд',
+    },
+    language: 'mn',
+    loadSlides: () => import('./waterTheory').then((m) => m.waterTheorySlides),
+  },
   {
     id: 'water-sampling',
     title: { en: 'Taking drinking water samples', mn: 'Ундны усны дээж авалт' },
+    kind: 'worksheet',
     language: 'mn',
     load: () => import('./water-sampling.html?raw').then((m) => m.default),
     capture: captureSampling,
@@ -247,6 +278,7 @@ export const enrichmentLessons: EnrichmentLesson[] = [
   {
     id: 'water-physical',
     title: { en: 'Physical properties and suspended solids of drinking water', mn: 'Ундны усны физик үзүүлэлт ба жинлэгдэх бодис' },
+    kind: 'worksheet',
     language: 'mn',
     load: () => import('./water-physical.html?raw').then((m) => m.default),
     capture: capturePhysical,
@@ -254,6 +286,7 @@ export const enrichmentLessons: EnrichmentLesson[] = [
   {
     id: 'water-chloride',
     title: { en: 'Chloride in drinking water (Mohr titration)', mn: 'Ундны усны хлорын ионыг тодорхойлох (Морын арга)' },
+    kind: 'worksheet',
     language: 'mn',
     load: () => import('./water-chloride.html?raw').then((m) => m.default),
     capture: captureChloride,
@@ -264,6 +297,7 @@ export const enrichmentLessons: EnrichmentLesson[] = [
       en: 'Hardness, calcium and magnesium in drinking water (EDTA titration)',
       mn: 'Ундны усны хатуулаг, кальци, магнийн титрийн шинжилгээ',
     },
+    kind: 'worksheet',
     language: 'mn',
     load: () => import('./water-hardness.html?raw').then((m) => m.default),
     capture: captureHardness,
