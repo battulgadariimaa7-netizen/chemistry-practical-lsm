@@ -5,7 +5,7 @@ import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 import { ChevronLeft, ChevronRight, Download, Minus, Plus, X } from 'lucide-react';
 import { Language } from '../types/chemistry';
 
-// Shows a question paper inside the site, open at the page asked for. Phones and some browsers download a PDF
+// Shows a PDF inside the site (a question paper, or a student's report), open at the page asked for. Phones and some browsers download a PDF
 // instead of showing it, so the pages are drawn here instead. The older build of PDF.js also works on older phones.
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -15,11 +15,13 @@ interface QpViewerProps {
   page: number;
   language: Language;
   onClose: () => void;
+  /** The name the PDF is saved under; without it the browser names it from the address. */
+  fileName?: string;
 }
 
 const ZOOMS = [0.75, 1, 1.25, 1.5, 2, 2.5];
 
-export const QpViewer: React.FC<QpViewerProps> = ({ url, title, page: startPage, language, onClose }) => {
+export const QpViewer: React.FC<QpViewerProps> = ({ url, title, page: startPage, language, onClose, fileName }) => {
   const en = language === 'en';
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [failed, setFailed] = useState(false);
@@ -139,7 +141,7 @@ export const QpViewer: React.FC<QpViewerProps> = ({ url, title, page: startPage,
           <button type="button" onClick={() => zoomBy(1)} disabled={zoom === ZOOMS[ZOOMS.length - 1]} className={iconButton} aria-label={en ? 'Zoom in' : 'Томруулах'}>
             <Plus className="w-4 h-4" />
           </button>
-          <a href={url} download className={iconButton} aria-label={en ? 'Download the PDF' : 'PDF татах'} title={en ? 'Download the PDF' : 'PDF татах'}>
+          <a href={url} download={fileName ?? true} className={iconButton} aria-label={en ? 'Download the PDF' : 'PDF татах'} title={en ? 'Download the PDF' : 'PDF татах'}>
             <Download className="w-4 h-4" />
           </a>
         </div>
@@ -148,7 +150,7 @@ export const QpViewer: React.FC<QpViewerProps> = ({ url, title, page: startPage,
         {failed ? (
           <div className="mx-auto max-w-md mt-10 p-4 rounded-lg bg-white text-sm text-slate-700 text-center space-y-2">
             <p>{en ? 'The question paper could not be opened. Check the internet connection and try again.' : 'Асуултын хуудсыг нээж чадсангүй. Интернэтээ шалгаад дахин оролдоно уу.'}</p>
-            <a href={url} download className="inline-block text-cyan-700 font-semibold underline">{en ? 'Download the PDF instead' : 'PDF-ийг татаж авах'}</a>
+            <a href={url} download={fileName ?? true} className="inline-block text-cyan-700 font-semibold underline">{en ? 'Download the PDF instead' : 'PDF-ийг татаж авах'}</a>
           </div>
         ) : (
           <>

@@ -1,10 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { Language, LabNotebookEntry } from '../types/chemistry';
 import { MAX_SKILL_SCORE, ao3Skills, downloadReport, readReportFile, statusLabel } from '../data/reportFiles';
 import { InboxReport, deleteReport, getSession, isStaff, listReports, loadPictures, onSessionChange, saveGrade, signIn, signOut } from '../data/reportServer';
+import { reportPdf, reportPdfName } from '../data/reportPdf';
 import { useStoredState } from '../hooks/useStoredState';
-import { CheckCircle2, Database, Download, LogIn, LogOut, RefreshCw, Trash2, Upload } from 'lucide-react';
+import { CheckCircle2, Database, Download, FileText, LogIn, LogOut, Mail, RefreshCw, Share2, Trash2, Upload } from 'lucide-react';
+
+// The PDF viewer brings in PDF.js, so it is loaded only when a report is opened as a PDF.
+const QpViewer = lazy(() => import('./QpViewer'));
 
 interface StudentReportsProps {
   language: Language;
@@ -260,6 +264,84 @@ export const StudentReports: React.FC<StudentReportsProps> = ({ language }) => {
 
   const signedInAs = session?.user.email ?? '';
 
+  // ---- The report as a PDF: read in the site's viewer, saved, or sent on to another teacher ----
+  // The PDF holds the report as it is on screen now, with its whiteboard pages and the grade given so far.
+  const [pdfView, setPdfView] = useState<{ url: string; name: string } | null>(null);
+  const [pdfBusy, setPdfBusy] = useState<'view' | 'share' | 'mail' | 'save' | null>(null);
+  const [forwardTo, setForwardTo] = useState('');
+  const [forwardNote, setForwardNote] = useState('');
+  const [forwardStatus, setForwardStatus] = useState<{ ok: boolean; text: string } | null>(null);
+  // Only some browsers (most phones, Chrome and Edge on Windows) can hand a file to the share sheet.
+  const [canShareFiles] = useState(() => {
+    try {
+      return !!navigator.canShare?.({ files: [new File([''], 'report.pdf', { type: 'application/pdf' })] });
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => setForwardStatus(null), [selectedId]);
+  useEffect(() => () => {
+    if (pdfView) URL.revokeObjectURL(pdfView.url);
+  }, [pdfView]);
+
+  const makePdf = async () => {
+    const entry = plainEntry(selected!, boards);
+    return { blob: await reportPdf(entry, language), name: reportPdfName(entry) };
+  };
+  const savePdf = (blob: Blob, name: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  };
+  const withPdf = async (kind: NonNullable<typeof pdfBusy>, use: (pdf: { blob: Blob; name: string }) => Promise<void> | void) => {
+    if (!selected) return;
+    setPdfBusy(kind);
+    try {
+      await use(await makePdf());
+    } catch (error) {
+      if ((error as Error)?.name !== 'AbortError') {
+        setForwardStatus({ ok: false, text: en ? 'The PDF could not be made. Try again.' : 'PDF үүсгэж чадсангүй. Дахин оролдоно уу.' });
+      }
+    } finally {
+      setPdfBusy(null);
+    }
+  };
+  const forwardText = () => {
+    const lines = [
+      en ? `A student's report from Chemistry Practical & LSM: ${selected?.studentName} — ${selected?.experimentTitle} (${selected?.date}).` : `Chemistry Practical & LSM сайтын сурагчийн тайлан: ${selected?.studentName} — ${selected?.experimentTitle} (${selected?.date}).`,
+      forwardNote.trim(),
+    ];
+    return lines.filter(Boolean).join('\n\n');
+  };
+  const subject = () => (en ? `Student report: ${selected?.studentName} — ${selected?.experimentTitle}` : `Сурагчийн тайлан: ${selected?.studentName} — ${selected?.experimentTitle}`);
+  // The phone's or computer's own share sheet sends the file itself, by mail or a messenger.
+  const handleShare = () =>
+    withPdf('share', async ({ blob, name }) => {
+      const file = new File([blob], name, { type: 'application/pdf' });
+      if (!navigator.canShare?.({ files: [file] })) {
+        setForwardStatus({ ok: false, text: en ? 'This browser cannot share files. Use «Send by email» instead.' : 'Энэ хөтөч файл хуваалцаж чадахгүй. «И-мэйлээр илгээх»-ийг ашиглана уу.' });
+        return;
+      }
+      await navigator.share({ files: [file], title: subject(), text: forwardText() });
+      setForwardStatus({ ok: true, text: en ? 'The PDF was handed to the app you chose.' : 'PDF-ийг таны сонгосон апп руу дамжууллаа.' });
+    });
+  // A web page cannot attach a file to an email, so the PDF is saved and the mail program opens with the letter written.
+  const handleMail = () =>
+    withPdf('mail', ({ blob, name }) => {
+      savePdf(blob, name);
+      const body = `${forwardText()}\n\n${en ? `(Attach the file ${name} that was just saved.)` : `(Дөнгөж хадгалсан ${name} файлыг хавсаргана уу.)`}`;
+      window.location.href = `mailto:${encodeURIComponent(forwardTo.trim())}?subject=${encodeURIComponent(subject())}&body=${encodeURIComponent(body)}`;
+      setForwardStatus({
+        ok: true,
+        text: en ? `The PDF was saved as ${name}. Attach it to the email that opened, then send it.` : `PDF ${name} нэрээр хадгалагдлаа. Нээгдсэн и-мэйлд хавсаргаад илгээнэ үү.`,
+      });
+    });
+
   return (
     <div className="space-y-4">
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-3">
@@ -466,6 +548,26 @@ export const StudentReports: React.FC<StudentReportsProps> = ({ language }) => {
                 </div>
                 <h4 className="text-lg font-bold text-slate-900">{selected.experimentTitle}</h4>
                 <div className="text-sm text-slate-600">{selected.studentName}</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => withPdf('view', ({ blob, name }) => setPdfView({ url: URL.createObjectURL(blob), name }))}
+                    disabled={!!pdfBusy || waitingForPictures}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-cyan-700 hover:bg-cyan-800 rounded-lg transition-colors disabled:opacity-60"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>{pdfBusy === 'view' ? (en ? 'Making the PDF…' : 'PDF үүсгэж байна…') : en ? 'View as PDF' : 'PDF-ээр харах'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => withPdf('save', ({ blob, name }) => savePdf(blob, name))}
+                    disabled={!!pdfBusy || waitingForPictures}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-colors disabled:opacity-60"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>{en ? 'Save PDF' : 'PDF татах'}</span>
+                  </button>
+                </div>
                 {selected.examScore && (
                   <div className="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-xs text-cyan-900">
                     <span>{en ? 'Exam Practice marks' : 'Шалгалтын дадлагын оноо'}:</span>
@@ -598,10 +700,89 @@ export const StudentReports: React.FC<StudentReportsProps> = ({ language }) => {
                   </div>
                 )}
               </div>
+
+              {/* Sending the report on to another teacher, as a PDF */}
+              <div className="p-4 rounded-lg bg-cyan-50/50 border border-cyan-100 space-y-3">
+                <div>
+                  <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Share2 className="w-4 h-4 text-cyan-700" />
+                    {en ? 'Send to another teacher' : 'Өөр багш руу илгээх'}
+                  </h5>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    {en
+                      ? 'The report goes as a PDF, with its whiteboard pages and the grade and remarks given so far. Nothing is kept on a server.'
+                      : 'Тайлан PDF болж явна: самбарын зураг, одоогийн дүн, тэмдэглэл нь хамт орно. Сервер дээр юу ч хадгалагдахгүй.'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <label className="block text-xs text-slate-700">
+                    <span className="block font-medium mb-1">{en ? 'Teacher’s email (for «Send by email»)' : 'Багшийн и-мэйл («И-мэйлээр илгээх»-д)'}</span>
+                    <input
+                      type="email"
+                      value={forwardTo}
+                      onChange={(e) => setForwardTo(e.target.value)}
+                      placeholder="teacher@school.mn"
+                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg"
+                    />
+                  </label>
+                  <label className="block text-xs text-slate-700">
+                    <span className="block font-medium mb-1">{en ? 'Message (optional)' : 'Нэмэлт үг (заавал биш)'}</span>
+                    <input
+                      type="text"
+                      value={forwardNote}
+                      onChange={(e) => setForwardNote(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg"
+                    />
+                  </label>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {canShareFiles && (
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      disabled={!!pdfBusy || waitingForPictures}
+                      title={en ? 'Opens your phone’s or computer’s share sheet with the PDF attached: Gmail, Outlook, Messenger, Telegram…' : 'Утас, компьютерынхаа хуваалцах цонхыг PDF-тэй нь нээнэ: Gmail, Outlook, Messenger, Telegram…'}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-cyan-700 hover:bg-cyan-800 rounded-lg transition-colors disabled:opacity-60"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>{pdfBusy === 'share' ? (en ? 'Making the PDF…' : 'PDF үүсгэж байна…') : en ? 'Share the PDF' : 'PDF хуваалцах'}</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleMail}
+                    disabled={!!pdfBusy || waitingForPictures}
+                    title={en ? 'Saves the PDF and opens your email program with the letter written; attach the PDF and send.' : 'PDF-ийг хадгалаад захидал бичигдсэн и-мэйлээ нээнэ; PDF-ээ хавсаргаад илгээнэ.'}
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors disabled:opacity-60 ${
+                      canShareFiles ? 'text-slate-700 bg-white hover:bg-slate-100 border border-slate-300' : 'text-white bg-cyan-700 hover:bg-cyan-800'
+                    }`}
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>{pdfBusy === 'mail' ? (en ? 'Making the PDF…' : 'PDF үүсгэж байна…') : en ? 'Send by email' : 'И-мэйлээр илгээх'}</span>
+                  </button>
+                </div>
+                {forwardStatus && (
+                  <p role="status" className={`text-xs ${forwardStatus.ok ? 'text-emerald-800' : 'text-amber-900'}`}>
+                    {forwardStatus.text}
+                  </p>
+                )}
+              </div>
             </>
           )}
         </div>
       </div>
+      {pdfView && selected && (
+        <Suspense fallback={<div className="fixed inset-0 z-[70] bg-slate-800/80" />}>
+          <QpViewer
+            url={pdfView.url}
+            page={1}
+            fileName={pdfView.name}
+            title={`${selected.studentName} · ${selected.experimentTitle}`}
+            language={language}
+            onClose={() => setPdfView(null)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };
