@@ -91,7 +91,128 @@ const captureHardness = (doc: Document) => {
   return { entry, summary };
 };
 
+// ---- Helpers for worksheets that follow the same layout: the label next to a box, the ticked rows of a table ----
+const labelOf = (doc: Document, id: string) => doc.querySelector(`label[for="${id}"]`)?.textContent?.trim().replace(/^\d+\.\s*/, '') ?? '';
+/** The names in the second column of the rows whose «ready» box (r1, r2…) is ticked. */
+const readyItems = (doc: Document, count: number) =>
+  Array.from({ length: count }, (_, i) => doc.getElementById(`r${i + 1}`) as HTMLInputElement | null)
+    .filter((box) => box?.checked)
+    .map((box) => box!.closest('tr')?.children[1]?.textContent?.trim() ?? '');
+const questionsOf = (doc: Document, count: number) =>
+  Array.from({ length: count }, (_, i) => `${i + 1}. ${labelOf(doc, `q${i + 1}`)}\n${or(valueOf(doc, `q${i + 1}`))}`);
+const answeredOf = (doc: Document, count: number) => Array.from({ length: count }, (_, i) => valueOf(doc, `q${i + 1}`)).filter(Boolean).length;
+const safetyOf = (doc: Document, count: number) =>
+  Array.from({ length: count }, (_, i) => `${checked(doc, `s${i + 1}`) ? '☑' : '☐'} ${labelOf(doc, `s${i + 1}`)}`);
+const headerLines = (doc: Document) =>
+  [
+    ['Анги', valueOf(doc, 'cls')],
+    ['Дээжийн дугаар', valueOf(doc, 'sample')],
+    ['Дээжийн эх үүсвэр', valueOf(doc, 'source')],
+  ].filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`);
+const yesNo = (doc: Document, id: string) => (checked(doc, id) ? 'тийм' : 'үгүй');
+const single = (parameter: string, value: string, unit: string) => ({ parameter, trial1: '', trial2: '', trial3: '', mean: value, unit });
+
+const captureSampling = (doc: Document) => {
+  const dateTime = (id: string) => valueOf(doc, id).replace('T', ' ');
+  const requirements = Array.from(doc.querySelectorAll('#sumBody tr')).map((tr) => {
+    const td = tr.querySelectorAll('td');
+    const number = td[0]?.textContent?.trim();
+    return `${number ? `${number}. ` : ''}${td[1]?.textContent?.trim()}: ${td[2]?.textContent?.trim()}${td[3]?.textContent?.trim() ? ` — ${td[3].textContent.trim()}` : ''}`;
+  });
+  const ready = readyItems(doc, 6);
+  const summary: [string, string][] = [
+    ['Ажлын хуудас', 'Ундны усны дээж авалт'],
+    ['Хангасан шаардлага', or(textOf(doc, 'cOk'))],
+    ['Хүргэлтийн хугацаа', `${or(textOf(doc, 'cH'))} цаг`],
+    ['Хариулсан асуулт', `${answeredOf(doc, 5)} / 5`],
+  ];
+  const entry: LabNotebookEntry = {
+    id: `lesson-water-sampling-${Date.now()}`,
+    date: valueOf(doc, 'date') || new Date().toISOString().split('T')[0],
+    studentName: valueOf(doc, 'name'),
+    experimentTitle: 'Хөгжүүлэх хичээл: Ундны усны дээж авалт',
+    practicalId: 'enrichment:water-sampling',
+    chapterCode: '',
+    aim: doc.querySelector('h2 + p')?.textContent?.trim() ?? '',
+    equipmentUsed: `Бэлэн гэж тэмдэглэсэн хэрэгсэл: ${ready.length ? ready.join(', ') : '—'}`,
+    measurements: [
+      single('Савны багтаамж', valueOf(doc, 'bVol'), 'мл'),
+      single('Савыг зайлсан тоо', valueOf(doc, 'rinse'), 'удаа'),
+      single('Хүргэлтийн хугацаа', textOf(doc, 'hVal'), 'цаг'),
+      single('Хөргөгч савны температур', valueOf(doc, 'cool'), '°C'),
+    ],
+    observations: [
+      ...headerLines(doc),
+      `А. Цэг: ${or(valueOf(doc, 'kind'))}, ${or(valueOf(doc, 'point'))} — ${or(valueOf(doc, 'place'))}; цоргыг ${or(valueOf(doc, 'flush'))} мин урсгасан; цаг агаар: ${or(valueOf(doc, 'weather'))}`,
+      `Б. Сав: ${or(valueOf(doc, 'bType'))}, ${or(valueOf(doc, 'bVol'))} мл, ${or(valueOf(doc, 'rinse'))} удаа зайлсан; ариутгасан ${yesNo(doc, 'b1')}, агаарын зай ${yesNo(doc, 'b2')}, гар хүргээгүй ${yesNo(doc, 'b3')}`,
+      `В. Шошго: ${or(valueOf(doc, 'lN'))} | ${or(valueOf(doc, 'lD'))} | ${or(valueOf(doc, 'lT'))} | ${or(valueOf(doc, 'lK'))} | ${or(valueOf(doc, 'lP'))}; ус нэвтрэхгүй ${yesNo(doc, 'lW')}`,
+      `Г. Тээвэрлэлт: ${or(dateTime('tStart'))} → ${or(dateTime('tEnd'))}; ${or(valueOf(doc, 'cool'))} °C; битүүмжилсэн ${yesNo(doc, 'c1')}, нарнаас хамгаалсан ${yesNo(doc, 'c2')}`,
+    ].join('\n'),
+    calculations: [`Хүргэлтийн хугацаа = ${or(textOf(doc, 'hExpr'))} = ${or(textOf(doc, 'hVal'))} цаг`, '', 'Шаардлагын хураангуй', ...requirements].join('\n'),
+    conclusion: `Шаардлагын ${or(textOf(doc, 'cOk'))}-ийг хангасан. Хүргэлтийн хугацаа ${or(textOf(doc, 'cH'))} цаг, хадгалсан температур ${or(textOf(doc, 'cT'))} °C.\n${or(valueOf(doc, 'concl'))}`,
+    evaluations: ['Шалгах асуултууд', ...questionsOf(doc, 5), '', 'Аюулгүй ажиллагаа', ...safetyOf(doc, 3)].join('\n'),
+    status: 'draft',
+  };
+  return { entry, summary };
+};
+
+const capturePhysical = (doc: Document) => {
+  const ready = readyItems(doc, 7);
+  const summary: [string, string][] = [
+    ['Ажлын хуудас', 'Физик үзүүлэлт, жинлэгдэх бодис'],
+    ['Температур', `${or(textOf(doc, 'tVal'))} °C`],
+    ['Жинлэгдэх бодис', `${or(textOf(doc, 'sAvg'))} мг/л`],
+    ['Хариулсан асуулт', `${answeredOf(doc, 5)} / 5`],
+  ];
+  const entry: LabNotebookEntry = {
+    id: `lesson-water-physical-${Date.now()}`,
+    date: valueOf(doc, 'date') || new Date().toISOString().split('T')[0],
+    studentName: valueOf(doc, 'name'),
+    experimentTitle: 'Хөгжүүлэх хичээл: Ундны усны физик үзүүлэлт ба жинлэгдэх бодис',
+    practicalId: 'enrichment:water-physical',
+    chapterCode: '',
+    aim: doc.querySelector('h2 + p')?.textContent?.trim() ?? '',
+    equipmentUsed: `Бэлэн гэж тэмдэглэсэн бодис, багаж: ${ready.length ? ready.join(', ') : '—'}`,
+    measurements: [
+      { parameter: 'Температур', trial1: valueOf(doc, 'tt1'), trial2: valueOf(doc, 'tt2'), trial3: valueOf(doc, 'tt3'), mean: textOf(doc, 'tavg'), unit: '°C' },
+      { parameter: 'Жинлэгдэх бодис, Cₓ', trial1: textOf(doc, 'cx1'), trial2: textOf(doc, 'cx2'), trial3: '', mean: textOf(doc, 'cxavg'), unit: 'мг/л' },
+    ],
+    observations: [
+      ...headerLines(doc),
+      `Температур хэмжсэн гүн: ${[1, 2, 3].map((i) => or(valueOf(doc, `td${i}`))).join(', ')} м`,
+      `Тунгалагшил (хар суурь): ${or(valueOf(doc, 'tu'))} — ${or(valueOf(doc, 'obsTu'))}`,
+      `Өнгө (цагаан суурь): ${or(valueOf(doc, 'cv'))} — ${or(valueOf(doc, 'obsCo'))}`,
+      `Өнгө (стандарт): ${or(valueOf(doc, 'co'))} градус, ${or(valueOf(doc, 'coT'))} °C-т — ${or(valueOf(doc, 'coNote'))}`,
+      `Үнэр: ${or(valueOf(doc, 'ot'))}, илрэл ${or(valueOf(doc, 'ol'))}`,
+    ].join('\n'),
+    calculations: [
+      `t = ${or(textOf(doc, 'tExpr'))} = ${or(textOf(doc, 'tVal'))} °C`,
+      ...[1, 2].map((i) => `${i}-р давталт: m₁ = ${or(valueOf(doc, `m1_${i}`))} мг, m₂ = ${or(valueOf(doc, `m2_${i}`))} мг, V = ${or(valueOf(doc, `v_${i}`))} мл; Cₓ = ${or(textOf(doc, `s${i}Expr`))} = ${or(textOf(doc, `s${i}Val`))} мг/л`),
+      `Дундаж Cₓ = ${or(textOf(doc, 'sAvg'))} мг/л`,
+    ].join('\n'),
+    conclusion: `Стандартын зөвшөөрөх хэмжээ: ${or(valueOf(doc, 'std'))}\n${or(valueOf(doc, 'concl'))}`,
+    evaluations: ['Шалгах асуултууд', ...questionsOf(doc, 5), '', 'Аюулгүй ажиллагаа', ...safetyOf(doc, 4)].join('\n'),
+    status: 'draft',
+  };
+  return { entry, summary };
+};
+
+// In the order of the work: the sample is taken, then its physical properties are measured, then it is titrated.
 export const enrichmentLessons: EnrichmentLesson[] = [
+  {
+    id: 'water-sampling',
+    title: { en: 'Taking drinking water samples', mn: 'Ундны усны дээж авалт' },
+    language: 'mn',
+    load: () => import('./water-sampling.html?raw').then((m) => m.default),
+    capture: captureSampling,
+  },
+  {
+    id: 'water-physical',
+    title: { en: 'Physical properties and suspended solids of drinking water', mn: 'Ундны усны физик үзүүлэлт ба жинлэгдэх бодис' },
+    language: 'mn',
+    load: () => import('./water-physical.html?raw').then((m) => m.default),
+    capture: capturePhysical,
+  },
   {
     id: 'water-hardness',
     title: {
