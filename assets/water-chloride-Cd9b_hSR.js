@@ -1,0 +1,331 @@
+var e=`<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ажлын хуудас: Ундны усны хлорын ионыг тодорхойлох (Морын арга)</title>
+<style>
+  :root{
+    --ink:#1b2430; --muted:#5a6573; --line:#c9d2dc; --accent:#1f3864; --accent-soft:#e8eef8;
+    --formula:#fff6d9; --formula-line:#d9b34a; --ok:#1e7a46; --ok-soft:#e5f4ea; --warn:#a4400f; --warn-soft:#fdece2;
+    --paper:#ffffff; --bg:#f3f5f8;
+  }
+  *{box-sizing:border-box}
+  html{font-size:12pt}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial, Helvetica, sans-serif;font-size:12pt;line-height:1.5}
+  .sheet{max-width:820px;margin:24px auto;background:var(--paper);padding:36px 44px 44px;border:1px solid var(--line);border-radius:6px}
+  header.top{text-align:center;border-bottom:2px solid var(--accent);padding-bottom:14px;margin-bottom:20px}
+  header.top .kicker{font-weight:bold;letter-spacing:.08em;color:var(--accent)}
+  header.top h1{font-size:12pt;margin:4px 0;font-weight:bold}
+  header.top .sub{font-style:italic;color:var(--muted)}
+  h2{font-size:12pt;font-weight:bold;color:var(--accent);margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--accent)}
+  h3{font-size:12pt;font-weight:bold;margin:16px 0 6px}
+  p{margin:0 0 10px}
+  .note{color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:12pt}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle}
+  th{background:var(--accent-soft);font-weight:bold}
+  tr.avg td{background:#f5f7fa;font-weight:bold}
+  input[type=text],input[type=number],input[type=date],textarea{
+    font-family:Arial, Helvetica, sans-serif;font-size:12pt;color:var(--ink);
+    width:100%;padding:6px 8px;border:1px solid #aab6c3;border-radius:4px;background:#fff}
+  input:focus,textarea:focus{outline:2px solid #7fa2d9;outline-offset:0;border-color:#7fa2d9}
+  input[type=number]{text-align:right}
+  td input{border-color:#c4ced9}
+  select{font-family:Arial, Helvetica, sans-serif;font-size:12pt;width:100%;padding:6px 8px;border:1px solid #aab6c3;border-radius:4px;background:#fff}
+  textarea{min-height:64px;resize:vertical;line-height:1.5}
+  .grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;gap:10px}
+  .grid label, .field label{display:block;font-weight:bold;margin-bottom:3px}
+  .field{margin:10px 0}
+  .formula{background:var(--formula);border:1px solid var(--formula-line);border-radius:4px;padding:8px 12px;text-align:center;margin:8px 0}
+  ol.steps,ul.plain{margin:6px 0 10px;padding-left:26px}
+  ol.steps li,ul.plain li{margin:3px 0}
+  .check{display:flex;gap:8px;align-items:flex-start;margin:4px 0}
+  .check input{width:18px;height:18px;margin-top:3px;flex:none}
+  .inline-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .inline-row input{width:120px}
+  .obs{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px;align-items:center;margin:8px 0}
+  .calc{border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin:10px 0}
+  .calc .result{font-weight:bold;font-size:12pt}
+  .result-val{display:inline-block;min-width:80px;padding:2px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent);text-align:right}
+  .msg{border-radius:4px;padding:6px 10px;margin:6px 0;display:none}
+  .msg.show{display:block}
+  .msg.warn{background:var(--warn-soft);color:var(--warn)}
+  .msg.ok{background:var(--ok-soft);color:var(--ok)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+  button{font-family:Arial, Helvetica, sans-serif;font-size:12pt;padding:8px 16px;border-radius:4px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+  button.secondary{background:#fff;color:var(--accent)}
+  button.danger{background:#fff;color:var(--warn);border-color:var(--warn)}
+  button:focus-visible{outline:2px solid #7fa2d9;outline-offset:2px}
+  .status{color:var(--muted);align-self:center}
+  .dialog-backdrop{position:fixed;inset:0;background:rgba(20,30,45,.45);display:none;align-items:center;justify-content:center;padding:16px}
+  .dialog-backdrop.show{display:flex}
+  .dialog{background:#fff;border-radius:6px;padding:20px 22px;max-width:420px;width:100%}
+  .dialog p{margin-bottom:16px}
+  .q{margin:14px 0}
+  .q label{font-weight:bold;display:block;margin-bottom:4px}
+  @media (max-width:640px){
+    .sheet{padding:20px 16px;margin:0;border-radius:0;border-left:none;border-right:none}
+    .grid{grid-template-columns:1fr 1fr}
+    .obs{grid-template-columns:1fr}
+    th,td{padding:5px}
+  }
+  @media print{
+    body{background:#fff}
+    .sheet{border:none;margin:0;padding:0;max-width:none}
+    .actions,.dialog-backdrop{display:none!important}
+    input,textarea{border:none;border-bottom:1px solid #888;border-radius:0}
+    textarea{min-height:0}
+    h2{break-after:avoid}
+    table,.calc{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<main class="sheet" id="sheet">
+  <header class="top">
+    <div class="kicker">АЖЛЫН ХУУДАС</div>
+    <h1>Ундны усны хлорын ионыг тодорхойлох титрийн арга</h1>
+    <div class="sub">Морын арга · AgNO<sub>3</sub>-аар титрлэх, K<sub>2</sub>CrO<sub>4</sub> индикатор</div>
+  </header>
+
+  <section>
+    <div class="grid">
+      <div><label for="name">Овог, нэр</label><input type="text" id="name" data-save></div>
+      <div><label for="cls">Анги</label><input type="text" id="cls" data-save></div>
+      <div><label for="date">Огноо</label><input type="date" id="date" data-save></div>
+      <div><label for="sample">Дээжийн дугаар</label><input type="text" id="sample" data-save></div>
+    </div>
+    <div class="field"><label for="source">Дээжийн эх үүсвэр (хаанаас авсан)</label><input type="text" id="source" data-save></div>
+  </section>
+
+  <h2>1. Зорилго</h2>
+  <p>Ундны усны дээж дэх хлорын ион (Cl<sup>−</sup>)-ы агуулалтыг (мг/л) мөнгөний нитрат (AgNO<sub>3</sub>)-ын стандарт уусмалаар Морын аргаар титрлэн тодорхойлж, ундны усны стандарттай харьцуулах.</p>
+
+  <h2>2. Аргын зарчим</h2>
+  <p>Дээж дэх Cl<sup>−</sup> ион нь Ag<sup>+</sup> ионтой урвалд орж, цагаан AgCl тунадас үүсгэнэ. Бүх Cl<sup>−</sup> тунасны дараа илүүдэл Ag<sup>+</sup> нь индикатор CrO<sub>4</sub><sup>2−</sup>-тэй урвалд орж, улаан хүрэн Ag<sub>2</sub>CrO<sub>4</sub> үүсгэнэ — энэ нь титрлэлтийн төгсгөлийн цэг юм.</p>
+  <div class="formula">Ag<sup>+</sup> + Cl<sup>−</sup> → AgCl↓ &nbsp;(цагаан тунадас)</div>
+  <div class="formula">2Ag<sup>+</sup> + CrO<sub>4</sub><sup>2−</sup> → Ag<sub>2</sub>CrO<sub>4</sub>↓ &nbsp;(улаан хүрэн тунадас)</div>
+  <table>
+    <thead><tr><th>Уусмал</th><th>Үүрэг</th><th>Өнгө өөрчлөгдөлт</th></tr></thead>
+    <tbody>
+      <tr><td>0.0141 М AgNO<sub>3</sub></td><td>Стандарт (титрлэгч) уусмал</td><td rowspan="2">шар → улаан хүрэн</td></tr>
+      <tr><td>5% K<sub>2</sub>CrO<sub>4</sub></td><td>Индикатор</td></tr>
+    </tbody>
+  </table>
+  <p class="note">0.0141 М AgNO<sub>3</sub>-ын 1.00 мл нь 0.0141 · 35.45 ≈ 0.500 мг Cl<sup>−</sup>-тэй тэнцүү.</p>
+
+  <h2>3. Хэрэглэх бодис, багаж</h2>
+  <p>Бодис бүрийг бэлэн эсэхийг шалгаад тэмдэглэнэ үү.</p>
+  <table>
+    <thead><tr><th style="width:36px">№</th><th style="width:26%">Бодис</th><th>Бэлтгэх арга</th><th style="width:70px">Бэлэн</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>0.0141 М AgNO<sub>3</sub></td><td>2.395 г AgNO<sub>3</sub>-ыг 1000 мл-ийн хэмжих колбонд хийж, нэрмэл усаар тэмдэглэгээ хүртэл шингэлж, сайтар хутгана. Харанхуй шилэнд хадгална.</td><td><input type="checkbox" id="r1" data-save aria-label="AgNO3 бэлэн"></td></tr>
+      <tr><td>2</td><td>5% K<sub>2</sub>CrO<sub>4</sub></td><td>5.0 г K<sub>2</sub>CrO<sub>4</sub>-ыг 100 мл-ийн хэмжих колбонд хийж, нэрмэл усаар шингэлнэ. Шаардлагатай бол шүүнэ.</td><td><input type="checkbox" id="r2" data-save aria-label="K2CrO4 бэлэн"></td></tr>
+      <tr><td>3</td><td>Дээж (ундны ус)</td><td>Шууд эсвэл шингэлсэн байдлаар</td><td><input type="checkbox" id="r3" data-save aria-label="Дээж бэлэн"></td></tr>
+    </tbody>
+  </table>
+  <p><b>Багаж:</b> бюретка (25 мл), пипетка (10/25/50 мл), коник колбо (250 мл), аяга, хэмжих цилиндр, штатив, шүүлтүүр (шаардлагатай бол).</p>
+
+  <h3>Уусмал бэлтгэх тооцоо</h3>
+  <div class="formula">m = C · M · V / 1000</div>
+  <p class="note">m — жинлэх масс (г), C — молийн концентраци (М), M — AgNO<sub>3</sub>-ын молийн масс = 169.87 г/моль, V — уусмалын эзлэхүүн (мл).</p>
+  <div class="inline-row">
+    <label for="pC"><b>C, М:</b></label><input type="number" id="pC" step="0.0001" min="0" value="0.0141" data-save>
+    <label for="pV"><b>V, мл:</b></label><input type="number" id="pV" step="1" min="1" value="1000" data-save>
+    <label for="pM"><b>Таны бодсон m, г:</b></label><input type="number" id="pM" step="0.001" min="0" data-save>
+  </div>
+  <div class="msg" id="msgP" role="status"></div>
+
+  <h2>4. Тодорхойлох явц</h2>
+  <ol class="steps">
+    <li>50.0 мл ундны усны дээжийг пипеткээр хэмжиж, коник колбонд хийнэ.</li>
+    <li>5% K<sub>2</sub>CrO<sub>4</sub> индикаторын уусмалаас 1–2 мл нэмнэ. Уусмал шар өнгөтэй болно.</li>
+    <li>Бюреткаас 0.0141 М AgNO<sub>3</sub> уусмалаар аажмаар, колбыг тасралтгүй сэгсэрч байгаад титрлэнэ.</li>
+    <li>Уусмалд арилахгүй улаан хүрэн өнгө гармагц титрлэлтийг зогсооно.</li>
+    <li>Зарцуулсан AgNO<sub>3</sub>-ын эзлэхүүнийг тэмдэглэнэ. Титрлэлтийг 3 удаа давтана.</li>
+  </ol>
+  <div class="obs">
+    <label for="obs1">Индикатор нэмсний дараах өнгө:</label><input type="text" id="obs1" data-save>
+    <label for="obs2">Титрлэлтийн явцад үүссэн тунадас:</label><input type="text" id="obs2" data-save>
+  </div>
+  <div class="obs">
+    <label for="obs3">Төгсгөлийн цэгийн өнгө:</label><input type="text" id="obs3" data-save>
+    <span></span><span></span>
+  </div>
+  <table id="tA">
+    <thead><tr><th>Давталт</th><th>Эхний заалт (мл)</th><th>Эцсийн заалт (мл)</th><th>V<sub>AgNO₃</sub> (мл)</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="msg" id="msgA" role="status"></div>
+
+  <h2>5. Тооцоо</h2>
+  <p>Хүснэгтэд утгаа оруулахад дундаж V<sub>AgNO₃</sub> болон үр дүн автоматаар тооцоологдоно. AgNO<sub>3</sub>-ын агуулалт яг 0.0141 М биш бол жинхэнэ утгыг оруулна уу.</p>
+  <div class="inline-row">
+    <label for="C"><b>C (AgNO<sub>3</sub>), М:</b></label><input type="number" id="C" step="0.0001" min="0" value="0.0141" data-save>
+    <label for="V"><b>V (дээж), мл:</b></label><input type="number" id="V" step="0.1" min="1" value="50.0" data-save>
+  </div>
+  <div class="calc">
+    <h3>Хлорын ионы агуулалт, мг/л</h3>
+    <div class="formula">C(Cl<sup>−</sup>) = (V<sub>AgNO₃</sub> · C<sub>AgNO₃</sub> · 35.45 · 1000) / V<sub>дээж</sub></div>
+    <p class="note">35.45 — Cl-ийн молийн масс (г/моль).</p>
+    <p class="result">C(Cl<sup>−</sup>) = <span id="clExpr">—</span> = <span class="result-val" id="clVal">—</span> мг/л</p>
+  </div>
+
+  <h3>Үр дүнгийн хураангуй</h3>
+  <table>
+    <thead><tr><th>Үзүүлэлт</th><th>Утга</th><th>Нэгж</th></tr></thead>
+    <tbody>
+      <tr><td>Дундаж зарцуулалт V<sub>AgNO₃</sub></td><td id="sV">—</td><td>мл</td></tr>
+      <tr><td>AgNO<sub>3</sub>-ын концентраци</td><td id="sC">—</td><td>М</td></tr>
+      <tr><td>Дээжийн эзлэхүүн</td><td id="sVs">—</td><td>мл</td></tr>
+      <tr><td><b>Хлорын ион (Cl<sup>−</sup>)</b></td><td id="sCl"><b>—</b></td><td>мг/л</td></tr>
+      <tr><td>Стандарттай харьцуулалт</td><td id="sCmp">—</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. Аюулгүй ажиллагаа</h2>
+  <div class="check"><input type="checkbox" id="s1" data-save><label for="s1">Бээлий, нүдний шил, лабораторийн хувцас өмсөж ажилласан.</label></div>
+  <div class="check"><input type="checkbox" id="s2" data-save><label for="s2">AgNO<sub>3</sub> арьсанд хүрвэл хар толбо үүсгэдэг тул болгоомжтой харьцсан.</label></div>
+  <div class="check"><input type="checkbox" id="s3" data-save><label for="s3">K<sub>2</sub>CrO<sub>4</sub> хортой тул хаягдлыг тусгай саванд хийсэн, угаалтуурт асгаагүй.</label></div>
+  <div class="check"><input type="checkbox" id="s4" data-save><label for="s4">Титрлэлтийг 2–3 удаа давтаж, дунджийг авсан (давталтын зөрүү ≤ 0.1 мл).</label></div>
+
+  <h2>7. Шалгах асуултууд</h2>
+  <div class="q"><label for="q1">1. Титрлэлтийн явцад колбонд үүсэх цагаан тунадас юу вэ? Урвалын тэгшитгэлийг бичнэ үү.</label><textarea id="q1" data-save></textarea></div>
+  <div class="q"><label for="q2">2. Төгсгөлийн цэгт улаан хүрэн өнгө яагаад үүсдэг вэ?</label><textarea id="q2" data-save></textarea></div>
+  <div class="q"><label for="q3">3. AgNO<sub>3</sub> уусмалыг яагаад харанхуй шилэнд, гэрлээс хамгаалж хадгалдаг вэ?</label><textarea id="q3" data-save></textarea></div>
+  <div class="q"><label for="q4">4. 0.0141 М AgNO<sub>3</sub>-ын 1 мл нь хэдэн мг Cl<sup>−</sup>-тэй тэнцэх вэ? Бодолтоо бичнэ үү.</label><textarea id="q4" data-save></textarea></div>
+  <div class="q"><label for="q5">5. Титрлэх үед колбыг яагаад тасралтгүй сэгсэрдэг вэ?</label><textarea id="q5" data-save></textarea></div>
+
+  <h2>8. Дүгнэлт</h2>
+  <p>Шинжилсэн усны хлорын ионы агуулалт <b id="cCl">—</b> мг/л байна.</p>
+  <div class="field"><label for="std">Ундны усны стандартын зөвшөөрөх дээд хэмжээ (мг/л)</label><input type="number" id="std" step="1" min="0" data-save></div>
+  <div class="msg" id="msgStd" role="status"></div>
+  <div class="field"><label for="concl">Стандарттай харьцуулсан дүгнэлт</label><textarea id="concl" data-save style="min-height:96px"></textarea></div>
+
+  <div class="actions">
+    <button type="button" id="btnCopy">Хариултыг хуулах</button>
+    <button type="button" class="danger" id="btnClear">Цэвэрлэх</button>
+    <span class="status" id="status" role="status" aria-live="polite"></span>
+  </div>
+</main>
+
+<div class="dialog-backdrop" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgText">
+  <div class="dialog">
+    <p id="dlgText">Бөглөсөн бүх мэдээллийг устгах уу?</p>
+    <div class="inline-row">
+      <button type="button" class="danger" id="dlgYes">Тийм, устгах</button>
+      <button type="button" class="secondary" id="dlgNo">Болих</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='worksheet-chloride-v1';
+  var $=function(id){return document.getElementById(id)};
+  var dash='—';
+  (function(){var tb=$('tA').querySelector('tbody'),h='';
+    for(var i=1;i<=3;i++)h+='<tr><td>'+i+'</td><td><input type="number" step="0.01" min="0" id="as'+i+'" data-save aria-label="'+i+'-р давталт, эхний заалт"></td><td><input type="number" step="0.01" min="0" id="ae'+i+'" data-save aria-label="'+i+'-р давталт, эцсийн заалт"></td><td id="av'+i+'">—</td></tr>';
+    h+='<tr class="avg"><td>Дундаж V<sub>AgNO₃</sub></td><td>—</td><td>—</td><td id="aavg">—</td></tr>';tb.innerHTML=h})();
+
+  function num(id){var v=$(id).value.trim().replace(',','.');if(v==='')return null;var n=parseFloat(v);return isFinite(n)?n:null;}
+  function fmt(n,d){return n.toFixed(d);}
+  function msg(id,cls,text){var m=$(id);m.className=cls?'msg '+cls+' show':'msg';m.innerHTML=text||'';}
+
+  function prep(){
+    var C=num('pC'),V=num('pV'),m=num('pM');
+    if(C===null||V===null||C<=0||V<=0){msg('msgP');return;}
+    var ans=C*169.87*V/1000;
+    if(m===null){msg('msgP');return;}
+    if(Math.abs(m-ans)<=Math.max(0.005,ans*0.005))msg('msgP','ok','Зөв! m = '+C+' · 169.87 · '+V+' / 1000 = '+fmt(ans,3)+' г');
+    else msg('msgP','warn','Дахин шалгаарай. Зөв хариу: m = '+C+' · 169.87 · '+V+' / 1000 = '+fmt(ans,3)+' г');
+  }
+
+  function vols(){
+    var vals=[],bad=false;
+    for(var i=1;i<=3;i++){var s=num('as'+i),e=num('ae'+i),c=$('av'+i);
+      if(s!==null&&e!==null){var v=e-s;if(v<=0){c.textContent='алдаа';bad=true;}else{c.textContent=fmt(v,2);vals.push(v);}}else c.textContent=dash;}
+    var avg=null;
+    if(vals.length){avg=vals.reduce(function(a,b){return a+b},0)/vals.length;$('aavg').textContent=fmt(avg,2);}else $('aavg').textContent=dash;
+    if(bad)msg('msgA','warn','Эцсийн заалт эхний заалтаас их байх ёстой. Утгаа шалгана уу.');
+    else if(vals.length>=2){var sp=Math.max.apply(null,vals)-Math.min.apply(null,vals);
+      if(sp>0.1+1e-9)msg('msgA','warn','Давталтуудын зөрүү '+fmt(sp,2)+' мл байна (≤ 0.1 мл байх ёстой). Дахин титрлэхийг зөвлөж байна.');
+      else msg('msgA','ok','Давталтуудын зөрүү '+fmt(sp,2)+' мл. Тохирч байна.');}
+    else msg('msgA');
+    return avg;
+  }
+
+  var CL=null;
+  function calc(){
+    prep();
+    var Vt=vols(),C=num('C'),V=num('V');
+    var ok=C!==null&&C>0&&V!==null&&V>0;
+    CL=null;
+    if(ok&&Vt!==null){CL=Vt*C*35.45*1000/V;$('clExpr').textContent='('+fmt(Vt,2)+' · '+C+' · 35.45 · 1000) / '+V;$('clVal').textContent=fmt(CL,1);}
+    else{$('clExpr').textContent=dash;$('clVal').textContent=dash;}
+    $('sV').textContent=Vt!==null?fmt(Vt,2):dash;
+    $('sC').textContent=C!==null?C:dash;
+    $('sVs').textContent=V!==null?V:dash;
+    $('sCl').innerHTML='<b>'+(CL!==null?fmt(CL,1):dash)+'</b>';
+    $('cCl').textContent=CL!==null?fmt(CL,1):dash;
+    var std=num('std'),cmp=dash;
+    if(CL!==null&&std!==null&&std>0){
+      if(CL<=std){cmp='≤ '+std+' мг/л — зөвшөөрөгдөх хэмжээнд';msg('msgStd','ok','Хлорын ион '+fmt(CL,1)+' мг/л нь зөвшөөрөх дээд хэмжээ '+std+' мг/л-ээс бага байна.');}
+      else{cmp='> '+std+' мг/л — хэтэрсэн';msg('msgStd','warn','Хлорын ион '+fmt(CL,1)+' мг/л нь зөвшөөрөх дээд хэмжээ '+std+' мг/л-ээс '+fmt(CL-std,1)+' мг/л-ээр их байна.');}
+    } else msg('msgStd');
+    $('sCmp').textContent=cmp;
+  }
+
+  var fields=function(){return Array.prototype.slice.call(document.querySelectorAll('[data-save]'));};
+  var defaults={pC:'0.0141',pV:'1000',C:'0.0141',V:'50.0'};
+  function save(){var data={};fields().forEach(function(el){data[el.id]=el.type==='checkbox'?el.checked:el.value;});try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
+  function load(){var data=null;try{data=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){}if(!data)return;
+    fields().forEach(function(el){if(!(el.id in data))return;if(el.type==='checkbox')el.checked=!!data[el.id];else el.value=data[el.id];});}
+  load();calc();
+  document.addEventListener('input',function(){calc();save();});
+  document.addEventListener('change',function(){calc();save();});
+
+  var statusEl=$('status'),statusTimer;
+  function status(t){statusEl.textContent=t;clearTimeout(statusTimer);statusTimer=setTimeout(function(){statusEl.textContent='';},4000);}
+  function val(id){var v=$(id).value.trim();return v||dash;}
+
+  function summary(){
+    calc();var L=[];
+    L.push('АЖЛЫН ХУУДАС: Ундны усны хлорын ионыг тодорхойлох титрийн арга (Морын арга)');
+    L.push('Нэр: '+val('name')+' | Анги: '+val('cls')+' | Огноо: '+val('date')+' | Дээж: '+val('sample'));
+    L.push('Эх үүсвэр: '+val('source'));L.push('');
+    L.push('Уусмал бэлтгэх тооцоо: C = '+val('pC')+' М, V = '+val('pV')+' мл, сурагчийн бодсон m = '+val('pM')+' г');
+    L.push('Ажиглалт: индикатор нэмсний дараа '+val('obs1')+'; тунадас '+val('obs2')+'; төгсгөлийн цэг '+val('obs3'));
+    for(var i=1;i<=3;i++)L.push('  '+i+': '+val('as'+i)+' → '+val('ae'+i)+' мл, V = '+$('av'+i).textContent);
+    L.push('  Дундаж V(AgNO3) = '+$('aavg').textContent+' мл');L.push('');
+    L.push('C(AgNO3) = '+val('C')+' М, V(дээж) = '+val('V')+' мл');
+    L.push('C(Cl−) = '+$('clExpr').textContent+' = '+$('clVal').textContent+' мг/л');
+    L.push('Стандарт: '+val('std')+' мг/л → '+$('sCmp').textContent);L.push('');
+    var qs=['Цагаан тунадас юу вэ?','Улаан хүрэн өнгө яагаад үүсдэг вэ?','AgNO3-ыг яагаад харанхуй шилэнд хадгалдаг вэ?','1 мл AgNO3 хэдэн мг Cl−-тэй тэнцэх вэ?','Колбыг яагаад сэгсэрдэг вэ?'];
+    qs.forEach(function(q,k){L.push((k+1)+'. '+q);L.push('   '+val('q'+(k+1)));});
+    L.push('');L.push('Дүгнэлт: '+val('concl'));
+    return L.join('\\n');
+  }
+
+  $('btnCopy').addEventListener('click',function(){
+    var text=summary();
+    function fallback(){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+      var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);status(ok?'Хариулт хуулагдлаа.':'Хуулж чадсангүй.');}
+    try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){status('Хариулт хуулагдлаа.');},fallback);}else fallback();}catch(e){fallback();}
+  });
+  var dlg=$('dlg');
+  $('btnClear').addEventListener('click',function(){dlg.classList.add('show');$('dlgNo').focus();});
+  $('dlgNo').addEventListener('click',function(){dlg.classList.remove('show');});
+  $('dlgYes').addEventListener('click',function(){
+    fields().forEach(function(el){if(el.type==='checkbox')el.checked=false;else el.value=(el.id in defaults)?defaults[el.id]:'';});
+    try{localStorage.removeItem(KEY);}catch(e){}
+    calc();dlg.classList.remove('show');status('Цэвэрлэгдлээ.');
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')dlg.classList.remove('show');});
+})();
+
+<\/script>
+</body>
+</html>
+`;export{e as default};
