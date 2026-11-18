@@ -254,6 +254,51 @@ const captureChloride = (doc: Document) => {
   return { entry, summary };
 };
 
+const captureCarbonate = (doc: Document) => {
+  const ready = readyItems(doc, 3);
+  const vp = [1, 2, 3].map((i) => textOf(doc, `vp${i}`));
+  const vm = [1, 2, 3].map((i) => textOf(doc, `vm${i}`));
+  const summary: [string, string][] = [
+    ['Ажлын хуудас', 'Карбонат, гидрокарбонат'],
+    ['P / M шүлтлэг', `${or(textOf(doc, 'pVal'))} / ${or(textOf(doc, 'mVal'))} мг/л CaCO₃`],
+    ['CO₃²⁻ / HCO₃⁻', `${or(textOf(doc, 'cC2'))} / ${or(textOf(doc, 'cH2'))} мг/л`],
+    ['Хариулсан асуулт', `${answeredOf(doc, 5)} / 5`],
+  ];
+  const entry: LabNotebookEntry = {
+    id: `lesson-water-carbonate-${Date.now()}`,
+    date: valueOf(doc, 'date') || new Date().toISOString().split('T')[0],
+    studentName: valueOf(doc, 'name'),
+    experimentTitle: 'Хөгжүүлэх хичээл: Ундны усны карбонат, гидрокарбонатыг тодорхойлох',
+    practicalId: 'enrichment:water-carbonate',
+    chapterCode: '',
+    aim: doc.querySelector('h2 + p')?.textContent?.trim() ?? '',
+    equipmentUsed: `Бэлэн гэж тэмдэглэсэн бодис: ${ready.length ? ready.join(', ') : '—'}`,
+    measurements: [
+      { parameter: 'Vₚ, фенолфталейн хүртэл', trial1: vp[0], trial2: vp[1], trial3: vp[2], mean: textOf(doc, 'vpavg'), unit: 'мл' },
+      { parameter: 'Vₘ, метилоранж хүртэл (нийт)', trial1: vm[0], trial2: vm[1], trial3: vm[2], mean: textOf(doc, 'vmavg'), unit: 'мл' },
+    ],
+    observations: [
+      ...headerLines(doc),
+      `Фенолфталейн нэмсний дараа: ${or(valueOf(doc, 'obs1'))} → 1-р цэг (P): ${or(valueOf(doc, 'obs2'))}`,
+      `Метилоранж нэмсний дараа: ${or(valueOf(doc, 'obs3'))} → 2-р цэг (M): ${or(valueOf(doc, 'obs4'))}`,
+      ...[1, 2, 3].map((i) => `${i}-р давталт: ${or(valueOf(doc, `a0_${i}`))} → P ${or(valueOf(doc, `aP_${i}`))} → M ${or(valueOf(doc, `aM_${i}`))} мл`),
+    ].join('\n'),
+    calculations: [
+      `HCl бэлтгэх: C₁ = ${or(valueOf(doc, 'pC1'))} М, C₂ = ${or(valueOf(doc, 'pC2'))} М, V₂ = ${or(valueOf(doc, 'pV2'))} мл, сурагчийн бодсон V₁ = ${or(valueOf(doc, 'pV1'))} мл${textOf(doc, 'msgP') ? ` (${textOf(doc, 'msgP')})` : ''}`,
+      `C(HCl) = ${or(valueOf(doc, 'C'))} М, Vs = ${or(valueOf(doc, 'V'))} мл`,
+      `P = ${or(textOf(doc, 'pExpr'))} = ${or(textOf(doc, 'pVal'))} мг/л CaCO₃`,
+      `M = ${or(textOf(doc, 'mExpr'))} = ${or(textOf(doc, 'mVal'))} мг/л CaCO₃`,
+      `Нөхцөл: ${or(textOf(doc, 'caseVal'))}`,
+      `Карбонат = ${or(textOf(doc, 'cExpr'))} = ${or(textOf(doc, 'cVal'))} мг/л CaCO₃ → CO₃²⁻ ${or(textOf(doc, 'cC2'))} мг/л`,
+      `Гидрокарбонат = ${or(textOf(doc, 'hExpr'))} = ${or(textOf(doc, 'hVal'))} мг/л CaCO₃ → HCO₃⁻ ${or(textOf(doc, 'cH2'))} мг/л`,
+    ].join('\n'),
+    conclusion: `P шүлтлэг ${or(textOf(doc, 'cP'))}, M шүлтлэг ${or(textOf(doc, 'cM'))} мг/л CaCO₃; CO₃²⁻ ${or(textOf(doc, 'cC2'))}, HCO₃⁻ ${or(textOf(doc, 'cH2'))} мг/л.\n${or(valueOf(doc, 'concl'))}`,
+    evaluations: ['Шалгах асуултууд', ...questionsOf(doc, 5), '', 'Аюулгүй ажиллагаа', ...safetyOf(doc, 5)].join('\n'),
+    status: 'draft',
+  };
+  return { entry, summary };
+};
+
 // The theory comes first. Then the worksheets in the order of the work: the sample is taken, its physical
 // properties are measured, then it is titrated.
 export const enrichmentLessons: EnrichmentLesson[] = [
@@ -301,5 +346,13 @@ export const enrichmentLessons: EnrichmentLesson[] = [
     language: 'mn',
     load: () => import('./water-hardness.html?raw').then((m) => m.default),
     capture: captureHardness,
+  },
+  {
+    id: 'water-carbonate',
+    kind: 'worksheet',
+    title: { en: 'Carbonate and hydrogencarbonate in drinking water (alkalinity)', mn: 'Ундны усны карбонат, гидрокарбонатыг тодорхойлох' },
+    language: 'mn',
+    load: () => import('./water-carbonate.html?raw').then((m) => m.default),
+    capture: captureCarbonate,
   },
 ];
