@@ -13,6 +13,7 @@ import { BellRing, CheckCircle2 } from 'lucide-react';
 
 // Exam preparation is loaded only when its tab is opened.
 const ExamPrep = lazy(() => import('./ExamPrep').then((m) => ({ default: m.ExamPrep })));
+const EnrichmentAnswerKey = lazy(() => import('./EnrichmentAnswerKey').then((m) => ({ default: m.EnrichmentAnswerKey })));
 
 interface TeacherLabDashboardProps {
   language: Language;
@@ -88,7 +89,7 @@ const assessmentRubric = [
   },
 ];
 
-type StaffTab = 'solutions' | 'exam' | 'equipment' | 'journal' | 'rubric' | 'reports';
+type StaffTab = 'solutions' | 'exam' | 'answers' | 'equipment' | 'journal' | 'rubric' | 'reports';
 
 export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
   language,
@@ -115,6 +116,7 @@ export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
   const tabs: { id: StaffTab; label: string }[] = [
     { id: 'solutions', label: t.management.tabSolutions },
     { id: 'exam', label: en ? 'Exam Preparation' : 'Шалгалтын бэлтгэл' },
+    { id: 'answers', label: en ? 'Enrichment Answer Key' : 'Хөгжүүлэх хичээлийн хариу' },
     { id: 'equipment', label: t.management.tabEquipment },
     { id: 'journal', label: t.management.tabJournal },
     { id: 'rubric', label: t.management.tabGrading },
@@ -221,6 +223,9 @@ export const TeacherLabDashboard: React.FC<TeacherLabDashboardProps> = ({
 
       {/* EXAM PREPARATION */}
       {activeTab === 'exam' && <Suspense fallback={<p className="text-sm text-slate-500">{en ? 'Loading…' : 'Ачаалж байна…'}</p>}><ExamPrep language={language} role={role} /></Suspense>}
+
+      {/* ENRICHMENT LESSONS ANSWER KEY */}
+      {activeTab === 'answers' && <Suspense fallback={<p className="text-sm text-slate-500">{en ? 'Loading…' : 'Ачаалж байна…'}</p>}><EnrichmentAnswerKey language={language} role={role} /></Suspense>}
 
       {/* GLASSWARE, EQUIPMENT AND BREAKAGES */}
       {activeTab === 'equipment' && (
