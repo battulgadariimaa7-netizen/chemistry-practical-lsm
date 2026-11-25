@@ -166,9 +166,13 @@ export const captureExam = (frame: HTMLIFrameElement, paper: ExamPaper, language
     experimentTitle: en ? `Exam practice: ${label}` : `Шалгалтын дадлага: ${label}`,
     practicalId: `exam:${paper.id}`,
     chapterCode: '',
-    aim: en
-      ? `Practice of the Cambridge ${label} practical exam in the simulation.`
-      : `Cambridge ${label} практик шалгалтыг симуляцид дадлагажсан.`,
+    aim: paper.practice
+      ? en
+        ? `The practice task «${label}», done in the simulation.`
+        : `«${label}» дасгал даалгаврыг симуляцид хийсэн.`
+      : en
+        ? `Practice of the Cambridge ${label} practical exam in the simulation.`
+        : `Cambridge ${label} практик шалгалтыг симуляцид дадлагажсан.`,
     equipmentUsed: en ? 'Exam Practice simulation' : 'Шалгалтын дадлагын симуляци',
     measurements: [],
     observations: answers.map((a) => `${a.title}\n${a.text || (en ? '(nothing written)' : '(юу ч бичээгүй)')}`).join('\n\n'),

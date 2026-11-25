@@ -521,6 +521,19 @@ export const paperPreps: PaperPrepSpec[] = [
     apparatus: [['pipette25', 1], ['pipetteFiller', 1], ['burette50', 1], ['cyl50', 1], ['cyl250', 1], ['buretteStand', 1], ['beaker100', 1], ['beaker250', 1], ['funnelBurette', 1], ['standClamp', 2], ['trough', 1], ['gasFlask', 1], ['thermometer', 1], ['cup', 1], ['glassRod', 1], ['teatPipette', 2], ['spatula', 1], ['bunsen', 1], ['mat', 1], ['ttHolder', 1], ['boilingTube', 3], ['hardGlass', 1], ['testTube', 8], ['rack', 1], ['washBottle', 1], ['pen', 1]],
     extras: [...commonExtras, 'balance001'],
   },
+  // ---------------- Practice tasks (written for this site; no Confidential Instructions) ----------------
+  {
+    paperId: 'practice-neutralisation', excess: 10, supervisor: questionsOnly('Question 1', '1-р асуултын'),
+    // No qualitative analysis, so no bench reagents.
+    bench: (Object.keys(benchDefaults) as BenchKey[]).map((key) => ({ key, omit: true })),
+    materials: [
+      hcl2('fa1', 'FA 1', 40, '2.00'),
+      { id: 'fa2', label: 'FA 2', amount: 40, unit: 'cm3', identity: conc('2.20', 'sodium hydroxide', 'натрийн гидроксид'), how: dissolve([[['88.0 g', 'NaOH']]], 'Care: dissolving gives out heat and the concentrated solution is very corrosive.', 'Анхаар: уусахад дулаан ялгарна, өтгөн уусмал маш идэмхий.'), hazards: ['C'] },
+    ],
+    apparatus: [['polyCup', 1], ['beaker250', 1], ['cyl25', 2], ['thermometer', 1], ['stopclock', 1], ['washBottle', 1], ['pen', 1]],
+    extras: ['paperTowels'],
+    notes: [note('A practice task written for this site, not a Cambridge paper, so it has no Confidential Instructions. Keep FA 1 and FA 2 in the laboratory beforehand, so both are at room temperature.', 'Энэ бол энэ сайтад зориулж зохиосон дасгал даалгавар, Cambridge-ийн шалгалт биш тул Confidential Instructions байхгүй. FA 1, FA 2-ыг урьдчилан лабораторид байлгаж, хоёуланг нь өрөөний температуртай болгоно.')],
+  },
 ];
 
 export const findPaperPrep = (paperId: string) => paperPreps.find((spec) => spec.paperId === paperId);

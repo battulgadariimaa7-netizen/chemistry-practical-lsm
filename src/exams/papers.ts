@@ -9,6 +9,8 @@ export interface ExamPaper {
   series: ExamSeries;
   /** Syllabus and component, as printed on the paper. */
   code: string;
+  /** A practice task written for this site in the style of a paper, not a Cambridge paper: its name. */
+  practice?: { en: string; mn: string };
   load: () => Promise<string>;
 }
 
@@ -32,6 +34,12 @@ const papers: ExamPaper[] = [
   { id: '9701-35-mj18', year: 2018, series: 'M/J', code: '9701/35', load: () => import('./9701-35-mj18.html?raw').then((m) => m.default) },
   { id: '9701-35-on17', year: 2017, series: 'O/N', code: '9701/35', load: () => import('./9701-35-on17.html?raw').then((m) => m.default) },
   { id: '9701-35-mj17', year: 2017, series: 'M/J', code: '9701/35', load: () => import('./9701-35-mj17.html?raw').then((m) => m.default) },
+  // Practice tasks: written for this site in the form of past questions. The year and series are not used.
+  {
+    id: 'practice-neutralisation', year: 2026, series: 'M/J', code: '9701/35',
+    practice: { en: 'Practice: enthalpy change of neutralisation (acid + alkali)', mn: 'Дасгал: саармагжих урвалын энтальпи (хүчил + шүлт)' },
+    load: () => import('./practice-neutralisation.html?raw').then((m) => m.default),
+  },
 ];
 
 // The original Cambridge question paper (QP) of each paper, kept in public/qp, with the PDF page where each
@@ -68,10 +76,25 @@ export const questionPaper = (paperId: string, question?: number) => {
 // February/March comes first in a year, then May/June, then October/November.
 const seriesOrder: Record<ExamSeries, number> = { 'F/M': 1, 'M/J': 2, 'O/N': 3 };
 
-/** Newest first: by year, then by exam series within the year, then by paper code. */
+/** Newest first: by year, then by exam series within the year, then by paper code. Practice tasks come last,
+ *  so a real paper is the one that opens first. */
 export const examPapers = [...papers].sort(
-  (a, b) => b.year - a.year || seriesOrder[b.series] - seriesOrder[a.series] || a.code.localeCompare(b.code),
+  (a, b) =>
+    Number(!!a.practice) - Number(!!b.practice) ||
+    b.year - a.year ||
+    seriesOrder[b.series] - seriesOrder[a.series] ||
+    a.code.localeCompare(b.code),
 );
+
+/** The papers grouped for a paper chooser: the practice tasks first, then the papers year by year. */
+export const paperGroups = (list: ExamPaper[], language: 'en' | 'mn') => {
+  const practice = list.filter((p) => p.practice);
+  const years = [...new Set(list.filter((p) => !p.practice).map((p) => p.year))];
+  return [
+    ...(practice.length ? [{ key: 'practice', label: language === 'en' ? 'Practice tasks' : 'Дасгал даалгавар', papers: practice }] : []),
+    ...years.map((year) => ({ key: String(year), label: String(year), papers: list.filter((p) => !p.practice && p.year === year) })),
+  ];
+};
 
 const seriesName: Record<ExamSeries, { en: string; mn: string }> = {
   'F/M': { en: 'February/March', mn: '2/3-р сар' },
@@ -80,6 +103,8 @@ const seriesName: Record<ExamSeries, { en: string; mn: string }> = {
 };
 
 export const paperLabel = (paper: ExamPaper, language: 'en' | 'mn') =>
-  language === 'en'
+  paper.practice
+    ? paper.practice[language]
+    : language === 'en'
     ? `${paper.code}, ${seriesName[paper.series].en} ${paper.year}`
     : `${paper.code}, ${paper.year} оны ${seriesName[paper.series].mn}`;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Language, UserRole } from '../types/chemistry';
-import { examPapers, paperLabel } from '../exams/papers';
+import { examPapers, paperGroups, paperLabel } from '../exams/papers';
 import { Bi, PaperPrepSpec, PrepMaterial, apparatusNames, benchDefaults, extraNames, findPaperPrep, paperPreps } from '../exams/examPrep';
 import { todayText } from '../data/solutionRecipes';
 import { useStoredState } from '../hooks/useStoredState';
@@ -72,8 +72,6 @@ const StatusPicker: React.FC<{ value: ItemStatus; onChange: (status: ItemStatus)
     </div>
   );
 };
-
-const years = [...new Set(examPapers.map((p) => p.year))];
 
 const progressOf = (spec: PaperPrepSpec, state: ExamPrepState) => {
   const items = (keys: string[]) => keys.filter((key) => state.items[key]?.status === 'ready').length;
@@ -246,9 +244,9 @@ export const ExamPrep: React.FC<{ language: Language; role: UserRole }> = ({ lan
           <div className="sm:col-span-2 lg:col-span-1">
             <label htmlFor="prep-paper" className="block text-xs font-medium text-slate-700 mb-1">{en ? 'Exam paper' : 'Шалгалт'}</label>
             <select id="prep-paper" value={paper.id} onChange={(event) => setPaperId(event.target.value)} className={inputClass}>
-              {years.map((year) => (
-                <optgroup key={year} label={String(year)}>
-                  {examPapers.filter((p) => p.year === year).map((p) => (
+              {paperGroups(examPapers, language).map((group) => (
+                <optgroup key={group.key} label={group.label}>
+                  {group.papers.map((p) => (
                     <option key={p.id} value={p.id}>{paperLabel(p, language)}</option>
                   ))}
                 </optgroup>

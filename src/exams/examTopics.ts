@@ -41,6 +41,7 @@ const byPaper: Record<string, TopicKey[][]> = {
   '9701-35-mj25': [['gas'], ['acidbase'], ['qa', 'organic']],
   '9701-35-on25': [['redox', 'water'], ['mass', 'water'], ['qa']],
   '9701-35-mj26': [['gas'], ['thermometric', 'graph'], ['qa']],
+  'practice-neutralisation': [['enthalpy', 'graph']],
 };
 
 /** The question numbers (1, 2, 3) of a paper that test a topic. */

@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'rea
 import { createPortal } from 'react-dom';
 import interFontUrl from 'inter-ui/variable/InterVariable.woff2?url';
 import { LabNotebookEntry, Language, UserRole } from '../types/chemistry';
-import { examPapers, paperLabel, questionPaper } from '../exams/papers';
+import { examPapers, paperGroups, paperLabel, questionPaper } from '../exams/papers';
 import { questionsOn, topics } from '../exams/examTopics';
 import { captureExam } from '../exams/examCapture';
 import { findPaperPrep } from '../exams/examPrep';
@@ -61,7 +61,9 @@ const paperIn = (html: string, language: Language, staff: boolean, paperId: stri
   return page.replace(/@@([\s\S]*?)\|\|\|([\s\S]*?)@@/g, (_, english: string, mongolian: string) => (language === 'en' ? english : mongolian));
 };
 
-const years = [...new Set(examPapers.map((p) => p.year))];
+/** Cambridge papers only: the practice tasks are not counted as papers. */
+const realCount = (list: typeof examPapers) => list.filter((p) => !p.practice).length;
+
 
 // A student passes the lab safety check once per browser session, so on a shared school computer the next
 // student, who opens the browser again, reads the rules too.
@@ -206,20 +208,17 @@ export const ExamPractice: React.FC<ExamPracticeProps> = ({ language, role }) =>
             {en ? 'Exam paper' : 'Шалгалт'}
           </label>
           <select id="exam-paper" value={paper.id} onChange={(event) => setPaperId(event.target.value)} className={`${selectClass} max-w-xs`}>
-            {years.map((year) => {
-              const inYear = listed.filter((p) => p.year === year);
-              return inYear.length ? (
-                <optgroup key={year} label={String(year)}>
-                  {inYear.map((p) => <option key={p.id} value={p.id}>{optionLabel(p)}</option>)}
-                </optgroup>
-              ) : null;
-            })}
+            {paperGroups(listed, language).map((group) => (
+              <optgroup key={group.key} label={group.label}>
+                {group.papers.map((p) => <option key={p.id} value={p.id}>{optionLabel(p)}</option>)}
+              </optgroup>
+            ))}
           </select>
         </div>
         <span className="hidden xl:inline text-xs text-slate-500 truncate">
           {topic
-            ? (en ? `${listed.length} papers on this topic, newest first` : `Энэ сэдвээр ${listed.length} шалгалт, сүүлийнх нь эхэндээ`)
-            : (en ? `${examPapers.length} papers, newest first` : `${examPapers.length} шалгалт, сүүлийнх нь эхэндээ`)}
+            ? (en ? `${realCount(listed)} papers on this topic, newest first` : `Энэ сэдвээр ${realCount(listed)} шалгалт, сүүлийнх нь эхэндээ`)
+            : (en ? `${realCount(examPapers)} papers, newest first` : `${realCount(examPapers)} шалгалт, сүүлийнх нь эхэндээ`)}
         </span>
         <div className="sm:ml-auto flex flex-wrap items-center gap-2">
         {!gated && (

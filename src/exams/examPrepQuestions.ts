@@ -83,6 +83,9 @@ export const questionPreps: Record<string, QuestionPrep[]> = {
     { q: 1, title: { en: 'x in hydrated sodium carbonate', mn: 'Ус агуулсан натрийн карбонатын x' }, materials: ['fa1', 'fa2', 'fa3', 'fa4', 'fa5'], apparatus: ['pipette25', 'pipetteFiller', 'burette50', 'conical', 'cyl50', 'cyl250', 'buretteStand', 'beaker100', 'funnelBurette', 'whiteTile', 'standClamp', 'trough', 'gasFlask', 'glassRod', 'teatPipette', 'spatula', 'washBottle', 'pen'], extras: ['paperTowels', 'balance001'] },
     { q: 2, title: { en: 'Qualitative analysis', mn: 'Чанарын шинжилгээ' }, materials: ['fa6', 'fa7', 'fa8', 'fa9', 'fa10', 'feso4', 'ki'], apparatus: ['beaker100', 'glassRod', 'teatPipette', 'spatula', 'bunsen', 'mat', 'ttHolder', 'boilingTube', 'hardGlass', 'testTube', 'rack', 'washBottle', 'pen'], extras: ['paperTowels', 'litmus', 'alFoil', 'splints', 'limewaterKit'], bench: true },
   ],
+  'practice-neutralisation': [
+    { q: 1, title: { en: 'Enthalpy change of neutralisation', mn: 'Саармагжих урвалын энтальпийн өөрчлөлт' }, materials: ['fa1', 'fa2'], apparatus: ['polyCup', 'beaker250', 'cyl25', 'thermometer', 'stopclock', 'washBottle', 'pen'], extras: ['paperTowels'] },
+  ],
   '9701-35-mj24': [
     { q: 1, title: { en: 'The effect of concentration on rate (the «iodine clock»)', mn: 'Урвалын хурдад концентрацийн нөлөө («иодын цаг»)' }, materials: ['fa1', 'fa2', 'fa3', 'fa4', 'water'], apparatus: ['burette50', 'cyl25', 'buretteStand', 'beaker100', 'funnelBurette', 'whiteTile', 'glassRod', 'stopclock', 'teatPipette', 'washBottle', 'pen'], extras: ['paperTowels'] },
     { q: 2, title: { en: 'Enthalpy of solution of ammonium chloride', mn: 'Аммонийн хлоридын уусалтын энтальпи' }, materials: ['fa5', 'water'], apparatus: ['cyl25', 'beaker100', 'beaker250', 'thermometer', 'cup', 'glassRod', 'stopclock', 'spatula', 'bunsen', 'mat', 'washBottle', 'pen'], extras: ['paperTowels', 'balance001'] },
